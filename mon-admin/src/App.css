@@ -69,3 +69,15 @@
   padding: 20px;
   background-color: white;
 }
+
+.formulaire {
+  border: none !important;
+  border-bottom: 3px solid hsl(187, 84%, 17%) !important;
+  outline: none !important;
+}
+
+a {
+  text-decoration: none !important;
+  color: hsl(187, 84%, 17%) !important;
+  text-align: end !important;
+}
