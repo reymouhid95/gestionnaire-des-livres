@@ -1,0 +1,71 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: medium;
+}
+
+.App {
+  text-align: center;
+  color: bisque;
+}
+
+.soumission {
+  border: none !important;
+  background-color: rgb(18, 143, 189) !important;
+  color: bisque !important;
+}
+
+.soumission:hover {
+  background-color: bisque !important;
+  color: rgb(3, 43, 58) !important;
+  transition: 2s !important;
+}
+
+.filter {
+  width: 200px !important;
+}
+
+.btn {
+  transition: 2s !important;
+}
+
+.bg-dark {
+  background-image: linear-gradient(
+    to right,
+    rgb(6, 71, 71),
+    rgba(6, 48, 71, 0.81)
+  ) !important;
+}
+
+.logo {
+  color: hsl(187, 84%, 17%);
+  font-size: 5rem !important;
+}
+
+.color {
+  color: hsl(187, 84%, 17%);
+}
+.backOne {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.backTwo {
+  background-color: white;
+}
+
+.form {
+  width: 400px;
+  height: 500px;
+  margin: 75px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+}
