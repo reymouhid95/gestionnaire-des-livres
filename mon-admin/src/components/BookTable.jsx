@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
 import * as Icon from "react-bootstrap-icons";
+import ListModal from "./ModalList";
 
 // Fonction principal du composant
 function TableBook({ books, onEditBook, onDeleteBook }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showListModal, setShowListModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 5;
@@ -20,7 +22,7 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
     setCurrentPage(pageNumber);
   };
 
-  // Méthode pour afficher lemodal
+  // Méthode pour afficher le modal
   const handleShowModal = (book) => {
     setSelectedBook(book);
     setShowModal(true);
@@ -30,6 +32,16 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
   const handleCloseModal = () => {
     setSelectedBook(null);
     setShowModal(false);
+  };
+
+  // Méthode pour afficher le modal de la liste
+  const handleShowListModal = () => {
+    setShowListModal(true);
+  };
+
+  // Méthode pour fermer le modal de la liste
+  const handleCloseListModal = () => {
+    setShowListModal(false);
   };
 
   // L'affichage
@@ -57,6 +69,13 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
           </Col>
         </Row>
       </div>
+      <Button
+        variant=""
+        className="soumission mt-3 mb-2 mx-2"
+        onClick={handleShowListModal}
+      >
+        Afficher la liste
+      </Button>
       <Table responsive striped bordered hover variant="bg-body-secondary">
         <thead>
           <tr>
@@ -151,9 +170,9 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
           </ul>
         </div>
       </Row>
-      <Modal show={showModal} onHide={handleCloseModal} className="text-center">
+      <Modal show={showModal} onHide={handleCloseModal} className="text-start">
         <Modal.Header closeButton>
-          <Modal.Title>Détails de l'utilisateur</Modal.Title>
+          <Modal.Title>Détails du livre</Modal.Title>
         </Modal.Header>
         <Modal.Body className="bg-dark text-light fw-bold">
           {selectedBook && (
@@ -167,6 +186,11 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
           )}
         </Modal.Body>
       </Modal>
+      <ListModal
+        show={showListModal}
+        handleClose={handleCloseListModal}
+        books={books}
+      />
     </div>
   );
 }

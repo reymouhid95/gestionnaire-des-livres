@@ -15,7 +15,6 @@ import Auth from "../assets/images/auth-illustration.svg";
 import GoogleAuth from "./AuthGoogle";
 import FacebookAuth from "./AuthFacebook";
 import toast from "react-hot-toast";
-// import { Link } from "react-router-dom";
 
 // Méthode principale du composant
 function SignUp() {
