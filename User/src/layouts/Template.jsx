@@ -1,5 +1,5 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function Template(props) {
   // const [toggle, setToggle] = useState(false);
@@ -7,8 +7,8 @@ function Template(props) {
   //   setToggle(!toggle) 
   // }
   return (
-      <div className="container-fluid nin-vh-100 template">
-        <div className='row contenu'>
+      <div className="container-fluid nin-vh-100">
+        <div className='row'>
           {props.toggle && <div className='col-4 col-md-2 vh-100 position-fixed m-0 p-0'>
             {props.sidebar}      
           </div>}

@@ -1,6 +1,6 @@
 // Importation des bibliothèques et outils
 import { useState, useEffect, useCallback } from "react";
-import { Container, Row, Col, Modal } from "react-bootstrap";
+import { Row, Col, Modal } from "react-bootstrap";
 import { Form, Button } from "react-bootstrap";
 import { db } from "../firebase-config";
 import {
@@ -23,6 +23,7 @@ function FormBook() {
     url: "",
     description: "",
   });
+
   const [selectedBook, setSelectedBook] = useState(null);
   const [isAdding, setIsAdding] = useState(true);
   const [show, setShow] = useState(false);
@@ -51,7 +52,7 @@ function FormBook() {
     loadBooks();
   }, [loadBooks]);
 
-  // Ajouter un utilisateur
+  // Ajouter un livre
   const handleAddBook = useCallback(async () => {
     const book = formData;
     await addDoc(collection(db, "books"), book);
@@ -66,7 +67,7 @@ function FormBook() {
     });
   }, [formData, loadBooks]);
 
-  // Mettre à jour d'un utilisateur
+  // Mettre à jour un livre
   const handleEditBook = (book) => {
     setShow(true);
     setFormData({
@@ -98,7 +99,7 @@ function FormBook() {
     }
   };
 
-  // Supprimer un utilisateur
+  // Supprimer un livre
   const handleDeleteBook = useCallback(
     async (bookId) => {
       await deleteDoc(doc(db, "books", bookId));
@@ -141,7 +142,7 @@ function FormBook() {
                 <Modal.Title>Informations membres</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div>
+                <div className="row d-flex g-2">
                   <Col md={6} sm={12} xs={12} className="mb-2">
                     <Form.Control
                       type="text"
@@ -167,7 +168,7 @@ function FormBook() {
                     />
                   </Col>
                 </div>
-                <div>
+                <div className="row g-2 d-flex flex-wrap">
                   <Col md={6} sm={12} xs={12} className="mb-2">
                     <Form.Control
                       type="text"
@@ -224,11 +225,13 @@ function FormBook() {
           </Row>
         </Form>
       </div>
-      <TableBook
-        books={books}
-        onEditBook={handleEditBook}
-        onDeleteBook={handleDeleteBook}
-      />
+      <div className="">
+        <TableBook
+          books={books}
+          onEditBook={handleEditBook}
+          onDeleteBook={handleDeleteBook}
+        />
+      </div>
     </div>
   );
 }

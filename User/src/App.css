@@ -13,7 +13,7 @@
   /* background-color: #282c34; */
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
   color: #fff;
-  z-index: 1000;
+  z-index: 1000 !important;
 }
 
 .sidebar a i{
@@ -91,7 +91,6 @@
 
 .dashboard{
   background-color: rgb(225,225, 235);
-  width: 100% !important;
 }
 
 #home #content {
@@ -140,6 +139,7 @@
 
 .homeCard{
   padding-top: 5%;
+  z-index: 0;
 }
 
 .homeCard img{
@@ -147,8 +147,27 @@
   height: 80%;
 }
 
+.content-modal{
+  background: hsl(199, 90%, 29%) !important;
+  color: #fff !important;
+}
+
 .homeCard{
   background-color: rgb(225,225, 235);
+}
+
+.books #title , .carte #title{
+  font-size: 18px !important;
+  font-weight: 500 !important;
+}
+
+#cardImgContent{
+  display: flex;
+  justify-content: center;
+}
+
+#cardImg{
+  width: 90% !important;
 }
 
 #cardImg:hover{
@@ -157,102 +176,10 @@
   transform: scale(1.1);
 }
 
-#table{
-  width: 200% !important;
+.homeCard .carte{
+  z-index: 0 !important;
 }
 
-/* td{
-  width: max-content !important;
-} */
-
-@media screen and (max-width: 500px){
-  #home .charts {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* #table{
-    width: 200% !important;
-  } */
-
-  /* .connexion{
-    display: flex !important;
-    flex-direction: column-reverse !important;
-  } */
-
-  .sidebar {
-    z-index: 1000 !important;
-  }
-
-  .searchContent{
-    display: flex !important;
-    justify-content: space-between;
-  }
-
-  /* .sidebar span{
-    display: none !important;
-  } */
-
-  /* .sidebar #logo{
-    display: none;
-  } */
-
-  /* .template .contenu{
-    display: flex !important;
-    flex-direction: column-reverse !important;
-  } */
-
-  /* .list-group-flush {
-    display:flex !important;
-    flex-wrap: wrap ;
-    padding-top: 9% ;
-    padding-bottom: 9% ;
-    padding-left: 5% ;
-    width: 100% ;
-    position: fixed ;
-    bottom: 0 ;
-    left: 0;
-    right: 0 ;
-    z-index: 1000 ;
-  } */
-}
-
-.soumission {
-  border: none !important;
-  background-color: rgb(18, 143, 189) !important;
-  color: bisque !important;
-}
-
-.soumission:hover {
-  background-color: green !important;
-  color: #fff !important;
-  transition: 2s !important;
-}
-
-.btn {
-  transition: 2s !important;
-}
-
-.bg-dark {
-  background-image: linear-gradient(
-    to right,
-    rgb(6, 71, 71),
-    rgba(6, 48, 71, 0.81)
-  ) !important;
-}
-
-.logo {
-  color: hsl(187, 84%, 17%);
-  font-size: 5rem !important;
-}
-
-thead th{
-  background-color: hsl(199, 100%, 33%) !important;
-}
-
-.color {
-  color: hsl(187, 84%, 17%);
-}
 
 .backOne {
   width: 100%;
@@ -332,4 +259,28 @@ thead th{
     rgb(6, 71, 71),
     rgba(6, 48, 71, 0.81)
   ) !important;
+}
+
+@media screen and (max-width: 500px){
+  #home .charts {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .newArrivals .carte{
+    padding: 30px !important;
+    z-index: 0;
+  }
+}
+
+@media screen and (max-width: 650px){
+  .homeCard .carte{
+    padding: 30px !important;
+    z-index: 0;
+  }
+
+  .homeCard .books{
+    padding-left: 8px !important;
+    padding-right: 8px !important
+  }
 }

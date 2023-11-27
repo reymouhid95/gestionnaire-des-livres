@@ -47,7 +47,6 @@ function SignIn() {
         setEmail("");
         setPassword("");
         toast.success("Utilisateur connecté!");
-        
         navigate("/user/dashboard");
       })
       .catch((error) => {

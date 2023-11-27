@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SidebarComponent from './SidebarComponent';
 import { menu } from './Utils';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
-import { Link} from 'react-router-dom';
+// import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+import Aos from 'aos';
+import 'aos/dist/aos.css';
 
 
 function Sidebar() {
@@ -10,14 +13,17 @@ function Sidebar() {
     localStorage.removeItem('utilisateur');
     window.location.replace("/connexion");
   }
+  useEffect(() => {
+    Aos.init({duration:2000})
+}, [])
   return (
     <div className='vh-100 sidebar p-2'>
-        <div className="m-2" id='logo'>
+        <div className="m-2">
             <AutoStoriesIcon className='fs-2' />
             <span className='brand-name fs-1 fw-bold mx-2'>eBook</span>
         </div>
         <hr className='text-white border-3 mt-5' style={{color: "#fff"}} />
-        <div className="list-group list-group-flush">
+        <div data-aos="fade-left" className="list-group list-group-flush">
           {menu.map((elem, index) => (
               <SidebarComponent {...elem} key={index}/>
           ))}

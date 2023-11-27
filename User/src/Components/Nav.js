@@ -82,7 +82,6 @@ function Nav({ Toggle }) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  // const navigate = useNavigate();
   const deconnexion = () =>{
     localStorage.removeItem('utilisateur');
     window.location.replace("/connexion");
@@ -106,7 +105,7 @@ function Nav({ Toggle }) {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={deconnexion}>Déconnexion</MenuItem>
+      <MenuItem onClick={deconnexion}>Déconnexion</MenuItem>
     </Menu>
   );
 
@@ -162,7 +161,6 @@ function Nav({ Toggle }) {
     </Menu>
   );
 
-
   return (
     <Box sx={{ flexGrow: 1 }} >
       <AppBar position="static">
@@ -191,7 +189,6 @@ function Nav({ Toggle }) {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
-              
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />

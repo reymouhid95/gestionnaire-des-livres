@@ -11,11 +11,14 @@ import img10 from '../assets/suspendisse-vel (2).jpg';
 import img11 from '../assets/the-storyteller (1).jpg';
 import img12 from '../assets/history-month (1).jpg'
 
-
+const deconnexion = () =>{
+    localStorage.removeItem('utilisateur');
+    window.location.replace("/connexion");
+}
 
 export const menu = [
     {title: "Home", icon: "bi bi-house-door fs-5 me-3" , path: "/user/dashboard"},
-    {title: "Archived", icon: "bi bi-folder-symlink fs-5 me-3" , path: "/user/Archived"},
+    {title: "Books", icon: "bi bi-book-half fs-5 me-3" , path: "/user/books"},
     {title: "Statistics", icon: "bi bi-graph-up-arrow fs-5 me-3", path:"/user/statistics"}
 ]
 
