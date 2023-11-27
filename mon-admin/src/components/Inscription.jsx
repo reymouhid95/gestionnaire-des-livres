@@ -17,7 +17,7 @@ import FacebookAuth from "./AuthFacebook";
 import toast from "react-hot-toast";
 
 // Méthode principale du composant
-function SignUp() {
+function Inscripton() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -192,4 +192,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Inscripton;

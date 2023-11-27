@@ -18,7 +18,7 @@ import GoogleAuth from "./AuthGoogle.jsx";
 import FacebookAuth from "./AuthFacebook.jsx";
 
 // Méthode principale du composant
-function SignIn() {
+function Connexion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -35,7 +35,15 @@ function SignIn() {
       return;
     }
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
+      .then((userCredential) => {
+        const user = userCredential.user;
+        // Vérifier l'email de l'utilisateur
+        if (user.mail === "exemple@gmail.com") {
+          console.log("Admin logged in");
+        } else {
+          console.log("User logged in");
+        }
+
         setEmail("");
         setPassword("");
         toast.success("Utilisateur connecté!");
@@ -126,4 +134,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default Connexion;
