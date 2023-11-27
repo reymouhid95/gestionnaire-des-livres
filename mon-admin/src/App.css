@@ -81,3 +81,9 @@ a {
   color: hsl(187, 84%, 17%) !important;
   text-align: end !important;
 }
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+}

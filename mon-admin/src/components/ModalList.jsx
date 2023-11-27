@@ -16,11 +16,6 @@ function ListModal({ show, handleClose, books }) {
           </div>
         ))}
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Fermer
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 }

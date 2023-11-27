@@ -1,9 +1,11 @@
 /* eslint-disable array-callback-return */
 // Importation des bibliothèques et outils
 import { useState } from "react";
-import { Table, Button, Modal, Form, Row, Col } from "react-bootstrap";
+import { Table, Button, Form, Row, Col } from "react-bootstrap";
 import * as Icon from "react-bootstrap-icons";
 import ListModal from "./ModalList";
+import BookDetails from "./BookDetails";
+import Paginations from "./Paginations";
 
 // Fonction principal du composant
 function TableBook({ books, onEditBook, onDeleteBook }) {
@@ -138,54 +140,19 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
       </Table>
       <Row>
         <div className="d-flex justify-content-center px-3">
-          <ul
-            className="pagination"
-            style={{
-              listStyle: "none",
-              display: "flex",
-              justifyContent: "center",
-              gap: "5px",
-            }}
-          >
-            {books.length > booksPerPage &&
-              Array(Math.ceil(books.length / booksPerPage))
-                .fill()
-                .map((_, index) => (
-                  <li
-                    key={index}
-                    className="page-item"
-                    style={{ borderRadius: "5px" }}
-                  >
-                    <Button
-                      className={`page-link ${
-                        currentPage === index + 1 ? "bg-primary text-white" : ""
-                      }`}
-                      onClick={() => paginate(index + 1)}
-                      style={{ border: "none", borderRadius: "100px" }}
-                    >
-                      {index + 1}
-                    </Button>
-                  </li>
-                ))}
-          </ul>
+          <Paginations
+            booksPerPage={booksPerPage}
+            totalBooks={books.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
         </div>
       </Row>
-      <Modal show={showModal} onHide={handleCloseModal} className="text-start">
-        <Modal.Header closeButton>
-          <Modal.Title>Détails du livre</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="bg-dark text-light fw-bold">
-          {selectedBook && (
-            <div>
-              <p>Titre : {selectedBook.title}</p>
-              <p>Auteur : {selectedBook.author}</p>
-              <p>Genre : {selectedBook.genre}</p>
-              <p>Lien : {selectedBook.url}</p>
-              <p>Description : {selectedBook.description}</p>
-            </div>
-          )}
-        </Modal.Body>
-      </Modal>
+      <BookDetails
+        show={showModal}
+        handleClose={handleCloseModal}
+        selectedBook={selectedBook}
+      />
       <ListModal
         show={showListModal}
         handleClose={handleCloseListModal}
