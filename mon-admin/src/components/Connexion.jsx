@@ -15,7 +15,6 @@ import Auth from "../assets/images/auth-illustration.svg";
 import toast from "react-hot-toast";
 import PasswordReset from "./Reset.jsx";
 import GoogleAuth from "./AuthGoogle.jsx";
-import FacebookAuth from "./AuthFacebook.jsx";
 
 // Méthode principale du composant
 function Connexion() {
@@ -35,24 +34,13 @@ function Connexion() {
       return;
     }
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-
-        // Vérifier l'email de l'utilisateur
-        if (user.mail === "adminexemple@gmail.com") {
-          toast.success("Admin logged in");
-        } else {
-          toast.success("User logged in");
-        }
-
+      .then(() => {
         setEmail("");
         setPassword("");
         toast.success("Utilisateur connecté!");
       })
-      .catch((error) => {
-        toast.error("Vérifiez les identifiants!");
-        setEmail("");
-        setPassword("");
+      .catch(() => {
+        toast.error("Identifiabants incorrects. Veuillez vérifier!");
       });
   };
 
@@ -95,6 +83,8 @@ function Connexion() {
                 aria-describedby="basic-addon1"
                 value={email}
                 onChange={handleEmailChange}
+                required
+                type="email"
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -107,6 +97,8 @@ function Connexion() {
                 aria-describedby="basic-addon1"
                 value={password}
                 onChange={handlePasswordChange}
+                required
+                type="password"
               />
             </InputGroup>
             <PasswordReset />
@@ -120,7 +112,6 @@ function Connexion() {
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
-            <FacebookAuth />
           </Form>
         </Col>
         <Col md={6} className="backThree text-center text-light fw-bold mt-4">

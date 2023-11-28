@@ -13,7 +13,6 @@ import LockIcon from "@mui/icons-material/Lock";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import Auth from "../assets/images/auth-illustration.svg";
 import GoogleAuth from "./AuthGoogle";
-import FacebookAuth from "./AuthFacebook";
 import toast from "react-hot-toast";
 
 // Méthode principale du composant
@@ -26,7 +25,6 @@ function Inscripton() {
   const [existingEmails, setExistingEmails] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
 
-  // Méthode pour pouvoir s'inscrire
   const handleSignUp = () => {
     if (isEmailUnique) {
       createUserWithEmailAndPassword(auth, email, password)
@@ -38,40 +36,29 @@ function Inscripton() {
           toast.success("Utilisateur inscrit avec succès!");
         })
         .catch((error) => {
-          console.error("Login error:", error.message);
+          console.error("Erreur d'inscription:", error.message);
           toast.error("Cette adresse e-mail est déjà utilisée !");
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-          setName("");
         });
     } else {
       toast.error("L'utilisateur n'a pas pu être inscrit !");
     }
   };
 
-  // Méthode de récupération du nom saisi dans le champ
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
-  // Méthode de récupération de l'email saisi dans le champ
+
   const handleEmailChange = (e) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
     setIsEmailUnique(true);
 
-    // Expression régulière pour valider l'adresse e-mail
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Vérifie si l'e-mail est au format valide
     setIsEmailValid(emailRegex.test(newEmail));
 
-    // Vérifie si l'e-mail se termine par un chiffre ou une lettre après le .com
     const invalidEmailSuffixRegex = /\.com[0-9a-zA-Z]+$/;
     if (invalidEmailSuffixRegex.test(newEmail)) {
       setIsEmailValid(false);
-
-      // Ajoutez ici votre logique pour gérer l'invalidité de l'e-mail
       toast.error(
         "L'adresse e-mail ne peut pas contenir de caractères après le '.com'. Veuillez l'enlever pour pouvoir vous inscrire !"
       );
@@ -82,21 +69,17 @@ function Inscripton() {
     }
   };
 
-  // Méthode de récupération du mot de passe saisi dans le champ
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
 
-  // Méthode de récupération du mot de passe confirmé saisi dans le champ
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
   };
 
-  // Méthode de contôle du formulaire
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password && password === confirmPassword) {
-      toast.success("Utilisateur inscrit avec succès!");
       handleSignUp();
     } else if (!isEmailValid) {
       toast.error("Veuillez saisir une adresse e-mail valide !");
@@ -135,6 +118,8 @@ function Inscripton() {
                 aria-describedby="basic-addon1"
                 value={name}
                 onChange={handleNameChange}
+                required
+                type="text"
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -147,6 +132,8 @@ function Inscripton() {
                 aria-describedby="basic-addon1"
                 value={email}
                 onChange={handleEmailChange}
+                required
+                type="email"
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -155,10 +142,12 @@ function Inscripton() {
               </InputGroup.Text>
               <Form.Control
                 placeholder="Créer un mot de passe"
-                aria-label="Username"
+                aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={password}
                 onChange={handlePasswordChange}
+                required
+                type="password"
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -167,10 +156,12 @@ function Inscripton() {
               </InputGroup.Text>
               <Form.Control
                 placeholder="Confirmer le mot de passe"
-                aria-label="Username"
+                aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
+                required
+                type="password"
               />
             </InputGroup>
             <Button
@@ -183,7 +174,6 @@ function Inscripton() {
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
-            <FacebookAuth />
             <p>Si vous avez déjà un compte connectez-vous</p>
           </Form>
         </Col>
