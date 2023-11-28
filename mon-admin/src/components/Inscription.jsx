@@ -29,6 +29,8 @@ function Inscripton() {
     if (isEmailUnique) {
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
+          // Enregistrez le nom dans le local storage
+          localStorage.setItem("userName", name);
           setEmail("");
           setPassword("");
           setConfirmPassword("");

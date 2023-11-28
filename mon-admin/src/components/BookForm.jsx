@@ -64,6 +64,8 @@ function FormBook() {
       url: "",
       description: "",
     });
+    // Stocker le nombre de livre par ajout dans le local storage
+    localStorage.setItem("numberOfBooks", "5");
   }, [formData, loadBooks]);
 
   // Mettre à jour d'un utilisateur
