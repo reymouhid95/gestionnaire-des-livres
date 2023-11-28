@@ -37,11 +37,12 @@ function Connexion() {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+
         // Vérifier l'email de l'utilisateur
-        if (user.mail === "exemple@gmail.com") {
-          console.log("Admin logged in");
+        if (user.mail === "adminexemple@gmail.com") {
+          toast.success("Admin logged in");
         } else {
-          console.log("User logged in");
+          toast.success("User logged in");
         }
 
         setEmail("");

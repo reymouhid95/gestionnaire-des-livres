@@ -12,6 +12,8 @@ import {
   doc,
 } from "firebase/firestore";
 import TableBook from "./BookTable";
+import NotificationModal from "./Notifications";
+import NotificationHistory from "./NotificationsHistory";
 
 // Composant principal pour les méthodes d'ajout, de modification et de suppression
 function FormBook() {
@@ -25,6 +27,7 @@ function FormBook() {
   });
   const [selectedBook, setSelectedBook] = useState(null);
   const [isAdding, setIsAdding] = useState(true);
+  const [notifications, setNotifications] = useState([]);
 
   // Surveiller le chargement des données au montage de l'aooli
   const loadBooks = useCallback(async () => {
@@ -116,10 +119,30 @@ function FormBook() {
   // Surveiller l'état du bouton
   const buttonText = isAdding ? "Ajouter" : "Mise à jour";
 
+  const handleNewNotification = (type, message) => {
+    const newNotification = {
+      type,
+      message,
+      date: new Date().toLocaleString(),
+    };
+
+    setNotifications((prevNotifications) => [
+      ...prevNotifications,
+      newNotification,
+    ]);
+  };
+
   // L'affichage
   return (
     <div className="mt-2">
+      <Button
+        variant="outline-secondary"
+        onClick={() => handleNewNotification("success", "Opération réussie")}
+      >
+        Afficher Notification
+      </Button>
       <h1>Books Database</h1>
+      <NotificationHistory notifications={notifications} />
       <Container>
         <Form onSubmit={handleSubmit}>
           <Row>

@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 // Importation des bibliothèques et outils
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Table, Button, Form, Row, Col } from "react-bootstrap";
 import * as Icon from "react-bootstrap-icons";
 import ListModal from "./ModalList";
@@ -15,14 +15,13 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 5;
-
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
   const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
-
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const [archivedBooks, setArchivedBooks] = useState([]);
 
   // Méthode pour afficher le modal
   const handleShowModal = (book) => {
@@ -45,6 +44,20 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
   const handleCloseListModal = () => {
     setShowListModal(false);
   };
+
+  // Fonction pour archiver ou désarchiver un livre
+  const handleArchiveToggle = (book) => {
+    if (archivedBooks.includes(book.id)) {
+      setArchivedBooks(archivedBooks.filter((id) => id !== book.id));
+    } else {
+      setArchivedBooks([...archivedBooks, book.id]);
+    }
+  };
+
+  // Effet pour réinitialiser la page courante lorsqu'on change le terme de recherche
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   // L'affichage
   return (
@@ -125,6 +138,17 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
                     onClick={() => onEditBook(book)}
                   >
                     <Icon.Pen />
+                  </Button>
+                  <Button
+                    variant="outline-warning"
+                    className="mb-2 mx-2 border border-none"
+                    onClick={() => handleArchiveToggle(book)}
+                  >
+                    {archivedBooks.includes(book.id) ? (
+                      <Icon.FolderSymlinkFill />
+                    ) : (
+                      <Icon.FolderX />
+                    )}
                   </Button>
                   <Button
                     variant="outline-danger"
