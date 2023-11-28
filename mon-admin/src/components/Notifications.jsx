@@ -1,6 +1,4 @@
 // NotificationComponent.jsx
-import React from "react";
-
 const Notification = ({ type, message, date }) => {
   return (
     <div className={`notification ${type}`}>

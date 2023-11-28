@@ -1,5 +1,4 @@
 // NotificationHistory.jsx
-import React from "react";
 import Notification from "./Notifications";
 
 const NotificationHistory = ({ notifications }) => {

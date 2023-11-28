@@ -12,7 +12,6 @@ import {
   doc,
 } from "firebase/firestore";
 import TableBook from "./BookTable";
-import NotificationModal from "./Notifications";
 import NotificationHistory from "./NotificationsHistory";
 
 // Composant principal pour les méthodes d'ajout, de modification et de suppression
@@ -137,11 +136,15 @@ function FormBook() {
     <div className="mt-2">
       <Button
         variant="outline-secondary"
-        onClick={() => handleNewNotification("success", "Opération réussie")}
+        onClick={() =>
+          handleNewNotification(
+            "success",
+            "Votre emprunt du livre a été validé pour 24h. Bonne Lecture!"
+          )
+        }
       >
-        Afficher Notification
+        Notification
       </Button>
-      <h1>Books Database</h1>
       <NotificationHistory notifications={notifications} />
       <Container>
         <Form onSubmit={handleSubmit}>

@@ -6,6 +6,7 @@ import * as Icon from "react-bootstrap-icons";
 import ListModal from "./ModalList";
 import BookDetails from "./BookDetails";
 import Paginations from "./Paginations";
+import ArchivedBooks from "./ArchivedBooks";
 
 // Fonction principal du composant
 function TableBook({ books, onEditBook, onDeleteBook }) {
@@ -45,13 +46,18 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
     setShowListModal(false);
   };
 
-  // Fonction pour archiver ou désarchiver un livre
+  // Méthode pour archiver un livre
   const handleArchiveToggle = (book) => {
     if (archivedBooks.includes(book.id)) {
       setArchivedBooks(archivedBooks.filter((id) => id !== book.id));
     } else {
       setArchivedBooks([...archivedBooks, book.id]);
     }
+  };
+
+  // Méthode pour désarchiver un livre
+  const handleUnarchiveBook = (book) => {
+    setArchivedBooks(archivedBooks.filter((id) => id !== book.id));
   };
 
   // Effet pour réinitialiser la page courante lorsqu'on change le terme de recherche
@@ -66,7 +72,7 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
         <Row>
           <Col md={8}>
             {" "}
-            <h2 className="fw-bold text-start px-3">Books Details</h2>
+            <h2 className="fw-bold text-start px-3">Books Database</h2>
           </Col>
           <Col md={4}>
             {" "}
@@ -181,6 +187,10 @@ function TableBook({ books, onEditBook, onDeleteBook }) {
         show={showListModal}
         handleClose={handleCloseListModal}
         books={books}
+      />
+      <ArchivedBooks
+        archivedBooks={books.filter((book) => archivedBooks.includes(book.id))}
+        onUnarchiveBook={handleUnarchiveBook}
       />
     </div>
   );
