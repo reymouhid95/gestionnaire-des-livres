@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Importation des bibliothèques et outils
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
@@ -64,6 +65,9 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+  const [bookArchives, setBookArchives] = useState(
+    JSON.parse(localStorage.getItem("bookArchives")) || {}
+  );
 
   // Méthode pour afficher le modal
   const handleShowModal = (book) => {
@@ -97,6 +101,21 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         book.genre.toLowerCase().includes(filter.toLowerCase()) ||
         book.url.toLowerCase().includes(filter.toLowerCase())
     );
+  };
+
+  const handleArchivedBook = (bookId) => {
+    onArchivedBook(bookId);
+
+    // Update local storage to store the archived state
+    setBookArchives((prevBookArchives) => {
+      const updatedArchives = {
+        ...prevBookArchives,
+        [bookId]: true,
+      };
+      console.log("Updated Archives:", updatedArchives);
+      localStorage.setItem("bookArchives", JSON.stringify(updatedArchives));
+      return updatedArchives;
+    });
   };
 
   // L'affichage
@@ -144,7 +163,12 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         </thead>
         <tbody>
           {filterBooks().map((book, index) => (
-            <tr key={book.id}>
+            <tr
+              key={book.id}
+              style={{
+                textDecoration: book.archived ? "line-through" : "none",
+              }}
+            >
               <td>{index + 1}</td>
               <td>{book.title}</td>
               <td>{book.author}</td>
@@ -172,7 +196,15 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                     className="mb-2 mx-1 text-warning border border-none"
                     onClick={onArchivedBook}
                   >
-                    <Icon.FolderSymlink />
+                    {book.archived ? (
+                      <Icon.FolderX
+                        onClick={() => handleArchivedBook(book.id)}
+                      />
+                    ) : (
+                      <Icon.FolderSymlink
+                        onClick={() => handleArchivedBook(book.id)}
+                      />
+                    )}
                   </Button>
                   <Button
                     variant="outline-danger"

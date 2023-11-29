@@ -1,7 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // Importation des bibliothèques et outils
-import { useCallback, useEffect, useState } from "react";
-import { Col, Modal, Row } from "react-bootstrap";
-// import * as Icon from "react-bootstrap-icons";
 import {
   addDoc,
   collection,
@@ -10,7 +8,8 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { Button, Form } from "react-bootstrap";
+import { useCallback, useEffect, useState } from "react";
+import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import toast from "react-hot-toast";
 import { db } from "../../firebase-config";
 import TableBook from "./BookTable";
@@ -27,10 +26,14 @@ function FormBook() {
     archived: false,
   });
   const [selectedBook, setSelectedBook] = useState(null);
+  // const [bookArchives, setBookArchives] = useState(
+  //   JSON.parse(localStorage.getItem("bookArchives")) || {}
+  // );
   const [isAdding, setIsAdding] = useState(true);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [numberOfBooks, setNumberOfBooks] = useState(0);
 
   // Surveiller le chargement des données au montage de l'aooli
   const loadBooks = useCallback(async () => {
@@ -68,6 +71,11 @@ function FormBook() {
       description: "",
     });
     toast.success("Livre ajouté avec success!");
+    // Mettre à jour le nombre de livres ajoutés
+    setNumberOfBooks((prevNumberOfBooks) => prevNumberOfBooks + 5);
+
+    // Stocker le nombre de livres ajoutés dans le local storage
+    localStorage.setItem("numberOfBooks", numberOfBooks + 5);
   }, [formData, loadBooks]);
 
   // Mettre à jour un livre
@@ -104,18 +112,32 @@ function FormBook() {
     }
   };
 
-  const archived = async () => {
-    if (selectedBook) {
-      const updatedBookData = {
-        ...selectedBook,
-        archived: true,
-      };
-      await updateDoc(doc(db, "books", selectedBook.id), updatedBookData);
-      alert("Archivage réussi");
-    } else {
-      alert("Non archivé");
-    }
-  };
+  const archive = useCallback(
+    async (bookId) => {
+      try {
+        const selectedBook = books.find((book) => book.id === bookId);
+        if (!selectedBook) {
+          console.error("No selected book to archive.");
+          return;
+        }
+
+        const updatedBookData = {
+          ...selectedBook,
+          archived: !selectedBook.archived,
+        };
+
+        await updateDoc(doc(db, "books", bookId), updatedBookData);
+        setBooks((prevBooks) =>
+          prevBooks.map((book) =>
+            book.id === bookId ? { ...book, archived: !book.archived } : book
+          )
+        );
+      } catch (error) {
+        console.error("Error updating book:", error);
+      }
+    },
+    [books, selectedBook, setBooks, loadBooks]
+  );
 
   // Supprimer un livre
   const handleDeleteBook = useCallback(
@@ -229,7 +251,6 @@ function FormBook() {
               </div>
               <div className="d-flex justify-content-center">
                 <Button
-                  // variant="outline-primary"
                   type="submit"
                   className="soumission mt-2 mb-3"
                   onClick={handleSubmit}
@@ -243,12 +264,12 @@ function FormBook() {
         </Row>
       </Form>
 
-      <div className="">
+      <div>
         <TableBook
           books={books}
           onEditBook={handleEditBook}
           onDeleteBook={handleDeleteBook}
-          onArchivedBook={archived}
+          onArchivedBook={archive}
         />
       </div>
     </div>
