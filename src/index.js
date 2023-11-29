@@ -3,17 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-// import { createBrowserRouter, Link, RouterProvider, Outlet } from 'react-router-dom';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import SignUp from './Pages-principales/Inscription';
-import SignIn from './Pages-principales/Connexion';
-import Books from './Pages/Archive';
-import Home from './Pages/Statistics';
-import Dashboard from './Pages/Dashboard';
-
-// import Dashboard from './Pages/Dashboard';
-// import Home from './Pages/Statistics';
-// import { Dashboard } from '@mui/icons-material';
+import SignUp from './Components/Inscription';
+import SignIn from './Components/Connexion';
+import Books from './Pages/Pages-User/Books'
+import Home from './Pages/Statistics'
+import DashboardUser from './Pages/Pages-User/DashboardUser';
+import DashboardAdmin from './Pages/Pages-Admin/DashboardAdmin';
+import Archive from './Pages/Pages-Admin/Archive';
 
 const route = createBrowserRouter([
   {
@@ -21,28 +18,40 @@ const route = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/user/dashboard",
-        element: <Dashboard />
+        path: "/admin/dashboardAdmin",
+        element: <DashboardAdmin />,
+      },
+      {
+        path: "/admin/statistics",
+        element: <Home />,
+      },
+      {
+        path: "/admin/archived",
+        element: <Archive />,
+      },
+      {
+        path: "/user/dashboardUser",
+        element: <DashboardUser />,
+      },
+      {
+        path: "/user/books",
+        element: <Books />,
       },
       {
         path: "/user/statistics",
-        element: <Home />
+        element: <Home />,
       },
-      {
-        path: "/user/Archived",
-        element: <Books />
-      }
-    ]
+    ],
   },
   {
     path: "/connexion",
-    element: <SignIn />
+    element: <SignIn />,
   },
   {
     path: "/inscription",
-    element: <SignUp />
+    element: <SignUp />,
   },
-])
+]);
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

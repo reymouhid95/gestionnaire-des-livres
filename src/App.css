@@ -151,6 +151,15 @@
   background-color: rgb(225,225, 235);
 }
 
+#cardImgContent{
+  display: flex;
+  justify-content: center;
+}
+
+#cardImg{
+  width: 90% !important;
+}
+
 #cardImg:hover{
   object-fit: cover;
   transition:  2s ease;
@@ -160,6 +169,11 @@
 #table{
   width: 200% !important;
 }
+
+/* .modal-view p{
+  display: flex;
+  flex-wrap: wrap;
+} */
 
 /* td{
   width: max-content !important;
@@ -332,4 +346,10 @@ thead th{
     rgb(6, 71, 71),
     rgba(6, 48, 71, 0.81)
   ) !important;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
 }

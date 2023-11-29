@@ -1,0 +1,73 @@
+{
+    "files.autoGuessEncoding": true,
+    "editor.autoClosingOvertype": "always",
+    "editor.autoClosingBrackets": "always",
+    "editor.autoSurround": "brackets",
+    "editor.minimap.enabled": false,
+    "editor.renderWhitespace": "trailing",
+    "editor.wordWrap": "on",
+    "editor.formatOnPaste": true,
+    "editor.occurrencesHighlight": false,
+    "editor.suggest.insertMode": "replace",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact",
+      "typescript": "typescriptreact",
+      "vue-html": "html",
+      "vue": "html"
+    },
+    "editor.fontFamily": "'Monaspace Neon', monospace",
+    "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
+    "editor.tokenColorCustomizations": {
+      "textMateRules": [
+        {
+          "scope": [
+            "comment",
+            "function",
+            "entity.name.type.class",
+            "keyword",
+            "constant",
+            "storage.modifier",
+            "storage.type.class.js"
+          ],
+          "settings": {
+            "fontStyle": "italic"
+          }
+        },
+        {
+          "scope": [
+            "invalid",
+            "keyword.operator",
+            "constant.numeric.css",
+            "keyword.other.unit.px.css",
+            "constant.numeric.decimal.js",
+            "constant.numeric.json"
+          ],
+          "settings": {
+            "fontStyle": ""
+          }
+        }
+      ]
+    },
+    "editor.fontSize": 16,
+    "editor.fontWeight": "400",
+    "editor.mouseWheelZoom": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": true,
+      "source.sortImports": true
+    },
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "editor.formatOnSave": true,
+    "terminal.integrated.fontFamily": "'Monaspace Neon','JetBrainsMono Nerd Font','MesloLGS NF'",
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "editor.formatOnType": true,
+    "terminal.integrated.fontWeightBold": "normal",
+    "editor.linkedEditing": true,
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.cursorBlinking": true,
+    "editor.cursorBlinking": "expand",
+    "emmet.triggerExpansionOnTab": true
+}
+  
