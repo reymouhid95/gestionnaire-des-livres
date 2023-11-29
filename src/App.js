@@ -22,13 +22,11 @@ import { useState } from 'react';
 // import About from './Components/About';
 
 function App() {
-  const adminEmail = localStorage.getItem("utilisateur");
   const [toggle, setToggle] = useState(true);
   const url = "http://localhost:3000/admin/dashboardAdmin";
   const Toggle = () => {
     setToggle(!toggle)
   }
-  console.log(adminEmail);
   return (
     <div>
       <Template

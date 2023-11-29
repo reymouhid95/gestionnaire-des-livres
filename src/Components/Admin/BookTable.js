@@ -5,8 +5,6 @@ import * as Icon from "react-bootstrap-icons";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { styled, alpha } from "@mui/material/styles";
-import { db } from "../../firebase-config";
-import { collection, addDoc, doc, deleteDoc } from "firebase/firestore";
 import ListModal from "./ModalList";
 import BookDetails from "./BookDetails";
 import Paginations from "./Paginations";
@@ -54,16 +52,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 // Fonction principal du composant
-function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook}) {
+function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showListModal, setShowListModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 5;
   const [filter, setFilter] = useState("");
-  // const [bookArchives, setBookArchives] = useState(
-  //   JSON.parse(localStorage.getItem("bookArchives")) || {}
-  // );
+  const [bookArchives, setBookArchives] = useState(
+    JSON.parse(localStorage.getItem("bookArchives")) || {}
+  );
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
   const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
@@ -71,6 +69,13 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook}) {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  useEffect(() => {
+    // Load archived status from local storage on component mount
+    const storedArchives = JSON.parse(localStorage.getItem("bookArchives")) || {};
+    console.log("Stored Archives:", storedArchives);
+    setBookArchives(storedArchives);
+  }, []);
 
   // Méthode pour afficher lemodal
   const handleShowModal = (book) => {
@@ -84,15 +89,15 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook}) {
     setShowModal(false);
   };
 
-    // Méthode pour afficher le modal de la liste
-    const handleShowListModal = () => {
-      setShowListModal(true);
-    };
-  
-    // Méthode pour fermer le modal de la liste
-    const handleCloseListModal = () => {
-      setShowListModal(false);
-    };
+  // Méthode pour afficher le modal de la liste
+  const handleShowListModal = () => {
+    setShowListModal(true);
+  };
+
+  // Méthode pour fermer le modal de la liste
+  const handleCloseListModal = () => {
+    setShowListModal(false);
+  };
 
   const filterBooks = () => {
     return currentBooks.filter(
@@ -105,57 +110,20 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook}) {
     );
   };
 
-// Fonction pour archiver un livre et Sauvegarder les livres archivés dans la base de données
-// const handleArchiveBook = async (book) => {
-//   const isBookArchived = bookArchives[book.id] !== undefined ? bookArchives[book.id] : false;
+  const handleArchivedBook = (bookId) => {
+    onArchivedBook(bookId);
 
-//   // Mettre à jour l'état d'archivage du livre
-//   setBookArchives((prevArchives) => ({
-//     ...prevArchives,
-//     [book.id]: !isBookArchived,
-//   }));
-
-//   // Si le livre est archivé, ajouter le livre à la collection "Archived"
-//   if (!isBookArchived) {
-//     const archivedBook = {
-//       originalId: book.id, // Store the original book ID
-//       title: book.title || "",
-//       author: book.author || "",
-//       genre: book.genre || "",
-//       url: book.url || "",
-//       description: book.description || "",
-//     };
-
-//     try {
-//       // Ajouter le document à la collection "Archived"
-//       const docRef = await addDoc(collection(db, "Archived"), archivedBook);
-//       console.log("Document archived with ID: ", docRef.id);
-//     } catch (error) {
-//       console.error("Error archiving document: ", error);
-//     }
-//   } else {
-//     // Si le livre est désarchivé, supprimer le document de la collection "Archived"
-//     console.log("Book archives before unarchiving: ", bookArchives);
-//     try {
-//       const originalId = bookArchives[book.id]?.originalId;
-//       if (originalId) {
-//         const archivedDoc = doc(db, "Archived", originalId);
-//         await deleteDoc(archivedDoc);
-//         console.log("Document unarchived and deleted: ", originalId);
-//       } else {
-//         console.warn("Original ID not found for book:", book.id);
-//       }
-//     } catch (error) {
-//       console.error("Error deleting archived document: ", error);
-//     }
-
-//   }
-// };
-  // Persist bookArchives to local storage whenever it changes
-  // useEffect(() => {
-  //   localStorage.setItem("bookArchives", JSON.stringify(bookArchives));
-  // }, [bookArchives]);
-
+    // Update local storage to store the archived state
+    setBookArchives((prevBookArchives) => {
+      const updatedArchives = {
+        ...prevBookArchives,
+        [bookId]: true,
+      };
+      console.log("Updated Archives:", updatedArchives);
+      localStorage.setItem("bookArchives", JSON.stringify(updatedArchives));
+      return updatedArchives;
+    });
+  };
 
   // L'affichage
   return (
@@ -218,7 +186,9 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook}) {
           {filterBooks().map((book, index) => (
             <tr
               key={book.id}
-              
+              style={{
+                textDecoration: book.archived ? "line-through" : "none",
+              }}
             >
               <td>{index + 1}</td>
               <td>{book.title}</td>
@@ -227,36 +197,39 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook}) {
               <td>{book.url}</td>
               <td>{book.description}</td>
               <td>
-                  <div className="">
-                    <Button
-                      variant="outline-info border border-none"
-                      className="mb-2 mx-1"
-                      onClick={() => handleShowModal(book)}
-                    >
-                      <Icon.Eye />
-                    </Button>
-                    <Button
-                      variant="outline-success"
-                      className="mb-2 mx-1 text-warning border border-none"
-                      onClick={() => onEditBook(book)}
-                    >
-                      <Icon.Pen />
-                    </Button>
-                    <Button
-                      variant="outline-success"
-                      className="mb-2 mx-1 text-warning border border-none"
-                      onClick={onArchivedBook}
-                    >
-                      <Icon.FolderSymlink />
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      className="mb-2 mx-1 border border-none"
-                      onClick={() => onDeleteBook(book.id)}
-                    >
-                      <Icon.Trash />
-                    </Button>
-                  </div>
+                <div className="">
+                  <Button
+                    variant="outline-info border border-none"
+                    className="mb-2 mx-1"
+                  >
+                    <Icon.Eye onClick={() => handleShowModal(book)} />
+                  </Button>
+                  <Button
+                    variant="outline-success"
+                    className="mb-2 mx-1 text-warning border border-none"
+                    style={{ display: !book.archived ? "inline" : "none" }}
+                  >
+                    <Icon.Pen onClick={() => onEditBook(book)} />
+                  </Button>
+                  <Button
+                    variant="outline-success"
+                    className="mb-2 mx-1 text-warning border border-none"
+                  >
+                    {book.archived ? (
+                      <Icon.FolderX onClick={() => handleArchivedBook(book.id)} />
+                    ) : (
+                      <Icon.FolderSymlink
+                        onClick={() => handleArchivedBook(book.id)}
+                      />
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    className="mb-2 mx-1 border border-none"
+                  >
+                    <Icon.Trash onClick={() => onDeleteBook(book.id)} />
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}

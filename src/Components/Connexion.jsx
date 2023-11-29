@@ -128,9 +128,7 @@ function SignIn() {
             <p>
               Vous n'avez pas de compte cliquez ici{" "}
               <Link to="/inscription">
-                <a href="">
-                  <span className="text-info fw-bold">S'inscrire</span>
-                </a>
+                <span className="text-info fw-bold">S'inscrire</span>
               </Link>
             </p>
           </Form>

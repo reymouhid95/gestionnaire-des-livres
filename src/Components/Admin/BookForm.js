@@ -27,6 +27,9 @@ function FormBook() {
   });
 
   const [selectedBook, setSelectedBook] = useState(null);
+  const [bookArchives, setBookArchives] = useState(
+    JSON.parse(localStorage.getItem("bookArchives")) || {}
+  );
   const [isAdding, setIsAdding] = useState(true);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -82,7 +85,7 @@ function FormBook() {
       archived: book.archived,
     });
     setIsAdding(false);
-    setSelectedBook(book);
+    setSelectedBook(null);
   };
 
   // Faire la mise à jour sans ajouter un nouveau champ dans le tableau
@@ -97,28 +100,46 @@ const handleUpdateBook = async () => {
       genre: "",
       url: "",
       description: "",
-      
     });
     setIsAdding(true);
     setSelectedBook(null);
   }
 };
 
-const archived = async () => {
-  if (selectedBook) {
-    const updatedBookData = {
-      ...selectedBook,
-      archived: true
-    };
-    await updateDoc(doc(db, "books", selectedBook.id), updatedBookData);
-    alert("Archivage réussi");
-  } else {
-    alert("Non archivé");
-  }
-};
+const archive = useCallback(
+  async (bookId) => {
+    try {
+      const selectedBook = books.find((book) => book.id=== bookId)
+      if (!selectedBook) {
+        console.error("No selected book to archive.");
+        return;
+      }
 
+      const updatedBookData = {
+        ...selectedBook,
+        archived: !selectedBook.archived,
+      };
 
+      await updateDoc(doc(db, "books", bookId), updatedBookData);
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book.id === bookId ? { ...book, archived: !book.archived } : book
+        )
+      );
+      // alert("archivage reussi")
+      // Optional: You can also reload the books after archiving to ensure data consistency
+      // await loadBooks();
 
+      // Reset the selectedBook state and hide the modal
+      // setShow(false);
+    } catch (error) {
+      console.error("Error updating book:", error);
+    }
+  },
+  [books, selectedBook, setBooks, loadBooks]
+);
+
+  
   // Supprimer un livre
   const handleDeleteBook = useCallback(
     async (bookId) => {
@@ -250,7 +271,7 @@ const archived = async () => {
           books={books}
           onEditBook={handleEditBook}
           onDeleteBook={handleDeleteBook}
-          onArchivedBook={archived}
+          onArchivedBook={archive}
         />
       </div>
     </div>

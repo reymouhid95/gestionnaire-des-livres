@@ -67,7 +67,6 @@
   right: 0;
   left: 0;
   z-index: 1000;
-
 }
 .title-seller{
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
@@ -151,6 +150,10 @@
   background-color: rgb(225,225, 235);
 }
 
+tbody .archiver{
+  text-decoration: line-through !important;
+}
+
 #cardImgContent{
   display: flex;
   justify-content: center;
@@ -189,10 +192,10 @@
     width: 200% !important;
   } */
 
-  /* .connexion{
+  .connexion{
     display: flex !important;
     flex-direction: column-reverse !important;
-  } */
+  }
 
   .sidebar {
     z-index: 1000 !important;
@@ -261,6 +264,10 @@
 }
 
 thead th{
+  background-color: hsl(199, 100%, 33%) !important;
+}
+
+.bookArchived thead th {
   background-color: hsl(199, 100%, 33%) !important;
 }
 
