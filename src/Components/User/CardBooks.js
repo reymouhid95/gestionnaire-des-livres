@@ -1,5 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { db } from "../../firebase-config";
 import HomeCard from "./HomeCard";
 import SearchBooks from "./SearchBooks";
@@ -36,7 +37,7 @@ function CardBooks() {
       setBooksNoDispo(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      alert(
+      toast.error(
         "Erreur de chargement. Veuillez vérifier votre connexion internet!"
       );
     }
@@ -88,6 +89,7 @@ function CardBooks() {
             key={index}
             description={book.description}
             auth={book.author}
+            genre={book.genre}
           />
         ))}
       </div>
