@@ -1,12 +1,9 @@
-import React from 'react'
-import HomeCard from './HomeCard';
-import { useState, useEffect, useCallback } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { db } from "../../firebase-config";
-import {
-    collection,
-    getDocs
-} from "firebase/firestore";
-import SearchBooks from './SearchBooks';
+import HomeCard from "./HomeCard";
+import SearchBooks from "./SearchBooks";
 
 function CardBooks() {
   const [books, setBooks] = useState([]);
@@ -23,7 +20,7 @@ function CardBooks() {
       setBooks(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      alert(
+      toString.error(
         "Erreur de chargement. Veuillez vérifier votre connexion internet!"
       );
     }
@@ -40,7 +37,7 @@ function CardBooks() {
       setBooksNoDispo(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      alert(
+      toast.error(
         "Erreur de chargement. Veuillez vérifier votre connexion internet!"
       );
     }
@@ -55,43 +52,49 @@ function CardBooks() {
   }, [loadBooks]);
   console.log(books);
 
-
   const filterBooks = () => {
     return books.filter(
-      (book) =>(
+      (book) =>
         book.title.toLowerCase().includes(filter.toLowerCase()) ||
         book.author.toLowerCase().includes(filter.toLowerCase()) ||
         book.description.toLowerCase().includes(filter.toLowerCase()) ||
         book.genre.toLowerCase().includes(filter.toLowerCase()) ||
-        book.url.toLowerCase().includes(filter.toLowerCase()))
-      );    
+        book.url.toLowerCase().includes(filter.toLowerCase())
+    );
   };
   const filterBooksNoDispo = () => {
     return booksNoDispo.filter(
-      (book) =>(
+      (book) =>
         book.title.toLowerCase().includes(filter.toLowerCase()) ||
         book.author.toLowerCase().includes(filter.toLowerCase()) ||
         book.description.toLowerCase().includes(filter.toLowerCase()) ||
         book.genre.toLowerCase().includes(filter.toLowerCase()) ||
-        book.url.toLowerCase().includes(filter.toLowerCase()))
+        book.url.toLowerCase().includes(filter.toLowerCase())
     );
   };
   return (
     <div className="container-fluid m-0 px-0 homeCard w-100">
-      <SearchBooks books={books} filter={filter} func={(e) => setFilter(e.target.value)} func2={filterBooksNoDispo} func3={filterBooks}/>
+      <SearchBooks
+        books={books}
+        filter={filter}
+        func={(e) => setFilter(e.target.value)}
+        func2={filterBooksNoDispo}
+        func3={filterBooks}
+      />
       <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 books">
-          {
-            filterBooks().map((book, index) => (
-                <HomeCard img={book.url} title={book.title} key={index} description={book.description} auth={book.author}/>
-            ))
-          }
+        {filterBooks().map((book, index) => (
+          <HomeCard
+            img={book.url}
+            title={book.title}
+            key={index}
+            description={book.description}
+            auth={book.author}
+            genre={book.genre}
+          />
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default CardBooks
-
-// filterBooksNoDispo() ? filterBooksNoDispo().map((book, index) => (
-//   <HomeCard img={book.url} title={book.title} key={index} description={book.description} auth={book.author}/>
-// )) :
+export default CardBooks;

@@ -1,12 +1,17 @@
 // Importation des bibliothèques et outils
-import { useEffect, useState } from "react";
-import { Table, Button, Col } from "react-bootstrap";
-import * as Icon from "react-bootstrap-icons";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
+<<<<<<< HEAD
 import { styled, alpha } from "@mui/material/styles";
 import ListModal from "./ModalList";
+=======
+import { alpha, styled } from "@mui/material/styles";
+import { useState } from "react";
+import { Button, Table } from "react-bootstrap";
+import * as Icon from "react-bootstrap-icons";
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
 import BookDetails from "./BookDetails";
+import ListModal from "./ModalList";
 import Paginations from "./Paginations";
 
 const Search = styled("div")(({ theme }) => ({
@@ -40,7 +45,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -59,17 +63,20 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 5;
   const [filter, setFilter] = useState("");
+<<<<<<< HEAD
   const [bookArchives, setBookArchives] = useState(
     JSON.parse(localStorage.getItem("bookArchives")) || {}
   );
+=======
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
   const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
-
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     // Load archived status from local storage on component mount
     const storedArchives = JSON.parse(localStorage.getItem("bookArchives")) || {};
@@ -78,6 +85,9 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   }, []);
 
   // Méthode pour afficher lemodal
+=======
+  // Méthode pour afficher le modal
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
   const handleShowModal = (book) => {
     setSelectedBook(book);
     setShowModal(true);
@@ -93,12 +103,21 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const handleShowListModal = () => {
     setShowListModal(true);
   };
+<<<<<<< HEAD
+
+  // Méthode pour fermer le modal de la liste
+  const handleCloseListModal = () => {
+    setShowListModal(false);
+  };
+=======
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
 
   // Méthode pour fermer le modal de la liste
   const handleCloseListModal = () => {
     setShowListModal(false);
   };
 
+  // Filtre de recherche des livres
   const filterBooks = () => {
     return currentBooks.filter(
       (book) =>
@@ -110,6 +129,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
     );
   };
 
+<<<<<<< HEAD
   const handleArchivedBook = (bookId) => {
     onArchivedBook(bookId);
 
@@ -125,41 +145,28 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
     });
   };
 
+=======
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
   // L'affichage
   return (
-    <div className=" m-0">
-      <div className="mb-1">
-        <div className="searchContent d-flex pb-4">
-          <Col md={8} sm={8}>
-            {" "}
-            <h2 className="fw-bold text-start text-dark px-3 w-100">
-              Books Details
-            </h2>
-          </Col>
-          <Col md={4} sm={4}>
-            {" "}
-            <div className="col-md-12">
-              <Search className="rounded-pill">
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ "aria-label": "search" }}
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                />
-              </Search>
-            </div>
-          </Col>
+    <div>
+      <div className="searchContent d-flex justify-content-center">
+        <div>
+          <Search className="rounded-pill">
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Rechercher ici…"
+              inputProps={{ "aria-label": "search" }}
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            />
+          </Search>
         </div>
       </div>
       <div>
-        <Button
-          variant=""
-          className="soumission mt-3 mb-2 mx-2"
-          onClick={handleShowListModal}
-        >
+        <Button className="soumission mx-5" onClick={handleShowListModal}>
           Afficher la liste
         </Button>
       </div>
@@ -170,26 +177,31 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         hover
         variant="bg-body-secondary"
         id="table"
+        className="mx-4"
       >
         <thead>
           <tr>
-            <th className="text-light text-start py-3">#</th>
-            <th className="text-light text-start py-3">Titre</th>
-            <th className="text-light text-start py-3">Auteur</th>
-            <th className="text-light text-start py-3">Genre</th>
-            <th className="text-light text-start py-3">Lien</th>
-            <th className="text-light text-start py-3">Description</th>
-            <th className="text-light text-start py-3">Actions</th>
+            <th className="text-light text-center">#</th>
+            <th className="text-light text-center">Titre</th>
+            <th className="text-light text-center">Auteur</th>
+            <th className="text-light text-center">Genre</th>
+            <th className="text-light text-center">Lien</th>
+            <th className="text-light text-center">Description</th>
+            <th className="text-light text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filterBooks().map((book, index) => (
+<<<<<<< HEAD
             <tr
               key={book.id}
               style={{
                 textDecoration: book.archived ? "line-through" : "none",
               }}
             >
+=======
+            <tr key={book.id}>
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
               <td>{index + 1}</td>
               <td>{book.title}</td>
               <td>{book.author}</td>
@@ -201,19 +213,32 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                   <Button
                     variant="outline-info border border-none"
                     className="mb-2 mx-1"
+<<<<<<< HEAD
                   >
                     <Icon.Eye onClick={() => handleShowModal(book)} />
+=======
+                    onClick={() => handleShowModal(book)}
+                  >
+                    <Icon.Eye />
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
                   </Button>
                   <Button
                     variant="outline-success"
                     className="mb-2 mx-1 text-warning border border-none"
+<<<<<<< HEAD
                     style={{ display: !book.archived ? "inline" : "none" }}
                   >
                     <Icon.Pen onClick={() => onEditBook(book)} />
+=======
+                    onClick={() => onEditBook(book)}
+                  >
+                    <Icon.Pen />
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
                   </Button>
                   <Button
                     variant="outline-success"
                     className="mb-2 mx-1 text-warning border border-none"
+<<<<<<< HEAD
                   >
                     {book.archived ? (
                       <Icon.FolderX onClick={() => handleArchivedBook(book.id)} />
@@ -222,12 +247,23 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                         onClick={() => handleArchivedBook(book.id)}
                       />
                     )}
+=======
+                    onClick={onArchivedBook}
+                  >
+                    <Icon.FolderSymlink />
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
                   </Button>
                   <Button
                     variant="outline-danger"
                     className="mb-2 mx-1 border border-none"
+<<<<<<< HEAD
                   >
                     <Icon.Trash onClick={() => onDeleteBook(book.id)} />
+=======
+                    onClick={() => onDeleteBook(book.id)}
+                  >
+                    <Icon.Trash />
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
                   </Button>
                 </div>
               </td>
@@ -236,7 +272,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         </tbody>
       </Table>
       <div>
-        <div className="d-flex justify-content-center p-0 m-0 w-100">
+        <div className="d-flex justify-content-center w-100">
           <Paginations
             booksPerPage={booksPerPage}
             totalBooks={books.length}

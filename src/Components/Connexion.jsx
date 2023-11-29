@@ -1,22 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 // Importation des outils nécessaires
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import LockIcon from "@mui/icons-material/Lock";
+import MailLockIcon from "@mui/icons-material/MailLock";
+import SendIcon from "@mui/icons-material/Send";
+import { Button } from "@mui/material";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import { auth } from "../firebase-config";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Button } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import MailLockIcon from "@mui/icons-material/MailLock";
-import LockIcon from "@mui/icons-material/Lock";
-import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import Auth from "../assets/auth-illustration.svg";
 import toast from "react-hot-toast";
-import PasswordReset from "../Components/Reset";
+import { Link, useNavigate } from "react-router-dom";
 import GoogleAuth from "../Components/AuthGoogle";
-import FacebookAuth from "../Components/AuthFacebook";
-import { Link, useNavigate } from 'react-router-dom';
+import PasswordReset from "../Components/Reset";
+import Auth from "../assets/auth-illustration.svg";
+import { auth } from "../firebase-config";
 
 // Méthode principale du composant
 function SignIn() {
@@ -27,10 +27,10 @@ function SignIn() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(localStorage.getItem("utilisateur")){
-      navigate("/user/dashboard")
+    if (localStorage.getItem("utilisateur")) {
+      navigate("/user/dashboard");
     }
-  })
+  }, []);
   // Méthode pour pouvoir se connecter
   const handleSignIn = () => {
     if (!email) {
@@ -42,27 +42,28 @@ function SignIn() {
       return;
     }
     signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        localStorage.setItem('utilisateur', JSON.stringify(auth,email,password))
+      .then((userCredential) => {
+        const user = userCredential.user;
+        localStorage.setItem("utilisateur", JSON.stringify(user));
         setEmail("");
         setPassword("");
         toast.success("Utilisateur connecté!");
-        if(email === "serigne@gmail.com"){
+        if (email === "serigne@gmail.com") {
           navigate("/admin/dashboardAdmin");
-        }else{
+        } else {
           navigate("/user/dashboardUser");
         }
       })
       .catch((error) => {
         toast.error("Vérifiez les identifiants!");
         setEmail("");
-        setPassword("");
       });
   };
 
   // Méthode de récupération de l'email saisi dans le champ
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+    setEmailError("");
   };
 
   // Méthode de récupération du mot de passe saisi dans le champ
@@ -99,6 +100,8 @@ function SignIn() {
                 aria-describedby="basic-addon1"
                 value={email}
                 onChange={handleEmailChange}
+                type="email"
+                required
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -111,6 +114,8 @@ function SignIn() {
                 aria-describedby="basic-addon1"
                 value={password}
                 onChange={handlePasswordChange}
+                type="password"
+                required
               />
             </InputGroup>
             <PasswordReset />
@@ -124,11 +129,14 @@ function SignIn() {
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
-            <FacebookAuth />
-            <p>
-              Vous n'avez pas de compte cliquez ici{" "}
+            <p className="fw-bold">
+              Vous n'avez pas de compte ?{" "}
               <Link to="/inscription">
+<<<<<<< HEAD
                 <span className="text-info fw-bold">S'inscrire</span>
+=======
+                <span className="text-info fw-bold">Cliquez ici</span>
+>>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
               </Link>
             </p>
           </Form>
