@@ -14,7 +14,7 @@ function HomeCard({ img, title, description, auth, genre }) {
   }, []);
 
   return (
-    <Card data-aos="fade-up" className="col-md-3 mx-4 py-3 mb-4">
+    <Card data-aos="fade-up" className="col-md-3 mx-4 py-3 mb-3">
       <div id="cardImgContent">
         <Card.Img variant="top" src={img} onClick={handleShow} id="cardImg" />
       </div>
@@ -30,7 +30,9 @@ function HomeCard({ img, title, description, auth, genre }) {
           </Button>
           <Modal show={show} onHide={handleClose} keyboard={false}>
             <Modal.Header closeButton>
-              <Modal.Title data-aos="fade-left">DETAILS DU LIVRE</Modal.Title>
+              <Modal.Title data-aos="fade-left" className="fw-bold">
+                Détails du livre
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body className="content-modal">
               <ul className="list-unstyled" data-aos="fade-left">
@@ -48,15 +50,6 @@ function HomeCard({ img, title, description, auth, genre }) {
                 </li>
               </ul>
             </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="secondary"
-                onClick={handleClose}
-                className="text-white"
-              >
-                Close
-              </Button>
-            </Modal.Footer>
           </Modal>
         </div>
         <Card.Text className="w-50 d-flex flex-column justify-content-end">

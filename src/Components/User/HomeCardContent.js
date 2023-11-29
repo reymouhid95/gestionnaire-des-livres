@@ -1,12 +1,7 @@
-import React, { useState, useEffect, useCallback  } from 'react';
-import HomeCard from './HomeCard';
+import { collection, getDocs } from "firebase/firestore";
+import React, { useCallback, useEffect, useState } from "react";
 import { db } from "../../firebase-config";
-import {
-    collection,
-    getDocs
-} from "firebase/firestore";
-// import Aos from 'aos';
-// import 'aos/dist/aos.css';
+import HomeCard from "./HomeCard";
 
 function HomeCardContent() {
   const [books, setBooks] = useState([]);
@@ -33,18 +28,22 @@ function HomeCardContent() {
 
   return (
     <div className="m-0 px-0 homeCard w-100">
-        <div className='title-seller text-white py-2'>
-            <h1>BEST SELLER</h1>
-        </div>
-          <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 carte">
-            {
-              books.map((book, index) => (
-                  <HomeCard img={book.url} title={book.title} key={index} description={book.description} auth={book.author}/>
-              ))
-            }
-          </div>
+      <div className="title-seller text-white fw-bold py-1">
+        <h1>Best seller</h1>
+      </div>
+      <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 carte">
+        {books.map((book, index) => (
+          <HomeCard
+            img={book.url}
+            title={book.title}
+            key={index}
+            description={book.description}
+            auth={book.author}
+          />
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
-export default HomeCardContent
+export default HomeCardContent;
