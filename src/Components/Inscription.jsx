@@ -1,22 +1,20 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 // Importation des outils nécessaires
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import LockIcon from "@mui/icons-material/Lock";
+import MailLockIcon from "@mui/icons-material/MailLock";
+import PersonIcon from "@mui/icons-material/Person";
+import SendIcon from "@mui/icons-material/Send";
+import { Button } from "@mui/material";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import { auth } from "../firebase-config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { Button } from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-import PersonIcon from "@mui/icons-material/Person";
-import MailLockIcon from "@mui/icons-material/MailLock";
-import LockIcon from "@mui/icons-material/Lock";
-import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import Auth from "../assets/auth-illustration.svg";
-import GoogleAuth from "../Components/AuthGoogle";
-import FacebookAuth from "../Components/AuthFacebook";
-import { useNavigate } from 'react-router-dom';
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import GoogleAuth from "../Components/AuthGoogle";
+import Auth from "../assets/auth-illustration.svg";
+import { auth } from "../firebase-config";
 
 // Méthode principale du composant
 function SignUp() {
@@ -34,20 +32,16 @@ function SignUp() {
     if (isEmailUnique) {
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
+          localStorage.setItem("userName", name);
           setEmail("");
           setPassword("");
           setConfirmPassword("");
           setName("");
-          toast.success("Utilisateur inscrit avec succès!");
           navigate("/connexion");
+          toast.success("Utilisateur inscrit avec succès!");
         })
         .catch((error) => {
           console.error("Login error:", error.message);
-          toast.error("Cette adresse e-mail est déjà utilisée !");
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-          setName("");
         });
     } else {
       toast.error("L'utilisateur n'a pas pu être inscrit !");
@@ -58,6 +52,7 @@ function SignUp() {
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
+
   // Méthode de récupération de l'email saisi dans le champ
   const handleEmailChange = (e) => {
     const newEmail = e.target.value;
@@ -100,7 +95,6 @@ function SignUp() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password && password === confirmPassword) {
-      toast.success("Utilisateur inscrit avec succès!");
       handleSignUp();
     } else if (!isEmailValid) {
       toast.error("Veuillez saisir une adresse e-mail valide !");
@@ -139,6 +133,8 @@ function SignUp() {
                 aria-describedby="basic-addon1"
                 value={name}
                 onChange={handleNameChange}
+                required
+                type="text"
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -151,6 +147,8 @@ function SignUp() {
                 aria-describedby="basic-addon1"
                 value={email}
                 onChange={handleEmailChange}
+                required
+                type="email"
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -163,6 +161,8 @@ function SignUp() {
                 aria-describedby="basic-addon1"
                 value={password}
                 onChange={handlePasswordChange}
+                required
+                type="password"
               />
             </InputGroup>
             <InputGroup className="mb-3">
@@ -175,6 +175,8 @@ function SignUp() {
                 aria-describedby="basic-addon1"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
+                required
+                type="password"
               />
             </InputGroup>
             <Button
@@ -187,10 +189,10 @@ function SignUp() {
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
-            <FacebookAuth />
             <Link to="/connexion">
               <p>
-                Si vous avez déjà un compte <span className="text-info fw-bold">connectez-vous</span>
+                Si vous avez déjà un compte{" "}
+                <span className="text-info fw-bold">connectez-vous</span>
               </p>
             </Link>
           </Form>

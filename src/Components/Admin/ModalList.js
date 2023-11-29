@@ -1,5 +1,4 @@
-// ListModal.j
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 function ListModal({ show, handleClose, books }) {
   return (
@@ -16,11 +15,6 @@ function ListModal({ show, handleClose, books }) {
           </div>
         ))}
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Fermer
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 }
