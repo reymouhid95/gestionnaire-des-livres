@@ -3,8 +3,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
 import { useState } from "react";
-import { Button, Table } from "react-bootstrap";
-import * as Icon from "react-bootstrap-icons";
+import { Button } from "react-bootstrap";
+// import * as Icon from "react-bootstrap-icons";
 import BookDetails from "./BookDetails";
 import ListModal from "./ModalList";
 import Paginations from "./Paginations";
@@ -122,7 +122,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
           Afficher la liste
         </Button>
       </div>
-      <Table
+      {/* <Table
         responsive
         striped
         bordered
@@ -186,7 +186,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </Table> */}
       <div>
         <div className="d-flex justify-content-center w-100">
           <Paginations
