@@ -1,34 +1,25 @@
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import SidebarUser from './Components/User/SidebarUser';
-import SidebarAdmin from './Components/Admin/SidebarAdmin';
-import Home from './Pages/Statistics';
-import Template from './layouts/Template';
-import NavUser from './Components/User/NavUser';
-import NavAdmin from './Components/Admin/NavAdmin';
-import DashboardUser from './Pages/Pages-User/DashboardUser';
-import Books from './Pages/Pages-User/Books';
-import DashboardAdmin from './Pages/Pages-Admin/DashboardAdmin';
-import Archive from './Pages/Pages-Admin/Archive';
-import {
-  Route,
-  Routes,
-} from "react-router-dom";
-
-
-
-import 'rsuite/dist/rsuite-no-reset.min.css';
-import { useState } from 'react';
-// import About from './Components/About';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import "rsuite/dist/rsuite-no-reset.min.css";
+import "./App.css";
+import NavAdmin from "./Components/Admin/NavAdmin";
+import SidebarAdmin from "./Components/Admin/SidebarAdmin";
+import NavUser from "./Components/User/NavUser";
+import SidebarUser from "./Components/User/SidebarUser";
+import Archive from "./Pages/Pages-Admin/Archive";
+import DashboardAdmin from "./Pages/Pages-Admin/DashboardAdmin";
+import Books from "./Pages/Pages-User/Books";
+import DashboardUser from "./Pages/Pages-User/DashboardUser";
+import Home from "./Pages/Statistics";
+import Template from "./layouts/Template";
 
 function App() {
-  const adminEmail = localStorage.getItem("utilisateur");
   const [toggle, setToggle] = useState(true);
   const url = "http://localhost:3000/admin/dashboardAdmin";
   const Toggle = () => {
-    setToggle(!toggle)
-  }
-  console.log(adminEmail);
+    setToggle(!toggle);
+  };
   return (
     <div>
       <Template

@@ -33,3 +33,5 @@ function SidebarAdmin() {
     </div>
   );
 }
+
+export default SidebarAdmin;
