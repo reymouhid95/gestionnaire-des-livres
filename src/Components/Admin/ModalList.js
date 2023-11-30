@@ -6,7 +6,7 @@ function ListModal({ show, handleClose, books }) {
       <Modal.Header closeButton>
         <Modal.Title>Liste des livres</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="bg-dark text-light fw-bold">
+      <Modal.Body className="fw-bold">
         {books.map((book) => (
           <div key={book.id}>
             <p>

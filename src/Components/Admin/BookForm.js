@@ -8,9 +8,9 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import toast from "react-hot-toast";
+import { ToastContainer, toast } from "react-toastify";
 import { db } from "../../firebase-config";
 import TableBook from "./BookTable";
 
@@ -26,14 +26,14 @@ function FormBook() {
     archived: false,
   });
   const [selectedBook, setSelectedBook] = useState(null);
-  // const [bookArchives, setBookArchives] = useState(
-  //   JSON.parse(localStorage.getItem("bookArchives")) || {}
-  // );
   const [isAdding, setIsAdding] = useState(true);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [numberOfBooks, setNumberOfBooks] = useState(0);
+  const urlInputRef = useRef();
+  const [isArchived, setIsArchived] = useState(false);
+  const [isUnarchived, setIsUnarchived] = useState(false);
 
   // Surveiller le chargement des données au montage de l'aooli
   const loadBooks = useCallback(async () => {
@@ -58,8 +58,45 @@ function FormBook() {
     loadBooks();
   }, [loadBooks]);
 
-  // Ajouter un livre
+  // Méthode d'ajout d'un livre
   const handleAddBook = useCallback(async () => {
+    // Utilisez une expression régulière pour vérifier si la valeur de formData.url est un lien valide
+    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+    if (!urlRegex.test(formData.url)) {
+      toast.error("Veuillez entrer un lien valide dans le champ URL.");
+      // Mettez le focus sur le champ URL
+      urlInputRef.current.focus();
+      return;
+    }
+
+    // Vérifier si tous les champs requis sont remplis
+    if (
+      formData.title.trim() === "" ||
+      formData.author.trim() === "" ||
+      formData.genre.trim() === "" ||
+      formData.url.trim() === "" ||
+      formData.description.trim() === ""
+    ) {
+      toast.error("Veuillez remplir tous les champs.");
+      return;
+    }
+
+    // Vérifier si le livre existe déjà
+    const existingBook = books.find(
+      (book) =>
+        book.title === formData.title &&
+        book.author === formData.author &&
+        book.genre === formData.genre &&
+        book.url === formData.url &&
+        book.description === formData.description
+    );
+
+    if (existingBook) {
+      toast.error("Ce livre existe déjà.");
+      return;
+    }
+
+    // Ajouter le livre seulement si tous les champs sont remplis
     const book = formData;
     await addDoc(collection(db, "books"), book);
     await loadBooks();
@@ -70,13 +107,23 @@ function FormBook() {
       url: "",
       description: "",
     });
-    toast.success("Livre ajouté avec success!");
+
+    // Réinitialiser les champs après l'ajout
+    setFormData({
+      title: "",
+      author: "",
+      genre: "",
+      url: "",
+      description: "",
+    });
+    toast.success("Livre ajouté avec succès!");
+
     // Mettre à jour le nombre de livres ajoutés
     setNumberOfBooks((prevNumberOfBooks) => prevNumberOfBooks + 5);
 
     // Stocker le nombre de livres ajoutés dans le local storage
     localStorage.setItem("numberOfBooks", numberOfBooks + 5);
-  }, [formData, loadBooks]);
+  }, [formData, loadBooks, numberOfBooks]);
 
   // Mettre à jour un livre
   const handleEditBook = (book) => {
@@ -106,7 +153,16 @@ function FormBook() {
         url: "",
         description: "",
       });
-      toast.success("Livre modifié avec success!");
+
+      // Réinitialiser les champs après l'ajout
+      setFormData({
+        title: "",
+        author: "",
+        genre: "",
+        url: "",
+        description: "",
+      });
+      toast.success("Données modifiées avec success!");
       setIsAdding(true);
       setSelectedBook(null);
     }
@@ -132,6 +188,14 @@ function FormBook() {
             book.id === bookId ? { ...book, archived: !book.archived } : book
           )
         );
+
+        if (updatedBookData.archived) {
+          setIsArchived(true);
+          setIsUnarchived(false);
+        } else {
+          setIsArchived(false);
+          setIsUnarchived(true);
+        }
       } catch (error) {
         console.error("Error updating book:", error);
       }
@@ -166,6 +230,9 @@ function FormBook() {
   // L'affichage
   return (
     <div className="mt-2">
+      <ToastContainer />
+      {isArchived && toast.success("Livre archivé avec succès!")}
+      {isUnarchived && toast.success("Livre désarchivé avec succès!")}
       <Form onSubmit={handleSubmit}>
         <Row className="w-100 m-0 p-0">
           <div className="d-flex justify-content-end">
@@ -230,6 +297,7 @@ function FormBook() {
                     onChange={(e) =>
                       setFormData({ ...formData, url: e.target.value })
                     }
+                    ref={urlInputRef}
                     required
                   />
                 </Col>

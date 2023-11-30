@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
-// Importation des outils nécessaires
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import LockIcon from "@mui/icons-material/Lock";
 import MailLockIcon from "@mui/icons-material/MailLock";
@@ -11,14 +10,13 @@ import { Button } from "@mui/material";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
 import Auth from "../assets/auth-illustration.svg";
 import { auth } from "../firebase-config";
 
-// Méthode principale du composant
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,11 +25,12 @@ function SignIn() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("utilisateur")) {
+    const storedUser = localStorage.getItem("utilisateur");
+    if (storedUser) {
       navigate("/user/dashboard");
     }
-  }, []);
-  // Méthode pour pouvoir se connecter
+  }, [navigate]);
+
   const handleSignIn = () => {
     if (!email) {
       setEmailError("Email is required");
@@ -41,37 +40,36 @@ function SignIn() {
       setPasswordError("Password is required");
       return;
     }
+
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+      .then(({ user }) => {
         localStorage.setItem("utilisateur", JSON.stringify(user));
         setEmail("");
         setPassword("");
-        toast.success("Utilisateur connecté!");
+
         if (email === "serigne@gmail.com") {
           navigate("/admin/dashboardAdmin");
+          toast.success("Administrateur connecté!");
         } else {
           navigate("/user/dashboardUser");
+          toast.success("Utilisateur connecté!");
         }
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Vérifiez les identifiants!");
         setEmail("");
       });
   };
 
-  // Méthode de récupération de l'email saisi dans le champ
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setEmailError("");
   };
 
-  // Méthode de récupération du mot de passe saisi dans le champ
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
 
-  // Méthode de contôle du formulaire
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password) {
@@ -79,9 +77,9 @@ function SignIn() {
     }
   };
 
-  // Rendu du composant
   return (
     <>
+      <ToastContainer />
       <Row className="m-0 connexion">
         <Col md={6} className="backTwo">
           <Form className="form color" onSubmit={handleSubmit}>

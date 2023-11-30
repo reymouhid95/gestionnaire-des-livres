@@ -37,16 +37,17 @@ function HomeCard({ img, title, description, auth, genre }) {
             <Modal.Body className="content-modal">
               <ul className="list-unstyled" data-aos="fade-left">
                 <li className="mb-3">
-                  <span className="h6 fw-bold">Titre:</span> {title}
+                  <span className="h6 fw-bold">Titre :</span> {title}
                 </li>
                 <li className="mb-3">
-                  <span className="h6 fw-bold">Auteur:</span> {auth}
+                  <span className="h6 fw-bold">Auteur :</span> {auth}
                 </li>
                 <li className="mb-3">
-                  <span className="h6 fw-bold">Genre:</span> {genre}
+                  <span className="h6 fw-bold">Genre :</span> {genre}
                 </li>
                 <li>
-                  <span className="h6 fw-bold">Description:</span> {description}
+                  <span className="h6 fw-bold">Description :</span>{" "}
+                  {description}
                 </li>
               </ul>
             </Modal.Body>

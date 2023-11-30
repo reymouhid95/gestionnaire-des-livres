@@ -377,14 +377,6 @@
   transition: 2s !important;
 }
 
-.bg-dark {
-  background-image: linear-gradient(
-    to right,
-    rgb(6, 71, 71),
-    rgba(6, 48, 71, 0.81)
-  ) !important;
-}
-
 .logo {
   color: hsl(187, 84%, 17%);
   font-size: 5rem !important;
