@@ -16,7 +16,7 @@ import Template from "./layouts/Template";
 
 function App() {
   const [toggle, setToggle] = useState(true);
-  const url = "http://localhost:3000/admin/dashboardAdmin";
+  const url = "/admin/dashboardAdmin";
   const Toggle = () => {
     setToggle(!toggle);
   };
@@ -24,10 +24,10 @@ function App() {
     <div>
       <Template
         sidebar={
-          window.location.href === url ? <SidebarAdmin /> : <SidebarUser />
+          window.location.pathname === url ? <SidebarAdmin /> : <SidebarUser />
         }
         navbar={
-          window.location.href === url ? (
+          window.location.pathname === url ? (
             <NavAdmin Toggle={Toggle} />
           ) : (
             <NavUser Toggle={Toggle} />
