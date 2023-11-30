@@ -24,7 +24,7 @@ function HomeCard({ img, title, description, auth, genre }) {
           <Button
             variant="warning"
             onClick={handleClose}
-            className="text-white mt-3"
+            className="text-white mt-3 bouton"
           >
             Emprunter
           </Button>

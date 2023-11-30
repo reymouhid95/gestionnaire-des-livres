@@ -27,10 +27,19 @@ function SignIn() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("utilisateur")) {
-      navigate("/user/dashboard");
+    // Vérifiez si l'utilisateur est déjà connecté
+    const user = JSON.parse(localStorage.getItem("utilisateur"));
+
+    if (user) {
+      // Si l'utilisateur est connecté, redirigez-le vers le tableau de bord approprié
+      if (user.email === "serigne@gmail.com") {
+        navigate("/admin/dashboardAdmin");
+      } else {
+        navigate("/user/dashboardUser");
+      }
     }
-  }, []);
+  }, [navigate]);
+
   // Méthode pour pouvoir se connecter
   const handleSignIn = () => {
     if (!email) {

@@ -165,9 +165,9 @@ function SearchBooks({filter , func, func1, func2, func3}) {
     };
   };
   return (
-    <div className="container">
+    <div className="container" id="search">
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-8 col-md-6 ">
           <Search className="rounded-pill">
             <SearchIconWrapper>
               <SearchIcon />
@@ -180,15 +180,19 @@ function SearchBooks({filter , func, func1, func2, func3}) {
             />
           </Search>
         </div>
-        <div className="col-md-6 text-end" style={{ color: "black" }}>
-          <div>
+        <div className="col-md-6 col-1 text-end" style={{ color: "black" }}>
+          <div id="filterDropDown">
             <Dropdown>
-                <MenuButton><TuneIcon /></MenuButton>
-                <Menu slots={{ listbox: Listbox }}>
-                    <MenuItem onClick={func3}>All books</MenuItem>
-                    <MenuItem role="button" onClick={func1}>Books available</MenuItem>
-                    <MenuItem onClick={func2}>Books not available</MenuItem>
-                </Menu>
+              <MenuButton className="icon">
+                <TuneIcon className="iconFliter"/>
+              </MenuButton>
+              <Menu slots={{ listbox: Listbox }}>
+                <MenuItem onClick={func3}>All books</MenuItem>
+                <MenuItem role="button" onClick={func1}>
+                  Books available
+                </MenuItem>
+                <MenuItem onClick={func2}>Books not available</MenuItem>
+              </Menu>
             </Dropdown>
           </div>
         </div>

@@ -51,10 +51,10 @@ function NewArrivals() {
             }
         </div>
         <div className='d-flex justify-content-between pt-5'>
-            <div className='col-md-6'>
+            <div className='col-6'>
                 <img src={imgBanner1} alt="img" className='img-fluid w-100'/>
             </div>
-            <div className='col-md-5 d-flex flex-column justify-content-between'>
+            <div className='col-5 d-flex flex-column justify-content-between'>
                 <div>
                     <img src={imgBanner2} alt="img" className='img-fluid'/>
                 </div>
