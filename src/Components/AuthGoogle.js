@@ -1,15 +1,15 @@
+/* eslint-disable no-unused-vars */
 // Importation des outils nécessaires
-import { useState, useEffect } from "react";
-import { auth, googleProvider } from "../firebase-config";
 import { signInWithPopup } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import * as Icon from "react-bootstrap-icons";
+import { auth, googleProvider } from "../firebase-config";
 
 // Méthode principale du composant
 const GoogleAuth = () => {
   const [user, setUser] = useState(null);
 
-  // Pour vérfier l'état
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
@@ -21,9 +21,8 @@ const GoogleAuth = () => {
       }
     });
 
-    return () => {
-      unsubscribe();
-    };
+    // Nettoyez le listener lors du démontage du composant
+    return () => unsubscribe();
   }, []);
 
   // Méthode pour pouvoir se connecter
@@ -31,38 +30,23 @@ const GoogleAuth = () => {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // Méthode pour pouvoir se déconnecter
-  const signOut = async () => {
-    try {
-      await auth.signOut();
-    } catch (error) {
-      console.error(error);
+      console.error("Erreur lors de la connexion avec Google:", error);
     }
   };
 
   // L'affichage du composant
   return (
     <div className="mb-3">
-      {user ? (
-        <Button variant="outline-danger" onClick={signOut} className="btn-lg">
-          Log Out
-        </Button>
-      ) : (
-        <Button
-          variant="outline-danger"
-          onClick={signInWithGoogle}
-          className="log"
-        >
-          <span className="px-2">
-            <Icon.Google size={25} />
-          </span>
-          With Google
-        </Button>
-      )}
+      <Button
+        variant="outline-danger"
+        onClick={signInWithGoogle}
+        className="log"
+      >
+        <span className="px-2">
+          <Icon.Google size={25} />
+        </span>
+        With Google
+      </Button>
     </div>
   );
 };

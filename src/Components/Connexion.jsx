@@ -89,14 +89,14 @@ function SignIn() {
               <AutoStoriesIcon className="mb-3 logo" />
               eBook
             </span>
-            <h1 className="mb-5">Connexion</h1>
+            <h1 className="mb-2">Connexion</h1>
             <InputGroup className="mb-3">
               <InputGroup.Text id="basic-addon1">
                 <MailLockIcon />
               </InputGroup.Text>
               <Form.Control
                 placeholder="Email"
-                aria-label="Username"
+                aria-label="Usermail"
                 aria-describedby="basic-addon1"
                 value={email}
                 onChange={handleEmailChange}
@@ -110,7 +110,7 @@ function SignIn() {
               </InputGroup.Text>
               <Form.Control
                 placeholder="Mot de passe"
-                aria-label="Username"
+                aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={password}
                 onChange={handlePasswordChange}
@@ -137,9 +137,9 @@ function SignIn() {
             </p>
           </Form>
         </Col>
-        <Col md={6} className="backThree text-center text-light fw-bold mt-4">
-          <h1>Welcome to eBook</h1>
-          <p className="mt-2">
+        <Col md={6} className="backThree text-center text-light fw-bold">
+          <h1 className="my-3">Welcome to eBook</h1>
+          <p className="my-3">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit.
           </p>
           <img src={Auth} alt="Image-auth" className="img-fluid" />

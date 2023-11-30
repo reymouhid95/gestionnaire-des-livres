@@ -1,43 +1,40 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: Georgia, "Times New Roman", Times, serif;
 }
 
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
-.sidebar{
-  /* background-color: #282c34; */
+.sidebar {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
   color: #fff;
   z-index: 1000;
 }
 
-.sidebar a i{
+.sidebar a i {
   color: #fff;
-  /* font-size: 21px !important; */
 }
 
-.sidebar .list-group-flush a{
-  /* background-color: #282c34; */
+.sidebar .list-group-flush a {
   background: transparent;
   color: #fff;
   border: none;
 }
 
-.list-group a:hover{
+.list-group a:hover {
   background: hsl(199, 90%, 29%);
   color: #fff;
   cursor: pointer;
 }
-#header{
+#header {
   background-color: #61dafb;
 }
 
-#home #header i{
+#home #header i {
   cursor: pointer;
 }
 
@@ -49,17 +46,16 @@
   height: 300px;
 }
 
-#home .charts #bar{
+#home .charts #bar {
   z-index: -1;
 }
 
-
-#header img{
+#header img {
   width: 55px;
   height: 55px;
 }
 
-.navbar{
+.navbar {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
   position: sticky !important;
   top: 0;
@@ -67,30 +63,44 @@
   right: 0;
   left: 0;
   z-index: 1000;
-
 }
-.title-seller{
+.title-seller {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
 }
 
-.imgCarousel1{
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.2) , rgba(0,0,0,0.2)),url('../src/assets/slider13-967.jpg');
+.imgCarousel1 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.2)
+    ),
+    url("../src/assets/slider13-967.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
-.imgCarousel2{
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.5) , rgba(0,0,0,0.5)),url('./assets/slider11-834.jpg');
+.imgCarousel2 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url("./assets/slider11-834.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
-.imgCarousel3{
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.3) , rgba(0,0,0,0.5)),url('../src/assets/slider12-13.jpg');
+.imgCarousel3 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url("../src/assets/slider12-13.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.dashboard{
-  background-color: rgb(225,225, 235);
+.dashboard {
+  background-color: rgb(225, 225, 235);
   width: 100% !important;
 }
 
@@ -98,107 +108,96 @@
   background-color: #dbdbdb;
 }
 
-#home #card-1 i{
+#home #card-1 i {
   background-color: #61dafb;
   border-radius: 10px 10px 10px 10px;
   color: #fff;
 }
-#home #card-2 i{
+#home #card-2 i {
   background-color: red;
   color: #fff;
   border-radius: 10px 10px 10px 10px;
 }
-#home #card-3 i{
+#home #card-3 i {
   background-color: orange;
   border-radius: 10px 10px 10px 10px;
   color: #fff;
 }
-#home #card-4 i{
+#home #card-4 i {
   background-color: green;
   border-radius: 10px 10px 10px 10px;
   color: #fff;
 }
 
-.custom-slider img{
+.custom-slider img {
   width: 100%;
 }
 
-.custom-slider button:hover{
+.custom-slider button:hover {
   background: hsl(199, 90%, 29%) !important;
   transition: 1.5s;
   font-weight: bold;
 }
 
-.custom-slider button{
+.custom-slider button {
   background: hsl(187, 84%, 17%) !important;
   border: none;
 }
 
-.title{
+.title {
   color: hsl(187, 84%, 17%);
 }
 
-.homeCard{
+.homeCard {
   padding-top: 5%;
 }
 
-.homeCard img{
+.homeCard img {
   width: 100%;
   height: 80%;
 }
 
-.homeCard{
-  background-color: rgb(225,225, 235);
+.homeCard {
+  background-color: rgb(225, 225, 235);
 }
 
-#cardImgContent{
+#cardImgContent {
   display: flex;
   justify-content: center;
 }
 
-#cardImg{
+#cardImg {
   width: 90% !important;
 }
 
-#cardImg:hover{
+#cardImg:hover {
   object-fit: cover;
-  transition:  2s ease;
+  transition: 2s ease;
   transform: scale(1.1);
 }
 
-#table{
+#table {
   width: 200% !important;
 }
 
-/* .modal-view p{
-  display: flex;
-  flex-wrap: wrap;
-} */
-
-/* td{
-  width: max-content !important;
-} */
-
-@media screen and (max-width: 500px){
+@media screen and (max-width: 500px) {
   #home .charts {
     display: flex;
     flex-direction: column;
   }
-
-  /* #table{
+  #table {
     width: 200% !important;
-  } */
-
-  /* .connexion{
+  }
+  .connexion {
     display: flex !important;
     flex-direction: column-reverse !important;
-  } */
+  }
 
   .sidebar {
     z-index: 1000 !important;
   }
 
-  .searchContent{
+  .searchContent {
     display: flex !important;
     justify-content: space-between;
   }
@@ -231,6 +230,137 @@
   } */
 }
 
+@media screen and (max-width: 768px) {
+  .carte {
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .carte #card {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 90%;
+    margin-bottom: 10% !important;
+  }
+
+  .carte #title {
+    font-size: 12px !important;
+  }
+
+  .books .carte {
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .books #card {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 90%;
+    margin-bottom: 10% !important;
+  }
+
+  #filterDropDown .icon {
+    width: max-content !important;
+    height: max-content !important;
+    font-size: 5px !important;
+  }
+
+  #filterDropDown .iconFliter {
+    font-size: 14px !important;
+  }
+
+  #search {
+    display: flex !important;
+    justify-content: space-between;
+  }
+
+  #search .rounded-pill {
+    width: 100% !important;
+  }
+
+  .carte .bouton {
+    font-size: 10px !important;
+  }
+
+  .books .bouton {
+    font-size: 10px !important;
+  }
+
+  .books #title {
+    font-size: 12px !important;
+  }
+
+  .custom-slider {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+  }
+
+  .custom-slider .divCarousel {
+    padding: 0 !important;
+    padding-top: 10% !important;
+    padding-bottom: 25% !important;
+    padding-left: 10px !important;
+  }
+
+  .custom-slider .divCarousel .btn-lg {
+    width: max-content;
+    height: max-content;
+    font-size: 14px;
+  }
+
+  .custom-slider .divCarousel h3,
+  .custom-slider .divCarousel h1 {
+    font-size: 15px;
+    font-weight: 500 !important;
+  }
+
+  .custom-slider .divCarousel p {
+    font-size: 10px;
+  }
+
+  .sidebar #logo span {
+    font-size: 12px !important;
+  }
+
+  .sidebar #logo #imgLogo {
+    font-size: 18px !important;
+  }
+
+  .sidebar .group .items i {
+    font-size: 15px !important;
+  }
+
+  .sidebar .group .items span {
+    font-size: 12px !important;
+  }
+
+  .connexion .backThree {
+    width: 100% !important;
+  }
+
+  .connexion .backTwo .form {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .inscription .backThree {
+    width: 100% !important;
+  }
+
+  .inscription .backTwo .form {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .inscription .backTwo {
+    padding-top: 10% !important;
+  }
+}
+
 .soumission {
   border: none !important;
   background-color: rgb(18, 143, 189) !important;
@@ -260,42 +390,13 @@
   font-size: 5rem !important;
 }
 
-thead th{
+thead th {
   background-color: hsl(199, 100%, 33%) !important;
 }
 
 .color {
   color: hsl(187, 84%, 17%);
 }
-
-.backOne {
-  width: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.backTwo {
-  background-color: white;
-}
-
-/* .form {
-  width: 400px;
-  height: 500px;
-  margin: 75px auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: white;
-} */
-/* 
-@media screen and (min-width: 650px){
-  .dropdown-menu{
-    width: 200px;
-  }
-} */
 
 .filter {
   width: 200px !important;
@@ -305,13 +406,6 @@ thead th{
   transition: 2s !important;
 }
 
-.backOne {
-  width: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
 .backTwo {
   background-color: white;
 }
@@ -319,7 +413,7 @@ thead th{
 .form {
   width: 400px;
   height: 500px;
-  margin: 75px auto;
+  margin: 50px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -334,13 +428,15 @@ thead th{
   outline: none !important;
 }
 
-.connexion a , .inscription a{
+.connexion a,
+.inscription a {
   text-decoration: none !important;
   color: hsl(187, 84%, 17%) !important;
   text-align: end !important;
 }
 
-.connexion , .inscription{
+.connexion,
+.inscription {
   background-image: linear-gradient(
     to right,
     rgb(6, 71, 71),

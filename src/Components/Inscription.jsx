@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 // Importation des outils nécessaires
@@ -109,20 +110,20 @@ function SignUp() {
   return (
     <>
       <Row className="m-0 inscription">
-        <Col md={6} className=" backOne text-center text-light fw-bold m-0 p-0">
-          <h1>Welcome to eBook</h1>
-          <p className="mt-2">
+        <Col md={6} className="backThree text-center text-light fw-bold">
+          <h1 className="my-3">Welcome to eBook</h1>
+          <p className="my-3">
             Lorem ipsum, dolor sit amet consectetur adipisicing elit.
           </p>
-          <img src={Auth} alt="Imahe-auth" className="img-fluid" />
+          <img src={Auth} alt="Image-auth" className="img-fluid" />
         </Col>
         <Col md={6} className="backTwo">
-          <Form onSubmit={handleSubmit} className="form color">
+          <Form className="form color" onSubmit={handleSubmit}>
             <span className="fs-1 fw-bold">
               <AutoStoriesIcon className="mb-3 logo" />
               eBook
             </span>
-            <h1 className="mb-5 fw-bold">Inscription</h1>
+            <h1 className="mb-2">Inscription</h1>
             <InputGroup className="mb-3">
               <InputGroup.Text id="basic-addon1">
                 <PersonIcon />
@@ -157,7 +158,7 @@ function SignUp() {
               </InputGroup.Text>
               <Form.Control
                 placeholder="Créer un mot de passe"
-                aria-label="Username"
+                aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={password}
                 onChange={handlePasswordChange}
@@ -171,7 +172,7 @@ function SignUp() {
               </InputGroup.Text>
               <Form.Control
                 placeholder="Confirmer le mot de passe"
-                aria-label="Username"
+                aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
@@ -189,17 +190,16 @@ function SignUp() {
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
-            <Link to="/connexion">
-              <p>
-                Si vous avez déjà un compte{" "}
-                <span className="text-info fw-bold">connectez-vous</span>
-              </p>
-            </Link>
+            <p className="fw-bold">
+              Vous avez déjà un compte ?{" "}
+              <Link to="/connexion">
+                <span className="text-info fw-bold">Cliquez ici</span>
+              </Link>
+            </p>
           </Form>
         </Col>
       </Row>
     </>
   );
 }
-
 export default SignUp;
