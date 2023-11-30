@@ -36,13 +36,13 @@ function HomeCardContent() {
         <div className='title-seller text-white py-2'>
             <h1>BEST SELLER</h1>
         </div>
-          <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 carte">
-            {
-              books.map((book, index) => (
-                  <HomeCard img={book.url} title={book.title} key={index} description={book.description} auth={book.author}/>
-              ))
-            }
-          </div>
+        <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 carte">
+          {
+            books.map((book, index) => (
+                <HomeCard img={book.url} title={book.title} key={index} description={book.description} auth={book.author}/>
+            ))
+          }
+        </div>
     </div>
   )
 }

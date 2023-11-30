@@ -21,18 +21,24 @@
   /* font-size: 21px !important; */
 }
 
-.sidebar .list-group-flush a{
+.sidebar .group a{
   /* background-color: #282c34; */
   background: transparent;
   color: #fff;
   border: none;
 }
 
-.list-group a:hover{
+.group a:hover{
   background: hsl(199, 90%, 29%);
   color: #fff;
   cursor: pointer;
 }
+
+.group{
+  display: flex;
+  flex-direction: column;
+}
+
 #header{
   background-color: #61dafb;
 }
@@ -182,6 +188,80 @@ tbody .archiver{
   width: max-content !important;
 } */
 
+@media screen and (max-width: 768px) {
+  .carte{
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .carte #card{
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 90%;   
+    margin-bottom: 10% !important; 
+  }
+
+    .books .carte {
+      width: 100%;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+  
+    .books .carte #card {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 90%;
+      margin-bottom: 10% !important;
+    }
+
+  .custom-slider{
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+  }
+
+  .custom-slider .divCarousel{
+    padding: 0 !important;
+    /* margin-top: 50% !important; */
+    padding-top: 10% !important;
+    padding-bottom: 25% !important;
+    padding-left: 10px !important;
+  }
+
+    .custom-slider .divCarousel .btn-lg{
+      width: max-content;
+      height: max-content;
+      font-size: 14px;
+    }
+
+    .custom-slider .divCarousel h3, .custom-slider .divCarousel h1{
+      font-size: 15px;
+      font-weight: 500 !important;
+    }
+
+    .custom-slider .divCarousel p{
+      font-size: 10px;
+    }
+
+    .sidebar #logo span{
+        font-size: 12px !important;
+    }
+
+    .sidebar #logo #imgLogo{
+      font-size: 18px !important;
+    }
+
+    .sidebar .group .items i{
+      font-size: 15px!important;
+    }
+
+    .sidebar .group .items span{
+      font-size: 12px!important;
+    }
+}
+
 @media screen and (max-width: 500px){
   #home .charts {
     display: flex;
@@ -192,19 +272,24 @@ tbody .archiver{
     width: 200% !important;
   } */
 
+  /* .carte{
+    display: block !important;
+    flex-direction: column !important;
+  } */
+
   .connexion{
     display: flex !important;
     flex-direction: column-reverse !important;
   }
 
-  .sidebar {
+  /* .sidebar {
     z-index: 1000 !important;
-  }
+  } */
 
-  .searchContent{
+  /* .searchContent{
     display: flex !important;
     justify-content: space-between;
-  }
+  } */
 
   /* .sidebar span{
     display: none !important;
@@ -214,24 +299,53 @@ tbody .archiver{
     display: none;
   } */
 
-  /* .template .contenu{
+  /* .sidebar{
+    z-index: 1000;
+    width: 100% !important;
+  } */
+
+  /* .sidebar hr{
+    display: none !important;
+  } */
+
+  /* .sidebar .items li{
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  } */
+
+  /* .sidebar .items{
+    width: 25% !important;
+    margin: 0;
+    padding: 0;
+  } */
+
+  /* .contenu{
     display: flex !important;
     flex-direction: column-reverse !important;
   } */
 
-  /* .list-group-flush {
-    display:flex !important;
-    flex-wrap: wrap ;
-    padding-top: 9% ;
-    padding-bottom: 9% ;
-    padding-left: 5% ;
-    width: 100% ;
+  /* .contenu .sidebarDiv{
+    width: 100% !important;
+    position: relative !important;
+    display: flex;
+  } */
+
+  /* .group{
+    /* padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-wrap: nowrap ; */
+    /* padding-top: 9% ;
+    padding-bottom: 9% ; */
+    /* padding-left: 5% ; */
+    /* width: 100% ;
     position: fixed ;
     bottom: 0 ;
     left: 0;
     right: 0 ;
-    z-index: 1000 ;
-  } */
+    z-index: 1000 ; */
+  
 }
 
 .soumission {
@@ -286,23 +400,6 @@ thead th{
   background-color: white;
 }
 
-/* .form {
-  width: 400px;
-  height: 500px;
-  margin: 75px auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: white;
-} */
-/* 
-@media screen and (min-width: 650px){
-  .dropdown-menu{
-    width: 200px;
-  }
-} */
 
 .filter {
   width: 200px !important;

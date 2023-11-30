@@ -8,8 +8,8 @@ function Template(props) {
   // }
   return (
       <div className="container-fluid nin-vh-100 template">
-        <div className='row contenu'>
-          {props.toggle && <div className='col-4 col-md-2 vh-100 position-fixed m-0 p-0'>
+        <div className='row d-flex contenu'>
+          {props.toggle && <div className='col-4 col-md-2 vh-100 position-fixed m-0 p-0' id='sidebarDiv'>
             {props.sidebar}      
           </div>}
           {props.toggle && <div className='col-4 col-md-2'></div>}

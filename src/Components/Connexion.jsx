@@ -132,11 +132,7 @@ function SignIn() {
             <p className="fw-bold">
               Vous n'avez pas de compte ?{" "}
               <Link to="/inscription">
-<<<<<<< HEAD
-                <span className="text-info fw-bold">S'inscrire</span>
-=======
                 <span className="text-info fw-bold">Cliquez ici</span>
->>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
               </Link>
             </p>
           </Form>

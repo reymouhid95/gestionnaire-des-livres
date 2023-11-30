@@ -1,18 +1,17 @@
 // Importation des bibliothèques et outils
-import { useCallback, useEffect, useState } from "react";
-import { Col, Modal, Row } from "react-bootstrap";
+import { useState, useEffect, useCallback } from "react";
+import { Row, Col, Modal } from "react-bootstrap";
 // import * as Icon from "react-bootstrap-icons";
+import { Form, Button } from "react-bootstrap";
+import {db} from '../../firebase-config';
 import {
-  addDoc,
   collection,
-  deleteDoc,
-  doc,
   getDocs,
+  addDoc,
+  deleteDoc,
   updateDoc,
+  doc,
 } from "firebase/firestore";
-import { Button, Form } from "react-bootstrap";
-import toast from "react-hot-toast";
-import { db } from "../../firebase-config";
 import TableBook from "./BookTable";
 
 // Composant principal pour les méthodes d'ajout, de modification et de suppression
@@ -24,12 +23,13 @@ function FormBook() {
     genre: "",
     url: "",
     description: "",
-    archived: false,
+    archived: false
   });
+
   const [selectedBook, setSelectedBook] = useState(null);
-  const [bookArchives, setBookArchives] = useState(
-    JSON.parse(localStorage.getItem("bookArchives")) || {}
-  );
+const [bookArchives, setBookArchives] = useState(
+  JSON.parse(localStorage.getItem("bookArchives")) || {}
+);
   const [isAdding, setIsAdding] = useState(true);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -48,7 +48,7 @@ function FormBook() {
       setBooks(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error(
+      alert(
         "Erreur de chargement. Veuillez vérifier votre connexion internet!"
       );
     }
@@ -63,6 +63,7 @@ function FormBook() {
     const book = formData;
     await addDoc(collection(db, "books"), book);
     await loadBooks();
+    // Réinitialisation des champs après l'ajout
     setFormData({
       title: "",
       author: "",
@@ -70,7 +71,6 @@ function FormBook() {
       url: "",
       description: "",
     });
-    toast.success("Livre ajouté avec success!");
   }, [formData, loadBooks]);
 
   // Mettre à jour un livre
@@ -89,7 +89,6 @@ function FormBook() {
   };
 
   // Faire la mise à jour sans ajouter un nouveau champ dans le tableau
-<<<<<<< HEAD
 const handleUpdateBook = async () => {
   setShow(false);
   if (selectedBook) {
@@ -127,44 +126,6 @@ const archive = useCallback(
           book.id === bookId ? { ...book, archived: !book.archived } : book
         )
       );
-      // alert("archivage reussi")
-      // Optional: You can also reload the books after archiving to ensure data consistency
-      // await loadBooks();
-=======
-  const handleUpdateBook = async () => {
-    setShow(false);
-    if (selectedBook) {
-      await updateDoc(doc(db, "books", selectedBook.id), formData);
-      await loadBooks();
-      setFormData({
-        title: "",
-        author: "",
-        genre: "",
-        url: "",
-        description: "",
-      });
-      toast.success("Livre modifié avec success!");
-      setIsAdding(true);
-      setSelectedBook(null);
-    }
-  };
-
-  const archived = async () => {
-    if (selectedBook) {
-      const updatedBookData = {
-        ...selectedBook,
-        archived: true,
-      };
-      await updateDoc(doc(db, "books", selectedBook.id), updatedBookData);
-      alert("Archivage réussi");
-    } else {
-      alert("Non archivé");
-    }
-  };
->>>>>>> 5e16f57db24a314ab87b8ad55896011a493ffa10
-
-      // Reset the selectedBook state and hide the modal
-      // setShow(false);
     } catch (error) {
       console.error("Error updating book:", error);
     }
@@ -178,7 +139,6 @@ const archive = useCallback(
     async (bookId) => {
       await deleteDoc(doc(db, "books", bookId));
       setBooks(books.filter((book) => book.id !== bookId));
-      toast.success("Livre supprimé avec success!");
     },
     [books]
   );
@@ -199,106 +159,107 @@ const archive = useCallback(
 
   // L'affichage
   return (
-    <div className="mt-2">
-      <Form onSubmit={handleSubmit}>
-        <Row className="w-100 m-0 p-0">
-          <div className="d-flex justify-content-end">
+    <div className="mt-2 py-3 m-0">
+      <div>
+        <Form onSubmit={handleSubmit}>
+          <Row className="w-100 m-0 p-0">
             <Button
-              className="soumission mt-2 mx-5"
+              // variant="outline-primary"
+              className="soumission mt-2 mb-3 ms-5"
               style={{ width: "max-content" }}
               onClick={handleShow}
             >
               Ajouter
             </Button>
-          </div>
-          <Modal show={show} onHide={handleClose} keyboard={false}>
-            <Modal.Header closeButton>
-              <Modal.Title>Informations livres</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row d-flex g-2">
-                <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    placeholder="Titre du livre"
-                    onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
-                    }
-                    required
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
-                    type="text"
-                    name="author"
-                    value={formData.author}
-                    placeholder="Nom de l'auteur"
-                    onChange={(e) =>
-                      setFormData({ ...formData, author: e.target.value })
-                    }
-                    required
-                  />
-                </Col>
-              </div>
-              <div className="row g-2 d-flex flex-wrap">
-                <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
-                    type="text"
-                    name="genre"
-                    value={formData.genre}
-                    placeholder="Genre du livre"
-                    onChange={(e) =>
-                      setFormData({ ...formData, genre: e.target.value })
-                    }
-                    required
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
-                    type="text"
-                    name="url"
-                    value={formData.url}
-                    placeholder="Lien du livre"
-                    onChange={(e) =>
-                      setFormData({ ...formData, url: e.target.value })
-                    }
-                    required
-                  />
-                </Col>
-                <Col md={12} sm={12} xs={12} className="mb-2">
-                  <Form.Control
-                    as="textarea"
-                    name="description"
-                    value={formData.description}
-                    placeholder="Description du livre"
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        description: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </Col>
-              </div>
-              <div className="d-flex justify-content-center">
-                <Button
-                  // variant="outline-primary"
-                  type="submit"
-                  className="soumission mt-2 mb-3"
-                  onClick={handleSubmit}
-                  style={{ width: "max-content" }}
-                >
-                  {buttonText}
-                </Button>
-              </div>
-            </Modal.Body>
-          </Modal>
-        </Row>
-      </Form>
 
+            <Modal show={show} onHide={handleClose} keyboard={false}>
+              <Modal.Header closeButton>
+                <Modal.Title>Informations livres</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="row d-flex g-2">
+                  <Col md={6} sm={12} xs={12} className="mb-2">
+                    <Form.Control
+                      type="text"
+                      name="title"
+                      value={formData.title}
+                      placeholder="Titre du livre"
+                      onChange={(e) =>
+                        setFormData({ ...formData, title: e.target.value })
+                      }
+                      required
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={12} className="mb-2">
+                    <Form.Control
+                      type="text"
+                      name="author"
+                      value={formData.author}
+                      placeholder="Nom de l'auteur"
+                      onChange={(e) =>
+                        setFormData({ ...formData, author: e.target.value })
+                      }
+                      required
+                    />
+                  </Col>
+                </div>
+                <div className="row g-2 d-flex flex-wrap">
+                  <Col md={6} sm={12} xs={12} className="mb-2">
+                    <Form.Control
+                      type="text"
+                      name="genre"
+                      value={formData.genre}
+                      placeholder="Genre du livre"
+                      onChange={(e) =>
+                        setFormData({ ...formData, genre: e.target.value })
+                      }
+                      required
+                    />
+                  </Col>
+                  <Col md={6} sm={12} xs={12} className="mb-2">
+                    <Form.Control
+                      type="text"
+                      name="url"
+                      value={formData.url}
+                      placeholder="Lien du livre"
+                      onChange={(e) =>
+                        setFormData({ ...formData, url: e.target.value })
+                      }
+                      required
+                    />
+                  </Col>
+                  <Col md={12} sm={12} xs={12} className="mb-2">
+                    <Form.Control
+                      as="textarea"
+                      name="description"
+                      value={formData.description}
+                      placeholder="Description du livre"
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </Col>
+                </div>
+                <div className="d-flex justify-content-center">
+                  <Button
+                    // variant="outline-primary"
+                    type="submit"
+                    className="soumission mt-2 mb-3"
+                    onClick={handleSubmit}
+                    style={{ width: "max-content" }}
+                  >
+                    {buttonText}
+                  </Button>
+                </div>
+              </Modal.Body>
+            </Modal>
+          </Row>
+        </Form>
+      </div>
       <div className="">
         <TableBook
           books={books}

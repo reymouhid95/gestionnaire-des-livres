@@ -157,7 +157,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function SearchBooks({filter , func, func2, func3}) {
+function SearchBooks({filter , func, func1, func2, func3}) {
 
   const createHandleMenuClick = (menuItem) => {
     return () => {
@@ -186,7 +186,7 @@ function SearchBooks({filter , func, func2, func3}) {
                 <MenuButton><TuneIcon /></MenuButton>
                 <Menu slots={{ listbox: Listbox }}>
                     <MenuItem onClick={func3}>All books</MenuItem>
-                    <MenuItem role="button" onClick={createHandleMenuClick('dispo')}>Books available</MenuItem>
+                    <MenuItem role="button" onClick={func1}>Books available</MenuItem>
                     <MenuItem onClick={func2}>Books not available</MenuItem>
                 </Menu>
             </Dropdown>

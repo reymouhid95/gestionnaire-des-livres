@@ -18,7 +18,7 @@ function DashboardUser() {
     <h1 className="title py-3 px-3 fw-bold">Home</h1>
       <div className="dashboard">
         <CarouselAcceuil />
-        <HomeCardContent />  
+        <HomeCardContent />
         <NewArrivals />
       </div> 
     </Link>
