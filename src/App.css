@@ -368,7 +368,7 @@
 }
 
 .soumission:hover {
-  background-color: green !important;
+  background-color: hsl(187, 84%, 17%) !important;
   color: #fff !important;
   transition: 2s !important;
 }
@@ -448,4 +448,14 @@ thead th {
   display: flex;
   flex-direction: column;
   word-wrap: break-word;
+}
+
+.data td {
+  border-collapse: collapse;
+  border: 1px solid rgb(18, 143, 189);
+  overflow: hidden;
+  max-width: 50px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
 }

@@ -148,7 +148,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         hover
         variant="bg-body-secondary"
         id="table"
-        className="mx-5"
+        className="mx-5 data"
       >
         <thead>
           <tr>
@@ -182,14 +182,14 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                     className="mb-2 mx-1"
                     onClick={() => handleShowModal(book)}
                   >
-                    <Icon.Eye />
+                    <Icon.EyeFill />
                   </Button>
                   <Button
                     variant="outline-success"
                     className="mb-2 mx-1 text-warning border border-none"
                     onClick={() => onEditBook(book)}
                   >
-                    <Icon.Pen />
+                    <Icon.PenFill />
                   </Button>
                   <Button
                     variant="outline-success"
@@ -201,7 +201,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                         onClick={() => handleArchivedBook(book.id)}
                       />
                     ) : (
-                      <Icon.FolderSymlink
+                      <Icon.FolderSymlinkFill
                         onClick={() => handleArchivedBook(book.id)}
                       />
                     )}
@@ -211,7 +211,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                     className="mb-2 mx-1 border border-none"
                     onClick={() => onDeleteBook(book.id)}
                   >
-                    <Icon.Trash />
+                    <Icon.TrashFill />
                   </Button>
                 </div>
               </td>
