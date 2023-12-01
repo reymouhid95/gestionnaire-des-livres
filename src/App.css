@@ -5,9 +5,9 @@
   font-family: Georgia, "Times New Roman", Times, serif;
 }
 
-/* .App {
+.App {
   text-align: center;
-} */
+}
 
 .sidebar {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));

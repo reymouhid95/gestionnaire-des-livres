@@ -6,7 +6,7 @@ function Archive() {
   return (
     <Link to="/admin/archived" style={{ textDecoration: "none" }}>
       <h1 className="title fw-bold py-3 px-3">Archived</h1>
-      <div>
+      <div className="divArchiveBooks">
         <ArchivedBooks />
       </div>
     </Link>

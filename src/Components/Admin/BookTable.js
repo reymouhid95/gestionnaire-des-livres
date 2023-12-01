@@ -3,9 +3,11 @@
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
-import { useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import * as Icon from "react-bootstrap-icons";
+import { db } from "../../firebase-config";
 import BookDetails from "./BookDetails";
 import ListModal from "./ModalList";
 import Paginations from "./Paginations";
@@ -65,9 +67,43 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  const [bookArchives, setBookArchives] = useState(
-    JSON.parse(localStorage.getItem("bookArchives")) || {}
-  );
+  // const [bookArchives, setBookArchives] = useState(
+  //   JSON.parse(localStorage.getItem("bookArchives")) || {}
+  // );
+  const [initialBookArchives, setInitialBookArchives] = useState({});
+  const [bookArchives, setBookArchives] = useState({});
+  const [archivedBookId, setArchivedBookId] = useState(null);
+
+  useEffect(() => {
+    const loadArchives = async () => {
+      try {
+        const docRef = doc(db, "archivedBooks", "archivedBooksData");
+        const docSnap = await getDoc(docRef);
+        const data = docSnap.data();
+        setInitialBookArchives(data || {});
+      } catch (error) {
+        console.error("Error loading archives from Firestore:", error);
+      }
+    };
+
+    loadArchives();
+  }, [books]);
+
+  useEffect(() => {
+    // Mettre à jour bookArchives après le chargement initial
+    setBookArchives(initialBookArchives);
+  }, [initialBookArchives]);
+
+  useEffect(() => {
+    // Mettre à jour bookArchives après l'archivage d'un livre
+    if (archivedBookId) {
+      setBookArchives((prevBookArchives) => ({
+        ...prevBookArchives,
+        [archivedBookId]: true,
+      }));
+      setArchivedBookId(null);
+    }
+  }, [archivedBookId]);
 
   // Méthode pour afficher le modal
   const handleShowModal = (book) => {
@@ -149,6 +185,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         variant="bg-body-secondary"
         id="table"
         className="mx-5 data"
+        size="sm"
       >
         <thead>
           <tr>

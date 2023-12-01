@@ -36,6 +36,7 @@ function NewArrivals() {
   useEffect(() => {
     Aos.init({ duration: 2000 });
   }, []);
+
   return (
     <div className="py-3 newArrivals">
       <div data-aos="fade-up">

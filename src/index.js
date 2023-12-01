@@ -1,44 +1,52 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import App from "./App";
-import SignIn from "./Components/Connexion";
-import SignUp from "./Components/Inscription";
-import Archive from "./Pages/Pages-Admin/Archive";
-import DashboardAdmin from "./Pages/Pages-Admin/DashboardAdmin";
-import Books from "./Pages/Pages-User/Books";
-import DashboardUser from "./Pages/Pages-User/DashboardUser";
-import Home from "./Pages/Statistics";
 import "./index.css";
+import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
+import SignUp from "./Components/Inscription";
+import SignIn from "./Components/Connexion";
+import Books from "./Pages/Pages-User/Books";
+import Home from "./Pages/Statistics";
+import DashboardUser from "./Pages/Pages-User/DashboardUser";
+import DashboardAdmin from "./Pages/Pages-Admin/DashboardAdmin";
+import Archive from "./Pages/Pages-Admin/Archive";
 
 const route = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/connexion" />,
+  },
   {
     path: "/",
     element: <App />,
     children: [
       {
-        path: "/admin/dashboardAdmin",
+        path: "admin/dashboardAdmin",
         element: <DashboardAdmin />,
       },
       {
-        path: "/admin/statistics",
+        path: "admin/statistics",
         element: <Home />,
       },
       {
-        path: "/admin/archived",
+        path: "admin/archived",
         element: <Archive />,
       },
       {
-        path: "/user/dashboardUser",
+        path: "user/dashboardUser",
         element: <DashboardUser />,
       },
       {
-        path: "/user/books",
+        path: "user/books",
         element: <Books />,
       },
       {
-        path: "/user/statistics",
+        path: "user/statistics",
         element: <Home />,
       },
     ],

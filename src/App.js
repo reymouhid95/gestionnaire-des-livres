@@ -1,9 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Route, Routes } from "react-router-dom";
-import "rsuite/dist/rsuite-no-reset.min.css";
 import "./App.css";
 import NavAdmin from "./Components/Admin/NavAdmin";
 import SidebarAdmin from "./Components/Admin/SidebarAdmin";
@@ -16,12 +14,21 @@ import DashboardUser from "./Pages/Pages-User/DashboardUser";
 import Home from "./Pages/Statistics";
 import Template from "./layouts/Template";
 
+import { useState } from "react";
+import "rsuite/dist/rsuite-no-reset.min.css";
+// import About from './Components/About';
+
+// Import des autres bibliothèques et composants
+
 function App() {
   const [toggle, setToggle] = useState(true);
   const url = "/admin/dashboardAdmin";
+  // const url2 = "/user/dashboardUser";
+
   const Toggle = () => {
     setToggle(!toggle);
   };
+
   return (
     <div>
       <Template
@@ -36,7 +43,7 @@ function App() {
           )
         }
         toggle={toggle}
-        sidebarBg={"#282c34"}
+        sidebarBg="#282c34"
       >
         <Routes>
           <Route path="/admin/dashboardAdmin" element={<DashboardAdmin />} />

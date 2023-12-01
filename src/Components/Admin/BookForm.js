@@ -229,7 +229,7 @@ function FormBook() {
 
   // L'affichage
   return (
-    <div className="mt-2">
+    <div className="mt-2 py-3 m-0" id="tableContent">
       <ToastContainer />
       {isArchived && toast.success("Livre archivé avec succès!")}
       {isUnarchived && toast.success("Livre désarchivé avec succès!")}
@@ -237,7 +237,7 @@ function FormBook() {
         <Row className="w-100 m-0 p-0">
           <div className="d-flex justify-content-end">
             <Button
-              className="soumission mt-2 mx-5"
+              className="soumission mt-2 mb-3 ms-5"
               style={{ width: "max-content" }}
               onClick={handleShow}
             >
@@ -331,7 +331,6 @@ function FormBook() {
           </Modal>
         </Row>
       </Form>
-
       <div>
         <TableBook
           books={books}
