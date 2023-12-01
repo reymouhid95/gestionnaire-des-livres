@@ -11,11 +11,13 @@ import { Button } from "@mui/material";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
 import Auth from "../assets/auth-illustration.svg";
+import { ToastContainer, toast } from "react-toastify";
+
 import { auth } from "../firebase-config";
 
 // Méthode principale du composant
@@ -56,12 +58,18 @@ function SignIn() {
         localStorage.setItem("utilisateur", JSON.stringify(user));
         setEmail("");
         setPassword("");
-        toast.success("Utilisateur connecté!");
-        if (email === "serigne@gmail.com") {
-          navigate("/admin/dashboardAdmin");
-        } else {
-          navigate("/user/dashboardUser");
-        }
+        toast.success(
+          email === "serigne@gmail.com"
+            ? "Administrateur connecté!"
+            : "Utilisateur connecté!"
+        );
+        setTimeout(() => {
+          if (email === "serigne@gmail.com") {
+            navigate("/admin/dashboardAdmin");
+          } else {
+            navigate("/user/dashboardUser");
+          }
+        }, 3000);
       })
       .catch((error) => {
         toast.error("Vérifiez les identifiants!");
@@ -91,6 +99,7 @@ function SignIn() {
   // Rendu du composant
   return (
     <>
+      <ToastContainer />
       <Row className="m-0 connexion">
         <Col md={6} className="backTwo">
           <Form className="form color" onSubmit={handleSubmit}>

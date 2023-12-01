@@ -10,11 +10,13 @@ import { Button } from "@mui/material";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleAuth from "../Components/AuthGoogle";
 import Auth from "../assets/auth-illustration.svg";
 import { auth } from "../firebase-config";
+import { ToastContainer, toast } from "react-toastify";
+
 
 // Méthode principale du composant
 function SignUp() {
@@ -37,8 +39,10 @@ function SignUp() {
           setPassword("");
           setConfirmPassword("");
           setName("");
-          navigate("/connexion");
           toast.success("Utilisateur inscrit avec succès!");
+          setInterval(() => {
+            navigate("/connexion");
+          }, 3000)
         })
         .catch((error) => {
           console.error("Login error:", error.message);
@@ -108,6 +112,7 @@ function SignUp() {
   // Rendu du composant
   return (
     <>
+      <ToastContainer />
       <Row className="m-0 inscription">
         <Col md={6} className=" backOne text-center text-light fw-bold m-0 p-0">
           <h1>Welcome to eBook</h1>

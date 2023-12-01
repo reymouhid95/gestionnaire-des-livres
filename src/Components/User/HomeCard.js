@@ -30,7 +30,7 @@ function HomeCard({ img, title, description, auth, genre }) {
           </Button>
           <Modal show={show} onHide={handleClose} keyboard={false}>
             <Modal.Header closeButton>
-              <Modal.Title data-aos="fade-left">DETAILS DU LIVRE</Modal.Title>
+              <Modal.Title data-aos="fade-left">Détails du livre</Modal.Title>
             </Modal.Header>
             <Modal.Body className="content-modal">
               <ul className="list-unstyled" data-aos="fade-left">
