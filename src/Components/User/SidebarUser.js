@@ -21,7 +21,7 @@ function SidebarUser() {
         <span className="brand-name fs-1 fw-bold mx-2">eBook</span>
       </div>
       <hr className="text-white border-3 mt-5" style={{ color: "#fff" }} />
-      <div data-aos="fade-left" className="group">
+      <div data-aos="fade-left" className="linkSidebar">
         {menuUser.map((elem, index) => (
           <SidebarComponent {...elem} key={index} />
         ))}

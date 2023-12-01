@@ -5,7 +5,7 @@ function SidebarComponent({ title, icon, path }) {
   return (
     <Link
       style={{ textDecoration: "none" }}
-      className="py-4 ps-2 my-2 rounded items"
+      className="py-4 ps-2 my-2 rounded items col-md-12 col-2"
       to={path}
     >
       <i className={icon}></i>

@@ -1,49 +1,49 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 .App {
   text-align: center;
 }
 
-.sidebar{
+.sidebar {
   /* background-color: #282c34; */
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
   color: #fff;
   z-index: 1000;
 }
 
-.sidebar a i{
+.sidebar a i {
   color: #fff;
   /* font-size: 21px !important; */
 }
 
-.sidebar .group a{
+.sidebar .linkSidebar a {
   /* background-color: #282c34; */
   background: transparent;
   color: #fff;
   border: none;
 }
 
-.group a:hover{
+.linkSidebar a:hover {
   background: hsl(199, 90%, 29%);
   color: #fff;
   cursor: pointer;
 }
 
-.group{
+.linkSidebar {
   display: flex;
   flex-direction: column;
 }
 
-#header{
+#header {
   background-color: #61dafb;
 }
 
-#home #header i{
+#home #header i {
   cursor: pointer;
 }
 
@@ -55,17 +55,16 @@
   height: 300px;
 }
 
-#home .charts #bar{
+#home .charts #bar {
   z-index: -1;
 }
 
-
-#header img{
+#header img {
   width: 55px;
   height: 55px;
 }
 
-.navbar{
+.navbar {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
   position: sticky !important;
   top: 0;
@@ -74,28 +73,43 @@
   left: 0;
   z-index: 1000;
 }
-.title-seller{
+.title-seller {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
 }
 
-.imgCarousel1{
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.2) , rgba(0,0,0,0.2)),url('../src/assets/slider13-967.jpg');
+.imgCarousel1 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.2)
+    ),
+    url("../src/assets/slider13-967.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
-.imgCarousel2{
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.5) , rgba(0,0,0,0.5)),url('./assets/slider11-834.jpg');
+.imgCarousel2 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.5),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url("./assets/slider11-834.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
-.imgCarousel3{
-  background-image: linear-gradient(to bottom, rgba(0,0,0,0.3) , rgba(0,0,0,0.5)),url('../src/assets/slider12-13.jpg');
+.imgCarousel3 {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.5)
+    ),
+    url("../src/assets/slider12-13.jpg");
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.dashboard{
-  background-color: rgb(225,225, 235);
+.dashboard {
+  background-color: rgb(225, 225, 235);
   width: 100% !important;
 }
 
@@ -103,82 +117,86 @@
   background-color: #dbdbdb;
 }
 
-#home #card-1 i{
+#home #card-1 i {
   background-color: #61dafb;
   border-radius: 10px 10px 10px 10px;
   color: #fff;
 }
-#home #card-2 i{
+#home #card-2 i {
   background-color: red;
   color: #fff;
   border-radius: 10px 10px 10px 10px;
 }
-#home #card-3 i{
+#home #card-3 i {
   background-color: orange;
   border-radius: 10px 10px 10px 10px;
   color: #fff;
 }
-#home #card-4 i{
+#home #card-4 i {
   background-color: green;
   border-radius: 10px 10px 10px 10px;
   color: #fff;
 }
 
-.custom-slider img{
+.custom-slider img {
   width: 100%;
 }
 
-.custom-slider button:hover{
+.custom-slider button:hover {
   background: hsl(199, 90%, 29%) !important;
   transition: 1.5s;
   font-weight: bold;
 }
 
-.custom-slider button{
+.custom-slider button {
   background: hsl(187, 84%, 17%) !important;
   border: none;
 }
 
-.title{
+.title {
   color: hsl(187, 84%, 17%);
 }
 
-.homeCard{
+.homeCard {
   padding-top: 5%;
 }
 
-.homeCard img{
+.homeCard img {
   width: 100%;
   height: 80%;
 }
 
-.homeCard{
-  background-color: rgb(225,225, 235);
+.homeCard {
+  background-color: rgb(225, 225, 235);
 }
 
-tbody .archiver{
+tbody .archiver {
   text-decoration: line-through !important;
 }
 
-#cardImgContent{
+#cardImgContent {
   display: flex;
   justify-content: center;
 }
 
-#cardImg{
+#cardImg {
   width: 90% !important;
 }
 
-#cardImg:hover{
+#cardImg:hover {
   object-fit: cover;
-  transition:  2s ease;
+  transition: 2s ease;
   transform: scale(1.1);
 }
 
-#table{
+#table {
   width: 200% !important;
 }
 
+.searchContent{
+  display: flex !important;
+  justify-content: center !important;
+}
 /* .modal-view p{
   display: flex;
   flex-wrap: wrap;
@@ -189,182 +207,343 @@ tbody .archiver{
 } */
 
 @media screen and (max-width: 768px) {
-  .carte{
+  .carte {
     width: 100%;
     padding-left: 5px;
     padding-right: 5px;
   }
 
-  .carte #card{
+  .carte #card {
     margin: 0 !important;
     padding: 0 !important;
-    width: 90%;   
-    margin-bottom: 10% !important; 
+    width: 90%;
+    margin-bottom: 10% !important;
   }
 
-  .carte #title{
-    font-size: 12px!important;
+  .carte #title {
+    font-size: 12px !important;
   }
 
-    .books .carte {
-      width: 100%;
-      padding-left: 5px;
-      padding-right: 5px;
-    }
-  
-    .books #card {
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 90%;
-      margin-bottom: 10% !important;
-    }
+  .books .carte {
+    width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
 
-    #filterDropDown .icon{
-      width: max-content !important;
-      height: max-content !important;
-      font-size: 5px !important;
-    }
+  .books #card {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 90%;
+    margin-bottom: 10% !important;
+  }
 
-    #filterDropDown .iconFliter{
-      font-size: 14px !important;
-    }
+  #filterDropDown .icon {
+    width: max-content !important;
+    height: max-content !important;
+    font-size: 5px !important;
+  }
 
-    #search{
-      display: flex !important;
-      justify-content: space-between;
-    }
+  #filterDropDown .iconFliter {
+    font-size: 14px !important;
+  }
 
-    #search .rounded-pill{
-      width: 100% !important;
-    }
+  #search {
+    display: flex !important;
+    justify-content: space-between;
+  }
 
-    .carte .bouton{
-      font-size: 10px !important;
-    }
+  #search .rounded-pill {
+    width: 100% !important;
+  }
 
-    .books .bouton{
-      font-size: 10px !important;
-    }
+  .carte .bouton {
+    font-size: 10px !important;
+  }
 
-    .books #title{
-      font-size: 12px !important;
-    }
+  .books .bouton {
+    font-size: 10px !important;
+  }
 
-  .custom-slider{
+  .books #title {
+    font-size: 12px !important;
+  }
+
+  .custom-slider {
     width: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
     height: 100% !important;
   }
 
-  .custom-slider .divCarousel{
+  .custom-slider .divCarousel {
     padding: 0 !important;
     padding-top: 10% !important;
     padding-bottom: 25% !important;
     padding-left: 10px !important;
   }
 
-    .custom-slider .divCarousel .btn-lg{
-      width: max-content;
-      height: max-content;
-      font-size: 14px;
-    }
+  .custom-slider .divCarousel .btn-lg {
+    width: max-content;
+    height: max-content;
+    font-size: 14px;
+  }
 
-    .custom-slider .divCarousel h3, .custom-slider .divCarousel h1{
-      font-size: 15px;
-      font-weight: 500 !important;
-    }
+  .custom-slider .divCarousel h3,
+  .custom-slider .divCarousel h1 {
+    font-size: 15px;
+    font-weight: 500 !important;
+  }
 
-    .custom-slider .divCarousel p{
-      font-size: 10px;
-    }
+  .custom-slider .divCarousel p {
+    font-size: 10px;
+  }
 
-    .sidebar #logo span{
-        font-size: 12px !important;
-    }
+  .sidebar #logo span {
+    font-size: 12px !important;
+  }
 
-    .sidebar #logo #imgLogo{
-      font-size: 18px !important;
-    }
+  .sidebar #logo #imgLogo {
+    font-size: 18px !important;
+  }
 
   .sidebar {
     z-index: 1000 !important;
     position: relative;
   }
-    .sidebar .group .items i{
-      font-size: 15px!important;
-    }
+  .sidebar .linkSidebar .items i {
+    font-size: 15px !important;
+  }
 
-    .sidebar .group .items span{
-      font-size: 12px !important;
-    }
+  .sidebar .linkSidebar .items span {
+    font-size: 12px !important;
+  }
 
-    .connexion .backThree{
-      width: 100% !important;
-    }
+  .connexion .backThree {
+    width: 100% !important;
+  }
+  .inscription .backThree {
+    width: 100% !important;
+  }
 
-    .backTwo {
-      padding-top: 10% !important;
-    }
+  .backTwo {
+    padding-top: 10% !important;
+  }
 
-    /* .divArchiveBooks{
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100%;
-    }
+  .inscription .backTwo {
+    padding-top: 20% !important;
+  }
+  .data {
+    margin: 0 !important;
+  }
 
-    #bookArchived{
-      width: 100% !important;
-      margin: 0 !important;
-    } */
+  #table {
+    width: 400% !important;
+    margin: 0 !important;
+  }
 
-    .connexion .backTwo .form{
-      margin: 0 !important;
-      width: 100% !important;
-    }
+  .template .contenu {
+    flex-direction: column-reverse;
+  }
 
-    #tableContent #table{
-      margin: 0 !important;
-      width: 100px !important;
-      padding: 0 !important;
-    }
+  .template .contenu #sidebarDiv {
+    width: 100% !important;
+    height: 100px !important;
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000 !important;
+  }
 
-    /* #table tbody{
-      /* width: 50% !important; */
-      /* margin: 0 !important;
-      padding: 0 !important; */
-    
+  .contentNavbar{
+    z-index: 0 !important;
+  }
 
-    /* #table thead { */
-      /* display: none !important; */
-      /* width: 50% !important; */
-      /* margin: 0;
-      padding: 0; */
-    
+  .template .contenu #sidebarDiv #logo,
+  .template .contenu #sidebarDiv hr {
+    display: none !important;
+  }
 
-    /* #tableContent{
-      margin: 0 !important;
-    } */
-     
+  .template .contenu #sidebarDiv .sidebar .linkSidebar .items {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
+    height: 80% !important;
+  }
+
+  .template .contenu #sidebarDiv .sidebar .linkSidebar .items span {
+    display: none;
+  }
+
+  .items i {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .items .bi::before {
+    width: 100% !important;
+    font-size: 35px !important;
+    margin-left: 25%;
+  }
+
+  .template .contenu #sidebarDiv .sidebar {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    z-index: 1000 !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .template #sidebarDiv .linkSidebar {
+    display: flex !important;
+    flex-direction: row !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding-top: 5% !important;
+  }
+
+  .searchContent .rounded-pill{
+    width: 90%;
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-left: 3% !important;
+  }
+
+  .soumission{
+    margin: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .searchContent{
+    justify-content: flex-start !important;
+    padding: 0;
+    padding-left: 0 !important;
+    padding-top: 5%;
+  }
+
+  .tableau {
+    width: 100% !important;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .contentData {
+    width: 100% !important;
+  }
+
+  #bookArchived {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .connexion .backTwo .form {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .inscription .backTwo .form {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  #tableContent #table {
+    margin: 0 !important;
+    width: 100px !important;
+    padding: 0 !important;
+  }
 }
 
-@media screen and (max-width: 500px){
+@media screen and (max-width: 500px) {
   #home .charts {
     display: flex;
     flex-direction: column;
   }
+  .data {
+    margin: 0 !important;
+  }
 
-  .connexion{
+  .pagination{
+    padding-top: 5%;
+    padding-bottom: 5%;
+  }
+
+  .contentNavbar{
+    padding-bottom: 26% !important;
+    z-index: 0 !important;
+  }
+
+  .template .contenu #sidebarDiv {
+    width: 100% !important;
+    height: 100px !important;
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .template .contenu #sidebarDiv .sidebar {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    z-index: 1000 !important;
+  }
+
+  #table {
+    width: 400% !important;
+    margin: 0 !important;
+  }
+
+  .tableau {
+    width: 100% !important;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .connexion {
     display: flex !important;
     flex-direction: column-reverse !important;
   }
-  
+
+  .template .contenu {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .template .contenu #sidebarDiv {
+    width: 100% !important;
+  }
+
+  .template .contenu #sidebarDiv #logo,
+  .template .contenu #sidebarDiv hr {
+    display: none !important;
+  }
+
+  .template .contenu #sidebarDiv .sidebar .linkSidebar .items {
+    width: 20% !important;
+  }
+
+  .template .contenu #sidebarDiv .sidebar .linkSidebar {
+    display: flex !important;
+    justify-content: space-around !important;
+  }
 }
 
 .soumission {
   border: none !important;
   background-color: rgb(18, 143, 189) !important;
   color: bisque !important;
+  margin-left: 4.6%;
 }
 
 .soumission:hover {
@@ -390,7 +569,7 @@ tbody .archiver{
   font-size: 5rem !important;
 }
 
-thead th{
+thead th {
   background-color: hsl(199, 100%, 33%) !important;
 }
 
@@ -412,7 +591,6 @@ thead th{
 .backTwo {
   background-color: white;
 }
-
 
 .filter {
   width: 200px !important;
@@ -451,13 +629,15 @@ thead th{
   outline: none !important;
 }
 
-.connexion a , .inscription a{
+.connexion a,
+.inscription a {
   text-decoration: none !important;
   color: hsl(187, 84%, 17%) !important;
   text-align: end !important;
 }
 
-.connexion , .inscription{
+.connexion,
+.inscription {
   background-image: linear-gradient(
     to right,
     rgb(6, 71, 71),

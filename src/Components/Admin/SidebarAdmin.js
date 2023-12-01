@@ -17,13 +17,13 @@ function SidebarAdmin() {
         <span className="brand-name fs-1 fw-bold mx-2">eBook</span>
       </div>
       <hr className="text-white border-3 mt-5" style={{ color: "#fff" }} />
-      <div className="group">
+      <div className="linkSidebar" id='linkSidebar'>
         {menuAdmin.map((elem, index) => (
           <SidebarComponent {...elem} key={index} />
         ))}
         <Link
           style={{ textDecoration: "none" }}
-          className="py-4 ps-2 my-2 rounded"
+          className="py-4 ps-2 my-2 rounded items"
           onClick={deconnexion}
         >
           <i className="bi bi-box-arrow-right fs-5 me-3"></i>
