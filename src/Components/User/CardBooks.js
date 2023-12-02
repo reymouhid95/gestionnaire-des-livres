@@ -1,14 +1,14 @@
 import { collection, getDocs } from "firebase/firestore";
-import React, { useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useCallback, useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import HomeCard from "./HomeCard";
 import SearchBooks from "./SearchBooks";
 
 function CardBooks() {
   const [books, setBooks] = useState([]);
-  const [booksNoDispo, setBooksNoDispo] = useState([]);
+  const [filterType, setFilterType] = useState("all");
   const [filter, setFilter] = useState("");
+
   const loadBooks = useCallback(async () => {
     try {
       const bookCollection = collection(db, "books");
@@ -20,40 +20,18 @@ function CardBooks() {
       setBooks(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toString.error(
+      alert(
         "Erreur de chargement. Veuillez vérifier votre connexion internet!"
       );
     }
   }, []);
-
-  const loadBooksNoDispo = useCallback(async () => {
-    try {
-      const bookCollection = collection(db, "Archived");
-      const snapshot = await getDocs(bookCollection);
-      const bookData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setBooksNoDispo(bookData);
-    } catch (error) {
-      console.error("Error loading books:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    loadBooksNoDispo();
-  }, [loadBooksNoDispo]);
 
   useEffect(() => {
     loadBooks();
   }, [loadBooks]);
-  console.log(books);
 
   const filterBooks = () => {
-    return books.filter(
+    const filteredBooks = books.filter(
       (book) =>
         book.title.toLowerCase().includes(filter.toLowerCase()) ||
         book.author.toLowerCase().includes(filter.toLowerCase()) ||
@@ -61,25 +39,28 @@ function CardBooks() {
         book.genre.toLowerCase().includes(filter.toLowerCase()) ||
         book.url.toLowerCase().includes(filter.toLowerCase())
     );
+
+    switch (filterType) {
+      case "all":
+        return filteredBooks;
+      case "dispo":
+        return filteredBooks.filter((book) => !book.archived);
+      case "noDispo":
+        return filteredBooks.filter((book) => book.archived);
+      default:
+        return [];
+    }
   };
-  const filterBooksNoDispo = () => {
-    return booksNoDispo.filter(
-      (book) =>
-        book.title.toLowerCase().includes(filter.toLowerCase()) ||
-        book.author.toLowerCase().includes(filter.toLowerCase()) ||
-        book.description.toLowerCase().includes(filter.toLowerCase()) ||
-        book.genre.toLowerCase().includes(filter.toLowerCase()) ||
-        book.url.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
+
   return (
     <div className="container-fluid m-0 px-0 homeCard w-100">
       <SearchBooks
         books={books}
         filter={filter}
         func={(e) => setFilter(e.target.value)}
-        func2={filterBooksNoDispo}
-        func3={filterBooks}
+        func3={() => setFilterType("all")}
+        func2={() => setFilterType("noDispo")}
+        func1={() => setFilterType("dispo")}
       />
       <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 books">
         {filterBooks().map((book, index) => (

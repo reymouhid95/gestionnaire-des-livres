@@ -236,7 +236,7 @@ function FormBook() {
 
   // L'affichage
   return (
-    <div className="mt-2 py-3 m-0" id="tableContent">
+    <div className="m-0" id="tableContent">
       <ToastContainer />
       {toastMessage && toast.success(toastMessage)}
       <Form onSubmit={handleSubmit}>

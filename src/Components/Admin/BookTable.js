@@ -202,11 +202,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
           </div>
         </div>
         <div>
-          <Button
-            variant=""
-            className="soumission"
-            onClick={handleShowListModal}
-          >
+          <Button className="soumission" onClick={handleShowListModal}>
             Afficher la liste
           </Button>
         </div>
@@ -219,6 +215,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
             className="mx-5 data"
             variant="bg-body-secondary"
             id="table"
+            size="sm"
           >
             <thead>
               <tr>
@@ -248,7 +245,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                   <td>{book.url}</td>
                   <td>{book.description}</td>
                   <td>
-                    <div className="">
+                    <div>
                       <Button
                         variant="outline-info border border-none"
                         className="mb-2 mx-1"

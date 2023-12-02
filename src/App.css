@@ -66,6 +66,7 @@
 
 .navbar {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
+  position: -webkit-sticky;
   position: sticky !important;
   top: 0;
   bottom: 0;
