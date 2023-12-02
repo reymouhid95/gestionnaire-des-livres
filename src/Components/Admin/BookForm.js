@@ -30,10 +30,10 @@ function FormBook() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [numberOfBooks, setNumberOfBooks] = useState(0);
   const urlInputRef = useRef();
-  const [isArchived, setIsArchived] = useState(false);
-  const [isUnarchived, setIsUnarchived] = useState(false);
+  // const [isArchived, setIsArchived] = useState(false);
+  // const [isUnarchived, setIsUnarchived] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   // Surveiller le chargement des données au montage de l'aooli
   const loadBooks = useCallback(async () => {
@@ -96,6 +96,21 @@ function FormBook() {
       return;
     }
 
+    // Ajouter 5 livres à la base de données
+    const batch = [];
+    for (let i = 0; i < 5; i++) {
+      batch.push(formData);
+    }
+
+    await Promise.all(
+      batch.map(async (book) => {
+        await addDoc(collection(db, "books"), book);
+      })
+    );
+
+    // Recharger les livres après l'ajout
+    await loadBooks();
+
     // Ajouter le livre seulement si tous les champs sont remplis
     const book = formData;
     await addDoc(collection(db, "books"), book);
@@ -117,13 +132,7 @@ function FormBook() {
       description: "",
     });
     toast.success("Livre ajouté avec succès!");
-
-    // Mettre à jour le nombre de livres ajoutés
-    setNumberOfBooks((prevNumberOfBooks) => prevNumberOfBooks + 5);
-
-    // Stocker le nombre de livres ajoutés dans le local storage
-    localStorage.setItem("numberOfBooks", numberOfBooks + 5);
-  }, [formData, loadBooks, numberOfBooks]);
+  }, [formData, loadBooks]);
 
   // Mettre à jour un livre
   const handleEditBook = (book) => {
@@ -190,11 +199,9 @@ function FormBook() {
         );
 
         if (updatedBookData.archived) {
-          setIsArchived(true);
-          setIsUnarchived(false);
+          setToastMessage("Livre archivé avec succès!");
         } else {
-          setIsArchived(false);
-          setIsUnarchived(true);
+          setToastMessage("Livre désarchivé avec succès!");
         }
       } catch (error) {
         console.error("Error updating book:", error);
@@ -231,8 +238,7 @@ function FormBook() {
   return (
     <div className="mt-2 py-3 m-0" id="tableContent">
       <ToastContainer />
-      {isArchived && toast.success("Livre archivé avec succès!")}
-      {isUnarchived && toast.success("Livre désarchivé avec succès!")}
+      {toastMessage && toast.success(toastMessage)}
       <Form onSubmit={handleSubmit}>
         <Row className="w-100 m-0 p-0">
           <div className="d-flex justify-content-end">

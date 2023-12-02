@@ -3,9 +3,9 @@
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import { alpha, styled } from "@mui/material/styles";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Col, Table } from "react-bootstrap";
 import * as Icon from "react-bootstrap-icons";
 import { db } from "../../firebase-config";
 import BookDetails from "./BookDetails";
@@ -67,9 +67,6 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  // const [bookArchives, setBookArchives] = useState(
-  //   JSON.parse(localStorage.getItem("bookArchives")) || {}
-  // );
   const [initialBookArchives, setInitialBookArchives] = useState({});
   const [bookArchives, setBookArchives] = useState({});
   const [archivedBookId, setArchivedBookId] = useState(null);
@@ -139,143 +136,181 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
     );
   };
 
-  const handleArchivedBook = (bookId) => {
+  const handleArchivedBook = async (bookId) => {
     onArchivedBook(bookId);
 
-    // Update local storage to store the archived state
-    setBookArchives((prevBookArchives) => {
-      const updatedArchives = {
+    try {
+      // Update archive state in Firestore
+      const docRef = doc(db, "archivedBooks", "archivedBooksData");
+      await setDoc(docRef, { ...bookArchives, [bookId]: true });
+
+      // Update local state
+      setBookArchives((prevBookArchives) => ({
         ...prevBookArchives,
         [bookId]: true,
-      };
-      console.log("Updated Archives:", updatedArchives);
-      localStorage.setItem("bookArchives", JSON.stringify(updatedArchives));
-      return updatedArchives;
-    });
+      }));
+
+      // Update archivedBookId
+      setArchivedBookId(bookId);
+    } catch (error) {
+      console.error("Error updating archives in Firestore:", error);
+    }
+  };
+
+  const handleUnarchivedBook = async (bookId) => {
+    onArchivedBook(bookId);
+
+    try {
+      // Update archive state in Firestore
+      const docRef = doc(db, "archivedBooks", "archivedBooksData");
+      await setDoc(docRef, { ...bookArchives, [bookId]: false });
+
+      // Update local state
+      setBookArchives((prevBookArchives) => ({
+        ...prevBookArchives,
+        [bookId]: false,
+      }));
+
+      // Update archivedBookId
+      setArchivedBookId(bookId);
+    } catch (error) {
+      console.error("Error updating archives in Firestore:", error);
+    }
   };
 
   // L'affichage
   return (
-    <div>
-      <div className="searchContent d-flex justify-content-center">
+    <div className=" m-0">
+      <div className="contentData">
+        <div className="mb-1">
+          <div className="searchContent pb-4">
+            <Col md={4} sm={4}>
+              <div className="col-md-12">
+                <Search className="rounded-pill">
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ "aria-label": "search" }}
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                  />
+                </Search>
+              </div>
+            </Col>
+          </div>
+        </div>
         <div>
-          <Search className="rounded-pill">
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Rechercher ici…"
-              inputProps={{ "aria-label": "search" }}
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
+          <Button
+            variant=""
+            className="soumission"
+            onClick={handleShowListModal}
+          >
+            Afficher la liste
+          </Button>
+        </div>
+        <div className="tableau">
+          <Table
+            responsive
+            striped
+            bordered
+            hover
+            className="mx-5 data"
+            variant="bg-body-secondary"
+            id="table"
+          >
+            <thead>
+              <tr>
+                <th className="text-light text-center py-3">#</th>
+                <th className="text-light text-center py-3">Titre</th>
+                <th className="text-light text-center py-3">Auteur</th>
+                <th className="text-light text-center py-3">Genre</th>
+                <th className="text-light text-center py-3">Lien</th>
+                <th className="text-light text-center py-3">Description</th>
+                <th className="text-light text-center py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filterBooks().map((book, index) => (
+                <tr
+                  key={book.id}
+                  style={{
+                    textDecoration: bookArchives[book.id]
+                      ? "line-through"
+                      : "none",
+                  }}
+                >
+                  <td>{index + 1}</td>
+                  <td>{book.title}</td>
+                  <td>{book.author}</td>
+                  <td>{book.genre}</td>
+                  <td>{book.url}</td>
+                  <td>{book.description}</td>
+                  <td>
+                    <div className="">
+                      <Button
+                        variant="outline-info border border-none"
+                        className="mb-2 mx-1"
+                      >
+                        <Icon.Eye onClick={() => handleShowModal(book)} />
+                      </Button>
+                      <Button
+                        variant="outline-success"
+                        className="mb-2 mx-1 text-warning border border-none"
+                        style={{ display: !book.archived ? "inline" : "none" }}
+                      >
+                        <Icon.Pen onClick={() => onEditBook(book)} />
+                      </Button>
+                      <Button
+                        variant="outline-success"
+                        className="mb-2 mx-1 text-warning border border-none"
+                        onClick={() =>
+                          book.archived
+                            ? handleUnarchivedBook(book.id)
+                            : handleArchivedBook(book.id)
+                        }
+                      >
+                        {book.archived ? (
+                          <Icon.FolderX />
+                        ) : (
+                          <Icon.FolderSymlink />
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        className="mb-2 mx-1 border border-none"
+                      >
+                        <Icon.Trash onClick={() => onDeleteBook(book.id)} />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+        <div>
+          <div className="d-flex justify-content-center p-0 m-0 w-100">
+            <Paginations
+              booksPerPage={booksPerPage}
+              totalBooks={books.length}
+              paginate={paginate}
+              currentPage={currentPage}
             />
-          </Search>
+          </div>
         </div>
+        <BookDetails
+          show={showModal}
+          handleClose={handleCloseModal}
+          selectedBook={selectedBook}
+        />
+        <ListModal
+          show={showListModal}
+          handleClose={handleCloseListModal}
+          books={books}
+        />
       </div>
-      <div>
-        <Button className="soumission mx-5" onClick={handleShowListModal}>
-          Afficher la liste
-        </Button>
-      </div>
-      <Table
-        responsive
-        striped
-        bordered
-        hover
-        variant="bg-body-secondary"
-        id="table"
-        className="mx-5 data"
-        size="sm"
-      >
-        <thead>
-          <tr>
-            <th className="text-light text-center">#</th>
-            <th className="text-light text-center">Titre</th>
-            <th className="text-light text-center">Auteur</th>
-            <th className="text-light text-center">Genre</th>
-            <th className="text-light text-center">Lien</th>
-            <th className="text-light text-center">Description</th>
-            <th className="text-light text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filterBooks().map((book, index) => (
-            <tr
-              key={book.id}
-              style={{
-                textDecoration: book.archived ? "line-through" : "none",
-              }}
-            >
-              <td>{index + 1}</td>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
-              <td>{book.genre}</td>
-              <td>{book.url}</td>
-              <td>{book.description}</td>
-              <td>
-                <div className="">
-                  <Button
-                    variant="outline-info border border-none"
-                    className="mb-2 mx-1"
-                    onClick={() => handleShowModal(book)}
-                  >
-                    <Icon.EyeFill />
-                  </Button>
-                  <Button
-                    variant="outline-success"
-                    className="mb-2 mx-1 text-warning border border-none"
-                    onClick={() => onEditBook(book)}
-                  >
-                    <Icon.PenFill />
-                  </Button>
-                  <Button
-                    variant="outline-success"
-                    className="mb-2 mx-1 text-warning border border-none"
-                    onClick={onArchivedBook}
-                  >
-                    {book.archived ? (
-                      <Icon.FolderX
-                        onClick={() => handleArchivedBook(book.id)}
-                      />
-                    ) : (
-                      <Icon.FolderSymlinkFill
-                        onClick={() => handleArchivedBook(book.id)}
-                      />
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline-danger"
-                    className="mb-2 mx-1 border border-none"
-                    onClick={() => onDeleteBook(book.id)}
-                  >
-                    <Icon.TrashFill />
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      <div>
-        <div className="d-flex justify-content-center w-100">
-          <Paginations
-            booksPerPage={booksPerPage}
-            totalBooks={books.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
-        </div>
-      </div>
-      <BookDetails
-        show={showModal}
-        handleClose={handleCloseModal}
-        selectedBook={selectedBook}
-      />
-      <ListModal
-        show={showListModal}
-        handleClose={handleCloseListModal}
-        books={books}
-      />
     </div>
   );
 }

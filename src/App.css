@@ -10,6 +10,7 @@
 }
 
 .sidebar {
+  /* background-color: #282c34; */
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
   color: #fff;
   z-index: 1000;
@@ -17,19 +18,27 @@
 
 .sidebar a i {
   color: #fff;
+  /* font-size: 21px !important; */
 }
 
-.sidebar .list-group-flush a {
+.sidebar .linkSidebar a {
+  /* background-color: #282c34; */
   background: transparent;
   color: #fff;
   border: none;
 }
 
-.list-group a:hover {
+.linkSidebar a:hover {
   background: hsl(199, 90%, 29%);
   color: #fff;
   cursor: pointer;
 }
+
+.linkSidebar {
+  display: flex;
+  flex-direction: column;
+}
+
 #header {
   background-color: #61dafb;
 }
@@ -161,6 +170,10 @@
   background-color: rgb(225, 225, 235);
 }
 
+tbody .archiver {
+  text-decoration: line-through !important;
+}
+
 #cardImgContent {
   display: flex;
   justify-content: center;
@@ -180,55 +193,18 @@
   width: 200% !important;
 }
 
-@media screen and (max-width: 500px) {
-  #home .charts {
-    display: flex;
-    flex-direction: column;
-  }
-  #table {
-    width: 200% !important;
-  }
-  .connexion {
-    display: flex !important;
-    flex-direction: column-reverse !important;
-  }
-
-  .sidebar {
-    z-index: 1000 !important;
-  }
-
-  .searchContent {
-    display: flex !important;
-    justify-content: space-between;
-  }
-
-  /* .sidebar span{
-    display: none !important;
-  } */
-
-  /* .sidebar #logo{
-    display: none;
-  } */
-
-  /* .template .contenu{
-    display: flex !important;
-    flex-direction: column-reverse !important;
-  } */
-
-  /* .list-group-flush {
-    display:flex !important;
-    flex-wrap: wrap ;
-    padding-top: 9% ;
-    padding-bottom: 9% ;
-    padding-left: 5% ;
-    width: 100% ;
-    position: fixed ;
-    bottom: 0 ;
-    left: 0;
-    right: 0 ;
-    z-index: 1000 ;
-  } */
+.searchContent {
+  display: flex !important;
+  justify-content: center !important;
 }
+/* .modal-view p{
+  display: flex;
+  flex-wrap: wrap;
+} */
+
+/* td{
+  width: max-content !important;
+} */
 
 @media screen and (max-width: 768px) {
   .carte {
@@ -330,24 +306,147 @@
     font-size: 18px !important;
   }
 
-  .sidebar .group .items i {
+  .sidebar {
+    z-index: 1000 !important;
+    position: relative;
+  }
+  .sidebar .linkSidebar .items i {
     font-size: 15px !important;
   }
 
-  .sidebar .group .items span {
+  .sidebar .linkSidebar .items span {
     font-size: 12px !important;
   }
 
   .connexion .backThree {
     width: 100% !important;
   }
-
-  .connexion .backTwo .form {
-    margin: 0 !important;
+  .inscription .backThree {
     width: 100% !important;
   }
 
-  .inscription .backThree {
+  .backTwo {
+    padding-top: 10% !important;
+  }
+
+  .inscription .backTwo {
+    padding-top: 20% !important;
+  }
+  .data {
+    margin: 0 !important;
+  }
+
+  #table {
+    width: 400% !important;
+    margin: 0 !important;
+  }
+
+  .template .contenu {
+    flex-direction: column-reverse;
+  }
+
+  .template .contenu #sidebarDiv {
+    width: 100% !important;
+    height: 100px !important;
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000 !important;
+  }
+
+  .contentNavbar {
+    z-index: 0 !important;
+  }
+
+  .template .contenu #sidebarDiv #logo,
+  .template .contenu #sidebarDiv hr {
+    display: none !important;
+  }
+
+  .template .contenu #sidebarDiv .sidebar .linkSidebar .items {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center;
+    height: 80% !important;
+  }
+
+  .template .contenu #sidebarDiv .sidebar .linkSidebar .items span {
+    display: none;
+  }
+
+  .items i {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .items .bi::before {
+    width: 100% !important;
+    font-size: 35px !important;
+    margin-left: 25%;
+  }
+
+  .template .contenu #sidebarDiv .sidebar {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    z-index: 1000 !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .template #sidebarDiv .linkSidebar {
+    display: flex !important;
+    flex-direction: row !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding-top: 5% !important;
+  }
+
+  .searchContent .rounded-pill {
+    width: 90%;
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-left: 3% !important;
+  }
+
+  .soumission {
+    margin: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .searchContent {
+    justify-content: flex-start !important;
+    padding: 0;
+    padding-left: 0 !important;
+    padding-top: 5%;
+  }
+
+  .tableau {
+    width: 100% !important;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .contentData {
+    width: 100% !important;
+  }
+
+  #bookArchived {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .connexion .backTwo .form {
+    margin: 0 !important;
     width: 100% !important;
   }
 
@@ -356,8 +455,87 @@
     width: 100% !important;
   }
 
-  .inscription .backTwo {
-    padding-top: 10% !important;
+  #tableContent #table {
+    margin: 0 !important;
+    width: 100px !important;
+    padding: 0 !important;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  #home .charts {
+    display: flex;
+    flex-direction: column;
+  }
+  .data {
+    margin: 0 !important;
+  }
+
+  .pagination {
+    padding-top: 5%;
+    padding-bottom: 5%;
+  }
+
+  .contentNavbar {
+    padding-bottom: 26% !important;
+    z-index: 0 !important;
+  }
+
+  .template .contenu #sidebarDiv {
+    width: 100% !important;
+    height: 100px !important;
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .template .contenu #sidebarDiv .sidebar {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    z-index: 1000 !important;
+  }
+
+  #table {
+    width: 400% !important;
+    margin: 0 !important;
+  }
+
+  .tableau {
+    width: 100% !important;
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .connexion {
+    display: flex !important;
+    flex-direction: column-reverse !important;
+  }
+
+  .template .contenu {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .template .contenu #sidebarDiv {
+    width: 100% !important;
+  }
+
+  .template .contenu #sidebarDiv #logo,
+  .template .contenu #sidebarDiv hr {
+    display: none !important;
+  }
+
+  .template .contenu #sidebarDiv .sidebar .linkSidebar .items {
+    width: 20% !important;
+  }
+
+  .template .contenu #sidebarDiv .sidebar .linkSidebar {
+    display: flex !important;
+    justify-content: space-around !important;
   }
 }
 
@@ -365,16 +543,25 @@
   border: none !important;
   background-color: rgb(18, 143, 189) !important;
   color: bisque !important;
+  margin-left: 4.6%;
 }
 
 .soumission:hover {
-  background-color: hsl(187, 84%, 17%) !important;
+  background-color: green !important;
   color: #fff !important;
   transition: 2s !important;
 }
 
 .btn {
   transition: 2s !important;
+}
+
+.bg-dark {
+  background-image: linear-gradient(
+    to right,
+    rgb(6, 71, 71),
+    rgba(6, 48, 71, 0.81)
+  ) !important;
 }
 
 .logo {
@@ -386,8 +573,23 @@ thead th {
   background-color: hsl(199, 100%, 33%) !important;
 }
 
+.bookArchived thead th {
+  background-color: hsl(199, 100%, 33%) !important;
+}
+
 .color {
   color: hsl(187, 84%, 17%);
+}
+
+.backOne {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.backTwo {
+  background-color: white;
 }
 
 .filter {
@@ -398,6 +600,13 @@ thead th {
   transition: 2s !important;
 }
 
+.backOne {
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .backTwo {
   background-color: white;
 }
@@ -405,7 +614,7 @@ thead th {
 .form {
   width: 400px;
   height: 500px;
-  margin: 50px auto;
+  margin: 75px auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -440,6 +649,18 @@ thead th {
   display: flex;
   flex-direction: column;
   word-wrap: break-word;
+}
+
+.form {
+  width: 400px;
+  height: 500px;
+  margin: 50px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
 }
 
 .data td {
