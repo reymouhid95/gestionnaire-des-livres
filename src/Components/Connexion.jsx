@@ -9,7 +9,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { Button } from "@mui/material";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
@@ -23,14 +23,23 @@ function SignIn() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("utilisateur");
-    if (storedUser) {
-      navigate("/user/dashboard");
+    // Vérifiez si l'utilisateur est déjà connecté
+    const user = JSON.parse(localStorage.getItem("utilisateur"));
+
+    if (user) {
+      // Si l'utilisateur est connecté, redirigez-le vers le tableau de bord approprié
+      if (user.email === "serigne@gmail.com") {
+        navigate("/admin/dashboardAdmin");
+      } else {
+        navigate("/user/dashboardUser");
+      }
     }
   }, [navigate]);
-
+  // Connecter un utilisateur
   const handleSignIn = () => {
     if (!email) {
       setEmailError("Email is required");
@@ -41,35 +50,53 @@ function SignIn() {
       return;
     }
 
+    // Set loading to true when starting the sign-in process
+    setLoading(true);
+
     signInWithEmailAndPassword(auth, email, password)
-      .then(({ user }) => {
+      .then((userCredential) => {
+        const user = userCredential.user;
         localStorage.setItem("utilisateur", JSON.stringify(user));
         setEmail("");
         setPassword("");
-
-        if (email === "serigne@gmail.com") {
-          navigate("/admin/dashboardAdmin");
-          toast.success("Administrateur connecté!");
-        } else {
-          navigate("/user/dashboardUser");
-          toast.success("Utilisateur connecté!");
-        }
+        toast.success(
+          email === "serigne@gmail.com"
+            ? "Administrateur connecté!"
+            : "Utilisateur connecté!"
+        );
+        setTimeout(() => {
+          if (email === "serigne@gmail.com") {
+            navigate("/admin/dashboardAdmin");
+          } else {
+            navigate("/user/dashboardUser");
+          }
+        }, 3000);
       })
-      .catch(() => {
+      .catch((error) => {
         toast.error("Vérifiez les identifiants!");
         setEmail("");
+      })
+      .finally(() => {
+        // Reset loading to false after the sign-in process is completed
+        setTimeout(() => {
+          setLoading(false);
+          setLoadingComplete(true);
+        }, 2000);
       });
   };
 
+  // Méthode de récupération de l'email saisi dans le champ
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
     setEmailError("");
   };
 
+  // Méthode de récupération du mot de passe saisi dans le champ
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
 
+  // Méthode de contôle du formulaire
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password) {
@@ -122,8 +149,19 @@ function SignIn() {
               variant="contained"
               endIcon={<SendIcon />}
               className="mb-3"
+              disabled={loading}
             >
-              Se connecter
+              Se connecter{" "}
+              {!loadingComplete && loading && (
+                <Spinner
+                  as="span"
+                  animation="grow"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
+              {loading && loadingComplete ? "Connexion..." : null}
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
@@ -136,9 +174,9 @@ function SignIn() {
           </Form>
         </Col>
         <Col md={6} className="backThree text-center text-light fw-bold">
-          <h1 className="my-3">Welcome to eBook</h1>
+          <h1 className="my-3">Bienvenue sur eBook</h1>
           <p className="my-3">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            La plateforme qui vous rendra autonome dans vos études.
           </p>
           <img src={Auth} alt="Image-auth" className="img-fluid" />
         </Col>

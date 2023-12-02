@@ -1,17 +1,21 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable react/no-unescaped-entities */
 //Importattion des outils nécessaires
-import { useState } from "react";
-import { auth } from "../firebase-config";
-import { sendPasswordResetEmail } from "firebase/auth";
-import { Form, Button, Modal } from "react-bootstrap";
-import toast from "react-hot-toast";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import SendIcon from "@mui/icons-material/Send";
+import { Button } from "@mui/material";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { useState } from "react";
+import { Form, Modal, Spinner } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
+import { auth } from "../firebase-config";
 
 // Méthode princiaple du composant
 const PasswordReset = () => {
   const [email, setEmail] = useState("");
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   // Méthodes de contrôle du modal
   const handleClose = () => setShow(false);
@@ -19,14 +23,25 @@ const PasswordReset = () => {
 
   // Méthode pour pouvoir réinitialiser le mot de passe
   const handlePasswordReset = () => {
+    // Set loading to true when starting the sign-in process
+    setLoading(true);
     sendPasswordResetEmail(auth, email)
       .then(() => {
         setEmail("");
         toast.success("Mail envoyé dans votre boite mail!");
-        setShow(false);
+        setTimeout(() => {
+          setShow(false);
+        }, 3000);
       })
       .catch(() => {
         toast.error("Merci de vérifier l'adresse email saisie.");
+      })
+      .finally(() => {
+        // Reset loading to false after the sign-in process is completed
+        setTimeout(() => {
+          setLoading(false);
+          setLoadingComplete(true);
+        }, 2000);
       });
   };
 
@@ -38,6 +53,7 @@ const PasswordReset = () => {
   // L'affichage du composant
   return (
     <div className="mb-3">
+      <ToastContainer />
       <div>
         <a href="#" onClick={handleShow} className="mx-2 fw-bold">
           Mot de place oublié ? <span className="text-info">cliquez ici!</span>
@@ -61,11 +77,24 @@ const PasswordReset = () => {
               className="mb-5 formulaire"
             />
             <Button
-              variant="outline-secondary"
+              type="submit"
+              variant="contained"
+              endIcon={<SendIcon />}
               onClick={handlePasswordReset}
-              className="btn-lg mb-5"
+              className="mb-3"
+              disabled={loading}
             >
-              Reset
+              Envoyer{" "}
+              {!loadingComplete && loading && (
+                <Spinner
+                  as="span"
+                  animation="grow"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
+              {loading && loadingComplete ? "Envoie..." : null}
             </Button>
           </Form>
         </Modal.Body>

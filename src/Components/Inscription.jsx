@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-// Importation des outils nécessaires
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import LockIcon from "@mui/icons-material/Lock";
 import MailLockIcon from "@mui/icons-material/MailLock";
@@ -10,14 +9,13 @@ import SendIcon from "@mui/icons-material/Send";
 import { Button } from "@mui/material";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
-import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import toast from "react-hot-toast";
+import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import Auth from "../assets/auth-illustration.svg";
 import { auth } from "../firebase-config";
 
-// Méthode principale du composant
 function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,10 +25,13 @@ function SignUp() {
   const [existingEmails, setExistingEmails] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(true);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
-  // Méthode pour pouvoir s'inscrire
   const handleSignUp = () => {
     if (isEmailUnique) {
+      setLoading(true);
+
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => {
           localStorage.setItem("userName", name);
@@ -38,40 +39,39 @@ function SignUp() {
           setPassword("");
           setConfirmPassword("");
           setName("");
-          navigate("/connexion");
-          toast.success("Utilisateur inscrit avec succès!");
+          toast.success("Inscription réussie!");
+          setTimeout(() => {
+            navigate("/connexion");
+          }, 3000);
         })
         .catch((error) => {
-          console.error("Login error:", error.message);
+          console.error("Erreur d'inscription :", error.message);
+          toast.error("Inscription échouée!");
+        })
+        .finally(() => {
+          setLoading(false);
+          setLoadingComplete(true);
         });
     } else {
-      toast.error("L'utilisateur n'a pas pu être inscrit !");
+      toast.error("Inscription échouée!");
     }
   };
 
-  // Méthode de récupération du nom saisi dans le champ
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
 
-  // Méthode de récupération de l'email saisi dans le champ
   const handleEmailChange = (e) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
     setIsEmailUnique(true);
 
-    // Expression régulière pour valider l'adresse e-mail
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Vérifie si l'e-mail est au format valide
     setIsEmailValid(emailRegex.test(newEmail));
 
-    // Vérifie si l'e-mail se termine par un chiffre ou une lettre après le .com
     const invalidEmailSuffixRegex = /\.com[0-9a-zA-Z]+$/;
     if (invalidEmailSuffixRegex.test(newEmail)) {
       setIsEmailValid(false);
-
-      // Ajoutez ici votre logique pour gérer l'invalidité de l'e-mail
       toast.error(
         "L'adresse e-mail ne peut pas contenir de caractères après le '.com'. Veuillez l'enlever pour pouvoir vous inscrire !"
       );
@@ -82,17 +82,14 @@ function SignUp() {
     }
   };
 
-  // Méthode de récupération du mot de passe saisi dans le champ
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
 
-  // Méthode de récupération du mot de passe confirmé saisi dans le champ
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
   };
 
-  // Méthode de contôle du formulaire
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email && password && password === confirmPassword) {
@@ -106,14 +103,14 @@ function SignUp() {
     }
   };
 
-  // Rendu du composant
   return (
     <>
+      <ToastContainer />
       <Row className="m-0 inscription">
         <Col md={6} className="backThree text-center text-light fw-bold">
-          <h1 className="my-3">Welcome to eBook</h1>
+          <h1 className="my-3">Bienvenue sur eBook</h1>
           <p className="my-3">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+            La plateforme qui vous rendra autonome dans vos études.
           </p>
           <img src={Auth} alt="Image-auth" className="img-fluid" />
         </Col>
@@ -185,8 +182,19 @@ function SignUp() {
               variant="contained"
               endIcon={<SendIcon />}
               className="mb-3"
+              disabled={loading}
             >
               S'inscrire
+              {!loadingComplete && loading && (
+                <Spinner
+                  as="span"
+                  animation="grow"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
+              {loading && loadingComplete ? "Inscription..." : null}
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
@@ -202,4 +210,5 @@ function SignUp() {
     </>
   );
 }
+
 export default SignUp;
