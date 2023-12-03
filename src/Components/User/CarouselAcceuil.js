@@ -9,7 +9,7 @@ function CarouselAcceuil() {
           <h3>THIS WEEK SALE OF 40%</h3>
           <h1>COUPLE BEAUTY LOVE</h1>
           <p>
-            Bienvenue chez eBook, la platforme qui vous donne le gout de la
+            Bienvenue chez eBook, la plateforme qui vous donne le goût de la
             lecture.
           </p>
           <Link to="/user/books">
@@ -17,7 +17,7 @@ function CarouselAcceuil() {
               className="btn rounded-5 px-4 btn-lg mt-5"
               style={{ background: "hsl(187, 85%, 43%)", color: "white" }}
             >
-              Discovery
+              Découvrez
             </button>
           </Link>
         </div>
@@ -27,7 +27,7 @@ function CarouselAcceuil() {
           <h3>THIS WEEK SALE OF 40%</h3>
           <h1>COUPLE BEAUTY LOVE</h1>
           <p>
-            Bienvenue chez eBook, la platforme qui vous donne le gout de la
+            Bienvenue chez eBook, la plateforme qui vous donne le goût de la
             lecture.
           </p>
           <Link to="/user/books">
@@ -35,7 +35,7 @@ function CarouselAcceuil() {
               className="btn rounded-5 px-4 btn-lg mt-5"
               style={{ background: "hsl(187, 85%, 43%)", color: "white" }}
             >
-              Discovery
+              Découvrez
             </button>
           </Link>
         </div>
@@ -45,7 +45,7 @@ function CarouselAcceuil() {
           <h3>THIS WEEK SALE OF 40%</h3>
           <h1>COUPLE BEAUTY LOVE</h1>
           <p>
-            Bienvenue chez eBook, la platforme qui vous donne le gout de la
+            Bienvenue chez eBook, la plateforme qui vous donne le goût de la
             lecture.
           </p>
           <Link to="/user/books">
@@ -53,7 +53,7 @@ function CarouselAcceuil() {
               className="btn rounded-5 px-4 btn-lg mt-5"
               style={{ background: "hsl(187, 85%, 43%)", color: "white" }}
             >
-              Discovery
+              Découvrez
             </button>
           </Link>
         </div>

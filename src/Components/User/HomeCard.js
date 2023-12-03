@@ -1,6 +1,6 @@
 import Aos from "aos";
 import "aos/dist/aos.css";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";

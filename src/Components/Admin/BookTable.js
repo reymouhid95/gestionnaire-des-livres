@@ -54,7 +54,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 // Fonction principal du composant
-function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
+function TableBook({
+  books,
+  onEditBook,
+  onDeleteBook,
+  onArchivedBook,
+  onBorrowBook,
+}) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showListModal, setShowListModal] = useState(false);
@@ -279,6 +285,9 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                         className="mb-2 mx-1 border border-none"
                       >
                         <Icon.Trash onClick={() => onDeleteBook(book.id)} />
+                      </Button>
+                      <Button onClick={() => onBorrowBook(book.title)}>
+                        Emprunter
                       </Button>
                     </div>
                   </td>

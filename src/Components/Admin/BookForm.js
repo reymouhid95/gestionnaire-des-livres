@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 // Importation des bibliothèques et outils
 import {
@@ -12,6 +13,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { db } from "../../firebase-config";
+import HomeCard from "../User/HomeCard";
 import TableBook from "./BookTable";
 
 // Composant principal pour les méthodes d'ajout, de modification et de suppression
@@ -34,6 +36,7 @@ function FormBook() {
   // const [isArchived, setIsArchived] = useState(false);
   // const [isUnarchived, setIsUnarchived] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [stocks, setStocks] = useState({});
 
   // Surveiller le chargement des données au montage de l'aooli
   const loadBooks = useCallback(async () => {
@@ -60,11 +63,11 @@ function FormBook() {
 
   // Méthode d'ajout d'un livre
   const handleAddBook = useCallback(async () => {
-    // Utilisez une expression régulière pour vérifier si la valeur de formData.url est un lien valide
+    // Une expression régulière pour vérifier si la valeur de formData.url est un lien valide
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
     if (!urlRegex.test(formData.url)) {
       toast.error("Veuillez entrer un lien valide dans le champ URL.");
-      // Mettez le focus sur le champ URL
+      // Mettre le focus sur le champ URL
       urlInputRef.current.focus();
       return;
     }
@@ -96,9 +99,12 @@ function FormBook() {
       return;
     }
 
+    // Stock initial par défaut
+    const initialStock = 5;
+
     // Ajouter 5 livres à la base de données
     const batch = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < initialStock; i++) {
       batch.push(formData);
     }
 
@@ -108,8 +114,11 @@ function FormBook() {
       })
     );
 
-    // Recharger les livres après l'ajout
-    await loadBooks();
+    // Mettre à jour le stock dans l'état
+    setStocks((prevStocks) => ({
+      ...prevStocks,
+      [formData.title]: initialStock,
+    }));
 
     // Ajouter le livre seulement si tous les champs sont remplis
     const book = formData;
@@ -133,6 +142,35 @@ function FormBook() {
     });
     toast.success("Livre ajouté avec succès!");
   }, [formData, loadBooks]);
+
+  // La fonction handleBorrowBook qui permet d'emprunter un llivre
+  const handleBorrowBook = async (title) => {
+    // Vérifier si le livre existe dans l'état des stocks
+    if (stocks[title] > 0) {
+      // Décrémenter le stock
+      const updatedStock = stocks[title] - 1;
+
+      // Mettre à jour le stock dans l'état
+      setStocks((prevStocks) => ({
+        ...prevStocks,
+        [title]: updatedStock,
+      }));
+
+      // Mettre à jour la base de données avec le nouveau stock
+      const bookToUpdate = books.find((book) => book.title === title);
+      if (bookToUpdate) {
+        await updateDoc(doc(db, "books", bookToUpdate.id), {
+          stock: updatedStock,
+        });
+
+        // Afficher une alerte pour informer l'utilisateur de l'emprunt réussi
+        toast.success("Livre emprunté avec succès!");
+      }
+    } else {
+      // Afficher une alerte si le stock est épuisé
+      toast.error("Stock épuisé. Impossible d'emprunter le livre.");
+    }
+  };
 
   // Mettre à jour un livre
   const handleEditBook = (book) => {
@@ -177,6 +215,7 @@ function FormBook() {
     }
   };
 
+  // Archiver un livre
   const archive = useCallback(
     async (bookId) => {
       try {
@@ -343,6 +382,7 @@ function FormBook() {
           onEditBook={handleEditBook}
           onDeleteBook={handleDeleteBook}
           onArchivedBook={archive}
+          onBorrowBook={handleBorrowBook}
         />
       </div>
     </div>

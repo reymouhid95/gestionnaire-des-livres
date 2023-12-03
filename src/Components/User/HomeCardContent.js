@@ -1,5 +1,5 @@
 import { collection, getDocs } from "firebase/firestore";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { db } from "../../firebase-config";
 import HomeCard from "./HomeCard";
 
@@ -28,7 +28,7 @@ function HomeCardContent() {
 
   return (
     <div className="m-0 px-0 homeCard w-100">
-      <div className="title-seller text-white fw-bold py-1">
+      <div className="title-seller text-white fw-bold">
         <h1>Best seller</h1>
       </div>
       <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 carte">
