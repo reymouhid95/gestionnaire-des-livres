@@ -56,7 +56,7 @@ const PasswordReset = () => {
       <ToastContainer />
       <div>
         <a href="#" onClick={handleShow} className="mx-2 fw-bold">
-          Mot de place oublié ? <span className="text-info">cliquez ici!</span>
+          Mot de passe oublié ? <span className="text-info">cliquez ici!</span>
         </a>
       </div>
 
