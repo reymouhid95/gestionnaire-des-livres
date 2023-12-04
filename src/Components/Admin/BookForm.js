@@ -46,7 +46,7 @@ function FormBook() {
       const bookData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-        archived: doc.archived || false,
+        archived: doc.data().archived || false,
       }));
       setBooks(bookData);
     } catch (error) {
@@ -71,8 +71,9 @@ function FormBook() {
     }
 
     // Vérifier si tous les champs requis sont remplis
-    if (Object.values(formData).some((value) => value.trim() === "")) {
-      toast.error("Veuillez remplir tous les champs!");
+    const requiredFields = ["title", "author", "genre", "url", "description"];
+    if (requiredFields.some((field) => formData[field].trim() === "")) {
+      toast.error("Veuillez remplir tous les champs.");
       return;
     }
 
@@ -90,7 +91,7 @@ function FormBook() {
     const initialStock = 5;
 
     // Ajouter 5 livres à la base de données
-    const batch = Array.from({ length: initialStock }, () => formData);
+    const batch = Array.from({ length: initialStock }, () => ({ ...formData }));
 
     await Promise.all(
       batch.map(async (book) => {
@@ -119,7 +120,7 @@ function FormBook() {
   // méthode pour le rechargement du stock
   const checkStockAndReload = async () => {
     const booksToUpdate = books.filter((book) => book.stock === 0);
-    if (booksToUpdate.length > 0) {
+    if (booksToUpdate.length > 0 && booksToUpdate[0].stock === 0) {
       await Promise.all(
         booksToUpdate.map(async (book) => {
           await updateDoc(doc(db, "books", book.id), {
@@ -137,13 +138,13 @@ function FormBook() {
 
   // La fonction handleBorrowBook qui permet d'emprunter un livre
   const handleBorrowBook = async (title) => {
-    if (stocks[title] > 0) {
+    if (stocks[title] && stocks[title] > 0) {
       const updatedStock = stocks[title] - 1;
       const dueDate = addSeconds(new Date(), 20);
       setFormData((prevData) => ({
         ...prevData,
         isBorrowed: true,
-        dueDate,
+        dueDate: null,
       }));
 
       // Mettre à jour la base de données avec le nouveau stock
@@ -152,7 +153,7 @@ function FormBook() {
         await updateDoc(doc(db, "books", bookToUpdate.id), {
           stock: updatedStock,
           isBorrowed: true,
-          dueDate,
+          dueDate: null,
         });
         setStocks((prevStocks) => ({
           ...prevStocks,
@@ -174,7 +175,7 @@ function FormBook() {
       (book) =>
         book.isBorrowed &&
         book.dueDate &&
-        differenceInDays(new Date(), book.dueDate) > 0
+        differenceInDays(new Date(), new Date(book.dueDate)) > 0
     );
 
     // Retour automatique des livres et mise à jour de la base de données
@@ -187,7 +188,7 @@ function FormBook() {
         });
         setStocks((prevStocks) => ({
           ...prevStocks,
-          [book.title]: stocks[book.title] + 1,
+          stock: (stocks[book.title] || 0) + 1,
         }));
 
         // L'lerte pour informer l'utilisateur du retour automatique
@@ -286,7 +287,7 @@ function FormBook() {
       setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
       setStocks((prevStocks) => {
         const {
-          [books.find((book) => book.id === bookId).title]: removed,
+          [books.find((book) => book.id === bookId)?.title]: removed,
           ...rest
         } = prevStocks;
         return rest;
