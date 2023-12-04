@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 // Importation des bibliothèques et outils
+import { addSeconds, differenceInDays } from "date-fns";
 import {
   addDoc,
   collection,
@@ -13,10 +14,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { db } from "../../firebase-config";
-import HomeCard from "../User/HomeCard";
 import TableBook from "./BookTable";
 
-// Composant principal pour les méthodes d'ajout, de modification et de suppression
+// Composant principal
 function FormBook() {
   const [books, setBooks] = useState([]);
   const [formData, setFormData] = useState({
@@ -26,6 +26,8 @@ function FormBook() {
     url: "",
     description: "",
     archived: false,
+    isBorrowed: false,
+    dueDate: null,
   });
   const [selectedBook, setSelectedBook] = useState(null);
   const [isAdding, setIsAdding] = useState(true);
@@ -33,12 +35,10 @@ function FormBook() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const urlInputRef = useRef();
-  // const [isArchived, setIsArchived] = useState(false);
-  // const [isUnarchived, setIsUnarchived] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [stocks, setStocks] = useState({});
 
-  // Surveiller le chargement des données au montage de l'aooli
+  // Surveiller le chargement des données au montage de l'appli
   const loadBooks = useCallback(async () => {
     try {
       const bookCollection = collection(db, "books");
@@ -63,39 +63,26 @@ function FormBook() {
 
   // Méthode d'ajout d'un livre
   const handleAddBook = useCallback(async () => {
-    // Une expression régulière pour vérifier si la valeur de formData.url est un lien valide
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
     if (!urlRegex.test(formData.url)) {
-      toast.error("Veuillez entrer un lien valide dans le champ URL.");
-      // Mettre le focus sur le champ URL
+      toast.warning("Veuillez entrer un lien valide dans le champ URL!");
       urlInputRef.current.focus();
       return;
     }
 
     // Vérifier si tous les champs requis sont remplis
-    if (
-      formData.title.trim() === "" ||
-      formData.author.trim() === "" ||
-      formData.genre.trim() === "" ||
-      formData.url.trim() === "" ||
-      formData.description.trim() === ""
-    ) {
-      toast.error("Veuillez remplir tous les champs.");
+    if (Object.values(formData).some((value) => value.trim() === "")) {
+      toast.error("Veuillez remplir tous les champs!");
       return;
     }
 
     // Vérifier si le livre existe déjà
     const existingBook = books.find(
-      (book) =>
-        book.title === formData.title &&
-        book.author === formData.author &&
-        book.genre === formData.genre &&
-        book.url === formData.url &&
-        book.description === formData.description
+      (book) => JSON.stringify(book) === JSON.stringify(formData)
     );
 
     if (existingBook) {
-      toast.error("Ce livre existe déjà.");
+      toast.warning("Ce livre existe déjà!");
       return;
     }
 
@@ -103,10 +90,7 @@ function FormBook() {
     const initialStock = 5;
 
     // Ajouter 5 livres à la base de données
-    const batch = [];
-    for (let i = 0; i < initialStock; i++) {
-      batch.push(formData);
-    }
+    const batch = Array.from({ length: initialStock }, () => formData);
 
     await Promise.all(
       batch.map(async (book) => {
@@ -121,18 +105,7 @@ function FormBook() {
     }));
 
     // Ajouter le livre seulement si tous les champs sont remplis
-    const book = formData;
-    await addDoc(collection(db, "books"), book);
     await loadBooks();
-    setFormData({
-      title: "",
-      author: "",
-      genre: "",
-      url: "",
-      description: "",
-    });
-
-    // Réinitialiser les champs après l'ajout
     setFormData({
       title: "",
       author: "",
@@ -143,17 +116,34 @@ function FormBook() {
     toast.success("Livre ajouté avec succès!");
   }, [formData, loadBooks]);
 
-  // La fonction handleBorrowBook qui permet d'emprunter un llivre
-  const handleBorrowBook = async (title) => {
-    // Vérifier si le livre existe dans l'état des stocks
-    if (stocks[title] > 0) {
-      // Décrémenter le stock
-      const updatedStock = stocks[title] - 1;
+  // méthode pour le rechargement du stock
+  const checkStockAndReload = async () => {
+    const booksToUpdate = books.filter((book) => book.stock === 0);
+    if (booksToUpdate.length > 0) {
+      await Promise.all(
+        booksToUpdate.map(async (book) => {
+          await updateDoc(doc(db, "books", book.id), {
+            stock: 5,
+          });
+          setStocks((prevStocks) => ({
+            ...prevStocks,
+            [book.title]: 5,
+          }));
+          toast.info(`Stock rechargé pour le livre "${book.title}"!`);
+        })
+      );
+    }
+  };
 
-      // Mettre à jour le stock dans l'état
-      setStocks((prevStocks) => ({
-        ...prevStocks,
-        [title]: updatedStock,
+  // La fonction handleBorrowBook qui permet d'emprunter un livre
+  const handleBorrowBook = async (title) => {
+    if (stocks[title] > 0) {
+      const updatedStock = stocks[title] - 1;
+      const dueDate = addSeconds(new Date(), 20);
+      setFormData((prevData) => ({
+        ...prevData,
+        isBorrowed: true,
+        dueDate,
       }));
 
       // Mettre à jour la base de données avec le nouveau stock
@@ -161,16 +151,64 @@ function FormBook() {
       if (bookToUpdate) {
         await updateDoc(doc(db, "books", bookToUpdate.id), {
           stock: updatedStock,
+          isBorrowed: true,
+          dueDate,
         });
-
-        // Afficher une alerte pour informer l'utilisateur de l'emprunt réussi
+        setStocks((prevStocks) => ({
+          ...prevStocks,
+          [title]: updatedStock,
+        }));
         toast.success("Livre emprunté avec succès!");
       }
     } else {
-      // Afficher une alerte si le stock est épuisé
-      toast.error("Stock épuisé. Impossible d'emprunter le livre.");
+      toast.warning("Stock épuisé. Impossible d'emprunter le livre!");
     }
+
+    await checkStockAndReload();
   };
+
+  // Fonction pour gérer le retour automatique des livres
+  const handleAutoReturn = async () => {
+    const currentDate = new Date();
+    const overdueBooks = books.filter(
+      (book) =>
+        book.isBorrowed &&
+        book.dueDate &&
+        differenceInDays(new Date(), book.dueDate) > 0
+    );
+
+    // Retour automatique des livres et mise à jour de la base de données
+    await Promise.all(
+      overdueBooks.map(async (book) => {
+        await updateDoc(doc(db, "books", book.id), {
+          isBorrowed: false,
+          dueDate: null,
+          stock: stocks[book.title] + 1,
+        });
+        setStocks((prevStocks) => ({
+          ...prevStocks,
+          [book.title]: stocks[book.title] + 1,
+        }));
+
+        // L'lerte pour informer l'utilisateur du retour automatique
+        toast.info(
+          `Retour automatique du livre "${book.title}" en raison de la date d'échéance dépassée!`
+        );
+      })
+    );
+
+    await checkStockAndReload();
+  };
+
+  // Nettoyage au démontage
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      handleAutoReturn();
+      checkStockAndReload();
+    }, 20 * 1000);
+
+    return () => clearInterval(intervalId);
+  }, [handleAutoReturn]);
 
   // Mettre à jour un livre
   const handleEditBook = (book) => {
@@ -201,14 +239,6 @@ function FormBook() {
         description: "",
       });
 
-      // Réinitialiser les champs après l'ajout
-      setFormData({
-        title: "",
-        author: "",
-        genre: "",
-        url: "",
-        description: "",
-      });
       toast.success("Données modifiées avec success!");
       setIsAdding(true);
       setSelectedBook(null);
@@ -238,23 +268,30 @@ function FormBook() {
         );
 
         if (updatedBookData.archived) {
-          setToastMessage("Livre archivé avec succès!");
+          setToastMessage("Livre archivé!");
         } else {
-          setToastMessage("Livre désarchivé avec succès!");
+          setToastMessage("Livre désarchivé!");
         }
       } catch (error) {
         console.error("Error updating book:", error);
       }
     },
-    [books, selectedBook, setBooks, loadBooks]
+    [books, setBooks]
   );
 
   // Supprimer un livre
   const handleDeleteBook = useCallback(
     async (bookId) => {
       await deleteDoc(doc(db, "books", bookId));
-      setBooks(books.filter((book) => book.id !== bookId));
-      toast.success("Livre supprimé avec success!");
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+      setStocks((prevStocks) => {
+        const {
+          [books.find((book) => book.id === bookId).title]: removed,
+          ...rest
+        } = prevStocks;
+        return rest;
+      });
+      toast.success("Stock supprimé avec succès!");
     },
     [books]
   );
@@ -291,7 +328,7 @@ function FormBook() {
           </div>
           <Modal show={show} onHide={handleClose} keyboard={false}>
             <Modal.Header closeButton>
-              <Modal.Title>Informations livres</Modal.Title>
+              <Modal.Title>Infos du stock</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className="row d-flex g-2">

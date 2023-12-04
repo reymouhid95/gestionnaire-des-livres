@@ -286,8 +286,11 @@ function TableBook({
                       >
                         <Icon.Trash onClick={() => onDeleteBook(book.id)} />
                       </Button>
-                      <Button onClick={() => onBorrowBook(book.title)}>
-                        Emprunter
+                      <Button
+                        variant="outline-info"
+                        onClick={() => onBorrowBook(book.title)}
+                      >
+                        <Icon.BoxArrowUp />
                       </Button>
                     </div>
                   </td>
