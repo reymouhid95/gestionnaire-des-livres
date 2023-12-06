@@ -600,6 +600,14 @@ thead th {
   transition: 2s !important;
 }
 
+.btn-archived{
+  background-color: rgb(237, 192, 192) !important;
+}
+
+/* .block1, .block2{
+  
+} */
+
 .backOne {
   width: 100%;
   background-size: cover;

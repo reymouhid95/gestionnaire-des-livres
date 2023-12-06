@@ -17,15 +17,13 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-
-
-
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import { useState } from 'react';
-// import About from './Components/About';
 
-// Import des autres bibliothèques et composants
 
+
+
+// Import des autres composants
 function App() {
   const [toggle, setToggle] = useState(true);
   const url = "/admin/dashboardAdmin";

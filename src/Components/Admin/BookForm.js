@@ -13,6 +13,7 @@ import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { db } from "../../firebase-config";
 import TableBook from "./BookTable";
+import { addSeconds, differenceInDays } from "date-fns";
 
 // Composant principal pour les méthodes d'ajout, de modification et de suppression
 function FormBook() {
@@ -24,18 +25,22 @@ function FormBook() {
     url: "",
     description: "",
     archived: false,
+    isBorrowed: false,
+    dueDate: null,
+    stock: 5,
   });
   const [selectedBook, setSelectedBook] = useState(null);
   const [isAdding, setIsAdding] = useState(true);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [numberOfBooks, setNumberOfBooks] = useState(0);
   const urlInputRef = useRef();
   const [isArchived, setIsArchived] = useState(false);
   const [isUnarchived, setIsUnarchived] = useState(false);
+  const [numberOfBooks, setNumberOfBooks] = useState(0);
+  const [stocks, setStocks] = useState({});
 
-  // Surveiller le chargement des données au montage de l'aooli
+  // Surveiller le chargement des données au montage de l'appli
   const loadBooks = useCallback(async () => {
     try {
       const bookCollection = collection(db, "books");
@@ -59,71 +64,90 @@ function FormBook() {
   }, [loadBooks]);
 
   // Méthode d'ajout d'un livre
-  const handleAddBook = useCallback(async () => {
-    // Utilisez une expression régulière pour vérifier si la valeur de formData.url est un lien valide
-    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-    if (!urlRegex.test(formData.url)) {
-      toast.error("Veuillez entrer un lien valide dans le champ URL.");
-      // Mettez le focus sur le champ URL
-      urlInputRef.current.focus();
-      return;
-    }
+ const handleAddBook = useCallback(async () => {
+   // Utilisez une expression régulière pour vérifier si la valeur de formData.url est un lien valide
+   const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+   if (!urlRegex.test(formData.url)) {
+     toast.error("Veuillez entrer un lien valide dans le champ URL.");
+     // Mettez le focus sur le champ URL
+     urlInputRef.current.focus();
+     return;
+   }
 
-    // Vérifier si tous les champs requis sont remplis
-    if (
-      formData.title.trim() === "" ||
-      formData.author.trim() === "" ||
-      formData.genre.trim() === "" ||
-      formData.url.trim() === "" ||
-      formData.description.trim() === ""
-    ) {
-      toast.error("Veuillez remplir tous les champs.");
-      return;
-    }
+   // Vérifier si tous les champs requis sont remplis
+   if (
+     formData.title.trim() === "" ||
+     formData.author.trim() === "" ||
+     formData.genre.trim() === "" ||
+     formData.url.trim() === "" ||
+     formData.description.trim() === ""
+   ) {
+     toast.error("Veuillez remplir tous les champs.");
+     return;
+   }
 
-    // Vérifier si le livre existe déjà
-    const existingBook = books.find(
-      (book) =>
-        book.title === formData.title &&
-        book.author === formData.author &&
-        book.genre === formData.genre &&
-        book.url === formData.url &&
-        book.description === formData.description
-    );
+   // Vérifier si le livre existe déjà
+   const existingBook = books.find(
+     (book) =>
+       book.title === formData.title &&
+       book.author === formData.author &&
+       book.genre === formData.genre &&
+       book.url === formData.url &&
+       book.description === formData.description
+   );
 
-    if (existingBook) {
-      toast.error("Ce livre existe déjà.");
-      return;
-    }
+   if (existingBook) {
+     toast.error("Ce livre existe déjà.");
+     return;
+   }
 
-    // Ajouter le livre seulement si tous les champs sont remplis
-    const book = formData;
-    await addDoc(collection(db, "books"), book);
-    await loadBooks();
-    setFormData({
-      title: "",
-      author: "",
-      genre: "",
-      url: "",
-      description: "",
-    });
+   // Ajouter le livre seulement si tous les champs sont remplis
+   const book = formData;
+   await addDoc(collection(db, "books"), book);
+   await loadBooks();
+   setFormData({
+     title: "",
+     author: "",
+     genre: "",
+     url: "",
+     description: "",
+   });
 
-    // Réinitialiser les champs après l'ajout
-    setFormData({
-      title: "",
-      author: "",
-      genre: "",
-      url: "",
-      description: "",
-    });
-    toast.success("Livre ajouté avec succès!");
+   // Réinitialiser les champs après l'ajout
+   setFormData({
+     title: "",
+     author: "",
+     genre: "",
+     url: "",
+     description: "",
+   });
+   toast.success("Livre ajouté avec succès!");
 
-    // Mettre à jour le nombre de livres ajoutés
-    setNumberOfBooks((prevNumberOfBooks) => prevNumberOfBooks + 5);
+   // Mettre à jour le nombre de livres ajoutés
+   setNumberOfBooks((prevNumberOfBooks) => prevNumberOfBooks + 5);
 
-    // Stocker le nombre de livres ajoutés dans le local storage
-    localStorage.setItem("numberOfBooks", numberOfBooks + 5);
-  }, [formData, loadBooks, numberOfBooks]);
+   // Stocker le nombre de livres ajoutés dans le local storage
+   localStorage.setItem("numberOfBooks", numberOfBooks + 5);
+ }, [formData, loadBooks, numberOfBooks]);
+
+  // méthode pour le rechargement du stock
+  // const checkStockAndReload = async () => {
+  //   const booksToUpdate = books.filter((book) => book.stock === 0);
+  //   if (booksToUpdate.length > 0) {
+  //     await Promise.all(
+  //       booksToUpdate.map(async (book) => {
+  //         await updateDoc(doc(db, "books", book.id), {
+  //           stock: 5,
+  //         });
+  //         setStocks((prevStocks) => ({
+  //           ...prevStocks,
+  //           [book.title]: 5,
+  //         }));
+  //         toast.info(`Stock rechargé pour le livre "${book.title}"!`);
+  //       })
+  //     );
+  //   }
+  // };
 
   // Mettre à jour un livre
   const handleEditBook = (book) => {
@@ -168,6 +192,81 @@ function FormBook() {
     }
   };
 
+  // La fonction handleBorrowBook qui permet d'emprunter un livre
+  // const handleBorrowBook = async (title) => {
+  //   if (stocks[title] > 0) {
+  //     const updatedStock = stocks[title] - 1;
+  //     const dueDate = addSeconds(new Date(), 20);
+  //     setFormData((prevData) => ({
+  //       ...prevData,
+  //       isBorrowed: true,
+  //       dueDate,
+  //     }));
+
+  //     // Mettre à jour la base de données avec le nouveau stock
+  //     const bookToUpdate = books.find((book) => book.title === title);
+  //     if (bookToUpdate) {
+  //       await updateDoc(doc(db, "books", bookToUpdate.id), {
+  //         stock: updatedStock,
+  //         isBorrowed: true,
+  //         dueDate,
+  //       });
+  //       setStocks((prevStocks) => ({
+  //         ...prevStocks,
+  //         [title]: updatedStock,
+  //       }));
+  //       toast.success("Livre emprunté avec succès!");
+  //     }
+  //   } else {
+  //     toast.warning("Stock épuisé. Impossible d'emprunter le livre!");
+  //   }
+
+  //   await checkStockAndReload();
+  // };
+
+  // Fonction pour gérer le retour automatique des livres
+  // const handleAutoReturn = async () => {
+  //   const currentDate = new Date();
+  //   const overdueBooks = books.filter(
+  //     (book) =>
+  //       book.isBorrowed &&
+  //       book.dueDate &&
+  //       differenceInDays(new Date(), book.dueDate) > 0
+  //   );
+
+  //   // Retour automatique des livres et mise à jour de la base de données
+  //   await Promise.all(
+  //     overdueBooks.map(async (book) => {
+  //       await updateDoc(doc(db, "books", book.id), {
+  //         isBorrowed: false,
+  //         dueDate: null,
+  //         stock: stocks[book.title] + 1,
+  //       });
+  //       setStocks((prevStocks) => ({
+  //         ...prevStocks,
+  //         [book.title]: stocks[book.title] + 1,
+  //       }));
+
+  //       // L'lerte pour informer l'utilisateur du retour automatique
+  //       toast.info(
+  //         `Retour automatique du livre "${book.title}" en raison de la date d'échéance dépassée!`
+  //       );
+  //     })
+  //   );
+
+  //   await checkStockAndReload();
+  // };
+
+  // Nettoyage au démontage
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     handleAutoReturn();
+  //     checkStockAndReload();
+  //   }, 20 * 1000);
+
+  //   return () => clearInterval(intervalId);
+  // }, [handleAutoReturn]);
+
   const archive = useCallback(
     async (bookId) => {
       try {
@@ -207,8 +306,15 @@ function FormBook() {
   const handleDeleteBook = useCallback(
     async (bookId) => {
       await deleteDoc(doc(db, "books", bookId));
-      setBooks(books.filter((book) => book.id !== bookId));
-      toast.success("Livre supprimé avec success!");
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+      setStocks((prevStocks) => {
+        const {
+          [books.find((book) => book.id === bookId).title]: removed,
+          ...rest
+        } = prevStocks;
+        return rest;
+      });
+      toast.success("Stock supprimé avec succès!");
     },
     [books]
   );
@@ -223,6 +329,8 @@ function FormBook() {
       await handleUpdateBook();
     }
   };
+
+
 
   // Surveiller l'état du bouton
   const buttonText = isAdding ? "Ajouter" : "Mise à jour";

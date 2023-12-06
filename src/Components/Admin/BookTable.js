@@ -54,7 +54,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 // Fonction principal du composant
-function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
+function TableBook({
+  books,
+  onEditBook,
+  onDeleteBook,
+  onArchivedBook,
+}) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showListModal, setShowListModal] = useState(false);
@@ -64,7 +69,6 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const [initialBookArchives, setInitialBookArchives] = useState({});
   const [bookArchives, setBookArchives] = useState({});
   const [archivedBookId, setArchivedBookId] = useState(null);
-
 
   // const [bookArchives, setBookArchives] = useState(
   //   JSON.parse(localStorage.getItem("bookArchives")) || {}
@@ -77,39 +81,38 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
     setCurrentPage(pageNumber);
   };
 
-    useEffect(() => {
-      const loadArchives = async () => {
-        try {
-          const docRef = doc(db, "archivedBooks", "archivedBooksData");
-          const docSnap = await getDoc(docRef);
-          const data = docSnap.data();
-          setInitialBookArchives(data || {});
-        } catch (error) {
-          console.error("Error loading archives from Firestore:", error);
-        }
-      };
+  useEffect(() => {
+    const loadArchives = async () => {
+      try {
+        const docRef = doc(db, "archivedBooks", "archivedBooksData");
+        const docSnap = await getDoc(docRef);
+        const data = docSnap.data();
+        setInitialBookArchives(data || {});
+      } catch (error) {
+        console.error("Error loading archives from Firestore:", error);
+      }
+    };
 
-      loadArchives();
-    }, [books]);
+    loadArchives();
+  }, [books]);
 
-      useEffect(() => {
-        // Mettre à jour bookArchives après le chargement initial
-        setBookArchives(initialBookArchives);
-      }, [initialBookArchives]);
+  useEffect(() => {
+    // Mettre à jour bookArchives après le chargement initial
+    setBookArchives(initialBookArchives);
+  }, [initialBookArchives]);
 
-      // ... (autres déclarations de l'effet)
+  // ... (autres déclarations de l'effet)
 
-      useEffect(() => {
-        // Mettre à jour bookArchives après l'archivage d'un livre
-        if (archivedBookId) {
-          setBookArchives((prevBookArchives) => ({
-            ...prevBookArchives,
-            [archivedBookId]: true,
-          }));
-          setArchivedBookId(null);
-        }
-      }, [archivedBookId]);
-
+  useEffect(() => {
+    // Mettre à jour bookArchives après l'archivage d'un livre
+    if (archivedBookId) {
+      setBookArchives((prevBookArchives) => ({
+        ...prevBookArchives,
+        [archivedBookId]: true,
+      }));
+      setArchivedBookId(null);
+    }
+  }, [archivedBookId]);
 
   // Méthode pour afficher le modal
   const handleShowModal = (book) => {
@@ -143,7 +146,6 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         book.url.toLowerCase().includes(filter.toLowerCase())
     );
   };
-
 
   const handleArchivedBook = async (bookId) => {
     onArchivedBook(bookId);
