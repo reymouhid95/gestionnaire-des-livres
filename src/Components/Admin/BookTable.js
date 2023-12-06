@@ -60,6 +60,7 @@ function TableBook({
   onDeleteBook,
   onArchivedBook,
   onBorrowBook,
+  onReturnBook,
 }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -286,12 +287,23 @@ function TableBook({
                       >
                         <Icon.Trash onClick={() => onDeleteBook(book.id)} />
                       </Button>
-                      <Button
-                        variant="outline-info"
-                        onClick={() => onBorrowBook(book.title)}
-                      >
-                        <Icon.BoxArrowUp />
-                      </Button>
+                      {book.isBorrowed ? (
+                        <Button
+                          variant="outline-info"
+                          size="sm"
+                          onClick={() => onReturnBook(book.title)}
+                        >
+                          <Icon.BoxArrowDown />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline-success"
+                          size="sm"
+                          onClick={() => onBorrowBook(book.title)}
+                        >
+                          <Icon.BoxArrowUp />
+                        </Button>
+                      )}
                     </div>
                   </td>
                 </tr>

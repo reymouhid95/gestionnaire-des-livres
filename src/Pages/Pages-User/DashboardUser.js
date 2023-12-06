@@ -9,7 +9,6 @@ import NewArrivals from "../../Components/User/NewArrivals";
 function DashboardUser() {
   return (
     <Link to="/user/dashboardUser" style={{ textDecoration: "none" }}>
-      <h1 className="title px-3 fw-bold">Home</h1>
       <div className="dashboard">
         <CarouselAcceuil />
         <HomeCardContent />

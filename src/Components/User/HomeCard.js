@@ -14,7 +14,7 @@ function HomeCard({ img, title, description, auth, genre }) {
   }, []);
 
   return (
-    <Card data-aos="fade-up" className="col-md-3 mx-4 py-3 mb-3">
+    <Card data-aos="fade-up" className="col-md-3 mx- py-3 mb-3">
       <div id="cardImgContent">
         <Card.Img variant="top" src={img} onClick={handleShow} id="cardImg" />
       </div>

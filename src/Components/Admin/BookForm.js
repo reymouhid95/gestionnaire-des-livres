@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 // Importation des bibliothèques et outils
@@ -28,6 +29,7 @@ function FormBook() {
     archived: false,
     isBorrowed: false,
     dueDate: null,
+    stock: 5,
   });
   const [selectedBook, setSelectedBook] = useState(null);
   const [isAdding, setIsAdding] = useState(true);
@@ -37,6 +39,8 @@ function FormBook() {
   const urlInputRef = useRef();
   const [toastMessage, setToastMessage] = useState("");
   const [stocks, setStocks] = useState({});
+  const [isReturning, setIsReturning] = useState(false);
+  const [lastReturnedTitle, setLastReturnedTitle] = useState("");
 
   // Surveiller le chargement des données au montage de l'appli
   const loadBooks = useCallback(async () => {
@@ -60,6 +64,16 @@ function FormBook() {
   useEffect(() => {
     loadBooks();
   }, [loadBooks]);
+
+  useEffect(() => {
+    // Vérifier si l'état de rendu est activé
+    if (isReturning) {
+      // Exécuter la fonction handleReturnBook avec le dernier titre rendu
+      handleReturnBook(lastReturnedTitle);
+      // Désactiver l'état de rendu
+      setIsReturning(false);
+    }
+  }, [stocks, isReturning]);
 
   // Méthode d'ajout d'un livre
   const handleAddBook = useCallback(async () => {
@@ -87,22 +101,17 @@ function FormBook() {
       return;
     }
 
-    // Stock initial par défaut
-    const initialStock = 5;
+    // Ajouter le livre avec un stock initial de 1
+    const newBook = { ...formData, stock: 5 };
+    await addDoc(collection(db, "books"), newBook);
 
-    // Ajouter 5 livres à la base de données
-    const batch = Array.from({ length: initialStock }, () => ({ ...formData }));
+    // Mettre à jour le state avec le nouveau livre
+    setBooks((prevBooks) => [...prevBooks, newBook]);
 
-    await Promise.all(
-      batch.map(async (book) => {
-        await addDoc(collection(db, "books"), book);
-      })
-    );
-
-    // Mettre à jour le stock dans l'état
+    // Mettre à jour l'état local des stocks
     setStocks((prevStocks) => ({
       ...prevStocks,
-      [formData.title]: initialStock,
+      [formData.title]: (prevStocks[formData.title] || 0) + 5,
     }));
 
     // Ajouter le livre seulement si tous les champs sont remplis
@@ -117,35 +126,12 @@ function FormBook() {
     toast.success("Livre ajouté avec succès!");
   }, [formData, loadBooks]);
 
-  // méthode pour le rechargement du stock
-  const checkStockAndReload = async () => {
-    const booksToUpdate = books.filter((book) => book.stock === 0);
-    if (booksToUpdate.length > 0 && booksToUpdate[0].stock === 0) {
-      await Promise.all(
-        booksToUpdate.map(async (book) => {
-          await updateDoc(doc(db, "books", book.id), {
-            stock: 5,
-          });
-          setStocks((prevStocks) => ({
-            ...prevStocks,
-            [book.title]: 5,
-          }));
-          toast.info(`Stock rechargé pour le livre "${book.title}"!`);
-        })
-      );
-    }
-  };
-
   // La fonction handleBorrowBook qui permet d'emprunter un livre
   const handleBorrowBook = async (title) => {
-    if (stocks[title] && stocks[title] > 0) {
-      const updatedStock = stocks[title] - 1;
-      const dueDate = addSeconds(new Date(), 20);
-      setFormData((prevData) => ({
-        ...prevData,
-        isBorrowed: true,
-        dueDate: null,
-      }));
+    const currentStock = stocks[title];
+    if (currentStock && currentStock > 0) {
+      const updatedStock = currentStock - 1;
+      const dueDate = addSeconds(new Date(), 45);
 
       // Mettre à jour la base de données avec le nouveau stock
       const bookToUpdate = books.find((book) => book.title === title);
@@ -159,57 +145,63 @@ function FormBook() {
           ...prevStocks,
           [title]: updatedStock,
         }));
-        toast.success("Livre emprunté avec succès!");
+        toast.success("Livre emprunté pour une durée de 45 secondes!");
       }
     } else {
-      toast.warning("Stock épuisé. Impossible d'emprunter le livre!");
+      toast.warning(
+        currentStock === 0
+          ? "Stock épuisé. Impossible d'emprunter le livre!"
+          : "Stock insuffisant pour emprunter le livre!"
+      );
     }
-
-    await checkStockAndReload();
   };
 
-  // Fonction pour gérer le retour automatique des livres
-  const handleAutoReturn = async () => {
-    const currentDate = new Date();
-    const overdueBooks = books.filter(
-      (book) =>
-        book.isBorrowed &&
-        book.dueDate &&
-        differenceInDays(new Date(), new Date(book.dueDate)) > 0
+  // Fonction pour rendre un livre emprunté
+  const handleReturnBook = async (title) => {
+    // Vérifier si le livre est emprunté
+    const borrowedBook = books.find(
+      (book) => book.title === title && book.isBorrowed
     );
 
-    // Retour automatique des livres et mise à jour de la base de données
-    await Promise.all(
-      overdueBooks.map(async (book) => {
-        await updateDoc(doc(db, "books", book.id), {
+    if (borrowedBook) {
+      // Vérifier si le stock est égal à 5
+      if (borrowedBook.stock === 5) {
+        toast.warning(`Le stock du livre "${title}" est déjà plein (5).`);
+      } else {
+        // Mettre à jour le stock dans la base de données et l'état local
+        const updatedStock = Math.min(borrowedBook.stock + 1, 5);
+        await updateDoc(doc(db, "books", borrowedBook.id), {
           isBorrowed: false,
           dueDate: null,
-          stock: stocks[book.title] + 1,
+          stock: updatedStock,
         });
         setStocks((prevStocks) => ({
           ...prevStocks,
-          stock: (stocks[book.title] || 0) + 1,
+          [title]: updatedStock,
         }));
 
-        // L'lerte pour informer l'utilisateur du retour automatique
-        toast.info(
-          `Retour automatique du livre "${book.title}" en raison de la date d'échéance dépassée!`
+        // Mettre à jour l'état local des livres
+        setBooks((prevBooks) =>
+          prevBooks.map((book) =>
+            book.id === borrowedBook.id
+              ? {
+                  ...book,
+                  isBorrowed: false,
+                  dueDate: null,
+                  stock: updatedStock,
+                }
+              : book
+          )
         );
-      })
-    );
-
-    await checkStockAndReload();
+        toast.success(`Le livre "${title}" a été rendu avec succès!`);
+      }
+    } else {
+      // Si le livre n'est pas emprunté, activer l'état de rendu
+      setLastReturnedTitle(title);
+      setIsReturning(true);
+      toast.warning(`Le livre "${title}" n'est pas emprunté actuellement.`);
+    }
   };
-
-  // Nettoyage au démontage
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      handleAutoReturn();
-      checkStockAndReload();
-    }, 20 * 1000);
-
-    return () => clearInterval(intervalId);
-  }, [handleAutoReturn]);
 
   // Mettre à jour un livre
   const handleEditBook = (book) => {
@@ -421,6 +413,7 @@ function FormBook() {
           onDeleteBook={handleDeleteBook}
           onArchivedBook={archive}
           onBorrowBook={handleBorrowBook}
+          onReturnBook={handleReturnBook}
         />
       </div>
     </div>
