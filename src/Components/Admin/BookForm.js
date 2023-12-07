@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 // Importation des bibliothèques et outils
-import { addSeconds, differenceInDays } from "date-fns";
+// import { addSeconds, differenceInDays } from "date-fns";
 import {
   addDoc,
   collection,
@@ -39,8 +39,8 @@ function FormBook() {
   const urlInputRef = useRef();
   const [toastMessage, setToastMessage] = useState("");
   const [stocks, setStocks] = useState({});
-  const [isReturning, setIsReturning] = useState(false);
-  const [lastReturnedTitle, setLastReturnedTitle] = useState("");
+  // const [isReturning, setIsReturning] = useState(false);
+  // const [lastReturnedTitle, setLastReturnedTitle] = useState("");
 
   // Surveiller le chargement des données au montage de l'appli
   const loadBooks = useCallback(async () => {
@@ -65,15 +65,15 @@ function FormBook() {
     loadBooks();
   }, [loadBooks]);
 
-  useEffect(() => {
-    // Vérifier si l'état de rendu est activé
-    if (isReturning) {
-      // Exécuter la fonction handleReturnBook avec le dernier titre rendu
-      handleReturnBook(lastReturnedTitle);
-      // Désactiver l'état de rendu
-      setIsReturning(false);
-    }
-  }, [stocks, isReturning]);
+  // useEffect(() => {
+  //   // Vérifier si l'état de rendu est activé
+  //   if (isReturning) {
+  //     // Exécuter la fonction handleReturnBook avec le dernier titre rendu
+  //     handleReturnBook(lastReturnedTitle);
+  //     // Désactiver l'état de rendu
+  //     setIsReturning(false);
+  //   }
+  // }, [stocks, isReturning]);
 
   // Méthode d'ajout d'un livre
   const handleAddBook = useCallback(async () => {
@@ -126,82 +126,82 @@ function FormBook() {
     toast.success("Livre ajouté avec succès!");
   }, [formData, loadBooks]);
 
-  // La fonction handleBorrowBook qui permet d'emprunter un livre
-  const handleBorrowBook = async (title) => {
-    const currentStock = stocks[title];
-    if (currentStock && currentStock > 0) {
-      const updatedStock = currentStock - 1;
-      const dueDate = addSeconds(new Date(), 45);
+  // // La fonction handleBorrowBook qui permet d'emprunter un livre
+  // const handleBorrowBook = async (title) => {
+  //   const currentStock = stocks[title];
+  //   if (currentStock && currentStock > 0) {
+  //     const updatedStock = currentStock - 1;
+  //     const dueDate = addSeconds(new Date(), 45);
 
-      // Mettre à jour la base de données avec le nouveau stock
-      const bookToUpdate = books.find((book) => book.title === title);
-      if (bookToUpdate) {
-        await updateDoc(doc(db, "books", bookToUpdate.id), {
-          stock: updatedStock,
-          isBorrowed: true,
-          dueDate: null,
-        });
-        setStocks((prevStocks) => ({
-          ...prevStocks,
-          [title]: updatedStock,
-        }));
-        toast.success("Livre emprunté pour une durée de 45 secondes!");
-      }
-    } else {
-      toast.warning(
-        currentStock === 0
-          ? "Stock épuisé. Impossible d'emprunter le livre!"
-          : "Stock insuffisant pour emprunter le livre!"
-      );
-    }
-  };
+  //     // Mettre à jour la base de données avec le nouveau stock
+  //     const bookToUpdate = books.find((book) => book.title === title);
+  //     if (bookToUpdate) {
+  //       await updateDoc(doc(db, "books", bookToUpdate.id), {
+  //         stock: updatedStock,
+  //         isBorrowed: true,
+  //         dueDate: null,
+  //       });
+  //       setStocks((prevStocks) => ({
+  //         ...prevStocks,
+  //         [title]: updatedStock,
+  //       }));
+  //       toast.success("Livre emprunté pour une durée de 45 secondes!");
+  //     }
+  //   } else {
+  //     toast.warning(
+  //       currentStock === 0
+  //         ? "Stock épuisé. Impossible d'emprunter le livre!"
+  //         : "Stock insuffisant pour emprunter le livre!"
+  //     );
+  //   }
+  // };
 
-  // Fonction pour rendre un livre emprunté
-  const handleReturnBook = async (title) => {
-    // Vérifier si le livre est emprunté
-    const borrowedBook = books.find(
-      (book) => book.title === title && book.isBorrowed
-    );
+  // // Fonction pour rendre un livre emprunté
+  // const handleReturnBook = async (title) => {
+  //   // Vérifier si le livre est emprunté
+  //   const borrowedBook = books.find(
+  //     (book) => book.title === title && book.isBorrowed
+  //   );
 
-    if (borrowedBook) {
-      // Vérifier si le stock est égal à 5
-      if (borrowedBook.stock === 5) {
-        toast.warning(`Le stock du livre "${title}" est déjà plein (5).`);
-      } else {
-        // Mettre à jour le stock dans la base de données et l'état local
-        const updatedStock = Math.min(borrowedBook.stock + 1, 5);
-        await updateDoc(doc(db, "books", borrowedBook.id), {
-          isBorrowed: false,
-          dueDate: null,
-          stock: updatedStock,
-        });
-        setStocks((prevStocks) => ({
-          ...prevStocks,
-          [title]: updatedStock,
-        }));
+  //   if (borrowedBook) {
+  //     // Vérifier si le stock est égal à 5
+  //     if (borrowedBook.stock === 5) {
+  //       toast.warning(`Le stock du livre "${title}" est déjà plein (5).`);
+  //     } else {
+  //       // Mettre à jour le stock dans la base de données et l'état local
+  //       const updatedStock = Math.min(borrowedBook.stock + 1, 5);
+  //       await updateDoc(doc(db, "books", borrowedBook.id), {
+  //         isBorrowed: false,
+  //         dueDate: null,
+  //         stock: updatedStock,
+  //       });
+  //       setStocks((prevStocks) => ({
+  //         ...prevStocks,
+  //         [title]: updatedStock,
+  //       }));
 
-        // Mettre à jour l'état local des livres
-        setBooks((prevBooks) =>
-          prevBooks.map((book) =>
-            book.id === borrowedBook.id
-              ? {
-                  ...book,
-                  isBorrowed: false,
-                  dueDate: null,
-                  stock: updatedStock,
-                }
-              : book
-          )
-        );
-        toast.success(`Le livre "${title}" a été rendu avec succès!`);
-      }
-    } else {
-      // Si le livre n'est pas emprunté, activer l'état de rendu
-      setLastReturnedTitle(title);
-      setIsReturning(true);
-      toast.warning(`Le livre "${title}" n'est pas emprunté actuellement.`);
-    }
-  };
+  //       // Mettre à jour l'état local des livres
+  //       setBooks((prevBooks) =>
+  //         prevBooks.map((book) =>
+  //           book.id === borrowedBook.id
+  //             ? {
+  //                 ...book,
+  //                 isBorrowed: false,
+  //                 dueDate: null,
+  //                 stock: updatedStock,
+  //               }
+  //             : book
+  //         )
+  //       );
+  //       toast.success(`Le livre "${title}" a été rendu avec succès!`);
+  //     }
+  //   } else {
+  //     // Si le livre n'est pas emprunté, activer l'état de rendu
+  //     setLastReturnedTitle(title);
+  //     setIsReturning(true);
+  //     toast.warning(`Le livre "${title}" n'est pas emprunté actuellement.`);
+  //   }
+  // };
 
   // Mettre à jour un livre
   const handleEditBook = (book) => {
@@ -412,8 +412,6 @@ function FormBook() {
           onEditBook={handleEditBook}
           onDeleteBook={handleDeleteBook}
           onArchivedBook={archive}
-          onBorrowBook={handleBorrowBook}
-          onReturnBook={handleReturnBook}
         />
       </div>
     </div>

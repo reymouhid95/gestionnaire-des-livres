@@ -54,14 +54,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 // Fonction principal du composant
-function TableBook({
-  books,
-  onEditBook,
-  onDeleteBook,
-  onArchivedBook,
-  onBorrowBook,
-  onReturnBook,
-}) {
+function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showListModal, setShowListModal] = useState(false);
@@ -94,12 +87,10 @@ function TableBook({
   }, [books]);
 
   useEffect(() => {
-    // Mettre à jour bookArchives après le chargement initial
     setBookArchives(initialBookArchives);
   }, [initialBookArchives]);
 
   useEffect(() => {
-    // Mettre à jour bookArchives après l'archivage d'un livre
     if (archivedBookId) {
       setBookArchives((prevBookArchives) => ({
         ...prevBookArchives,
@@ -147,17 +138,12 @@ function TableBook({
     onArchivedBook(bookId);
 
     try {
-      // Update archive state in Firestore
       const docRef = doc(db, "archivedBooks", "archivedBooksData");
       await setDoc(docRef, { ...bookArchives, [bookId]: true });
-
-      // Update local state
       setBookArchives((prevBookArchives) => ({
         ...prevBookArchives,
         [bookId]: true,
       }));
-
-      // Update archivedBookId
       setArchivedBookId(bookId);
     } catch (error) {
       console.error("Error updating archives in Firestore:", error);
@@ -168,17 +154,12 @@ function TableBook({
     onArchivedBook(bookId);
 
     try {
-      // Update archive state in Firestore
       const docRef = doc(db, "archivedBooks", "archivedBooksData");
       await setDoc(docRef, { ...bookArchives, [bookId]: false });
-
-      // Update local state
       setBookArchives((prevBookArchives) => ({
         ...prevBookArchives,
         [bookId]: false,
       }));
-
-      // Update archivedBookId
       setArchivedBookId(bookId);
     } catch (error) {
       console.error("Error updating archives in Firestore:", error);
@@ -287,23 +268,6 @@ function TableBook({
                       >
                         <Icon.Trash onClick={() => onDeleteBook(book.id)} />
                       </Button>
-                      {book.isBorrowed ? (
-                        <Button
-                          variant="outline-info"
-                          size="sm"
-                          onClick={() => onReturnBook(book.title)}
-                        >
-                          <Icon.BoxArrowDown />
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline-success"
-                          size="sm"
-                          onClick={() => onBorrowBook(book.title)}
-                        >
-                          <Icon.BoxArrowUp />
-                        </Button>
-                      )}
                     </div>
                   </td>
                 </tr>
