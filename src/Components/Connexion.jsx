@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
-// Importation des outils nécessaires
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import LockIcon from "@mui/icons-material/Lock";
 import MailLockIcon from "@mui/icons-material/MailLock";
@@ -10,23 +9,22 @@ import SendIcon from "@mui/icons-material/Send";
 import { Button } from "@mui/material";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { Col, Form, InputGroup, Row } from "react-bootstrap";
-// import toast from "react-hot-toast";
+import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
 import Auth from "../assets/auth-illustration.svg";
-
 import { auth } from "../firebase-config";
 
-// Méthode principale du composant
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   useEffect(() => {
     // Vérifiez si l'utilisateur est déjà connecté
@@ -41,8 +39,7 @@ function SignIn() {
       }
     }
   }, [navigate]);
-
-  // Méthode pour pouvoir se connecter
+  // Connecter un utilisateur
   const handleSignIn = () => {
     if (!email) {
       setEmailError("Email is required");
@@ -52,6 +49,10 @@ function SignIn() {
       setPasswordError("Password is required");
       return;
     }
+
+    // Set loading to true when starting the sign-in process
+    setLoading(true);
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -60,8 +61,8 @@ function SignIn() {
         setPassword("");
         toast.success(
           email === "serigne@gmail.com"
-            ? `Connexion réussie!`
-            : "Connexion réussie!"
+            ? "Administrateur connecté!"
+            : "Utilisateur connecté!"
         );
         setTimeout(() => {
           if (email === "serigne@gmail.com") {
@@ -74,6 +75,13 @@ function SignIn() {
       .catch((error) => {
         toast.error("Vérifiez les identifiants!");
         setEmail("");
+      })
+      .finally(() => {
+        // Reset loading to false after the sign-in process is completed
+        setTimeout(() => {
+          setLoading(false);
+          setLoadingComplete(true);
+        }, 2000);
       });
   };
 
@@ -96,10 +104,8 @@ function SignIn() {
     }
   };
 
-  // Rendu du composant
   return (
     <>
-      <ToastContainer />
       <Row className="m-0 connexion">
         <Col md={6} className="backTwo">
           <Form className="form color" onSubmit={handleSubmit}>
@@ -107,14 +113,14 @@ function SignIn() {
               <AutoStoriesIcon className="mb-3 logo" />
               eBook
             </span>
-            <h1 className="mb-5">Connexion</h1>
+            <h1 className="mb-2">Connexion</h1>
             <InputGroup className="mb-3">
               <InputGroup.Text id="basic-addon1">
                 <MailLockIcon />
               </InputGroup.Text>
               <Form.Control
                 placeholder="Email"
-                aria-label="Username"
+                aria-label="Usermail"
                 aria-describedby="basic-addon1"
                 value={email}
                 onChange={handleEmailChange}
@@ -128,7 +134,7 @@ function SignIn() {
               </InputGroup.Text>
               <Form.Control
                 placeholder="Mot de passe"
-                aria-label="Username"
+                aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={password}
                 onChange={handlePasswordChange}
@@ -142,8 +148,19 @@ function SignIn() {
               variant="contained"
               endIcon={<SendIcon />}
               className="mb-3"
+              disabled={loading}
             >
-              Se connecter
+              Se connecter{" "}
+              {!loadingComplete && loading && (
+                <Spinner
+                  as="span"
+                  animation="grow"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+              )}
+              {loading && loadingComplete ? "Connexion..." : null}
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
@@ -155,10 +172,10 @@ function SignIn() {
             </p>
           </Form>
         </Col>
-        <Col md={6} className="backThree text-center text-light fw-bold mt-4">
-          <h1>Welcome to eBook</h1>
-          <p className="mt-2">
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+        <Col md={6} className="backThree text-center text-light fw-bold">
+          <h1 className="my-3">Bienvenue sur eBook</h1>
+          <p className="my-3">
+            La plateforme qui vous rendra autonome dans vos études.
           </p>
           <img src={Auth} alt="Image-auth" className="img-fluid" />
         </Col>
