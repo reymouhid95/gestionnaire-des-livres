@@ -113,25 +113,6 @@ function FormBook() {
     toast.success("Livre ajouté avec succès!");
   }, [formData, loadBooks]);
 
-  // méthode pour le rechargement du stock
-  // const checkStockAndReload = async () => {
-  //   const booksToUpdate = books.filter((book) => book.stock === 0);
-  //   if (booksToUpdate.length > 0) {
-  //     await Promise.all(
-  //       booksToUpdate.map(async (book) => {
-  //         await updateDoc(doc(db, "books", book.id), {
-  //           stock: 5,
-  //         });
-  //         setStocks((prevStocks) => ({
-  //           ...prevStocks,
-  //           [book.title]: 5,
-  //         }));
-  //         toast.info(`Stock rechargé pour le livre "${book.title}"!`);
-  //       })
-  //     );
-  //   }
-  // };
-
   // Mettre à jour un livre
   const handleEditBook = (book) => {
     setShow(true);
@@ -179,38 +160,6 @@ function FormBook() {
       setSelectedBook(null);
     }
   };
-
-  // La fonction handleBorrowBook qui permet d'emprunter un livre
-  // const handleBorrowBook = async (title) => {
-  //   if (stocks[title] > 0) {
-  //     const updatedStock = stocks[title] - 1;
-  //     const dueDate = addSeconds(new Date(), 20);
-  //     setFormData((prevData) => ({
-  //       ...prevData,
-  //       isBorrowed: true,
-  //       dueDate,
-  //     }));
-
-  //     // Mettre à jour la base de données avec le nouveau stock
-  //     const bookToUpdate = books.find((book) => book.title === title);
-  //     if (bookToUpdate) {
-  //       await updateDoc(doc(db, "books", bookToUpdate.id), {
-  //         stock: updatedStock,
-  //         isBorrowed: true,
-  //         dueDate,
-  //       });
-  //       setStocks((prevStocks) => ({
-  //         ...prevStocks,
-  //         [title]: updatedStock,
-  //       }));
-  //       toast.success("Livre emprunté avec succès!");
-  //     }
-  //   } else {
-  //     toast.warning("Stock épuisé. Impossible d'emprunter le livre!");
-  //   }
-
-  //   await checkStockAndReload();
-  // };
 
   // Fonction pour gérer le retour automatique des livres
   // const handleAutoReturn = async () => {
@@ -293,19 +242,23 @@ function FormBook() {
   // Supprimer un livre
   const handleDeleteBook = useCallback(
     async (bookId) => {
-      await deleteDoc(doc(db, "books", bookId));
-      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
-      setStocks((prevStocks) => {
-        const {
-          [books.find((book) => book.id === bookId).title]: removed,
-          ...rest
-        } = prevStocks;
-        return rest;
-      });
-      toast.success("Stock supprimé avec succès!");
+      const bookToDelete = books.find((book) => book.id === bookId);
+      if (bookToDelete) {
+        const { title } = bookToDelete;
+        await deleteDoc(doc(db, "books", bookId));
+        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+        setStocks((prevStocks) => {
+          const { [title]: removed, ...rest } = prevStocks;
+          return rest;
+        });
+        toast.success(`Livre "${title}" supprimé avec succès!`);
+      } else {
+        toast.error(`Livre non trouvé avec l'ID : ${bookId}`);
+      }
     },
     [books]
   );
+
 
   // Soummission du formulaire
   const handleSubmit = async (e) => {
@@ -324,7 +277,6 @@ function FormBook() {
   // L'affichage
   return (
     <div className="mt-2">
-      <ToastContainer />
       {isArchived && toast.success("Livre archivé avec succès!")}
       {isUnarchived && toast.success("Livre désarchivé avec succès!")}
       <Form onSubmit={handleSubmit}>

@@ -60,8 +60,8 @@ function SignIn() {
         setPassword("");
         toast.success(
           email === "serigne@gmail.com"
-            ? "Administrateur connecté!"
-            : "Utilisateur connecté!"
+            ? `Connexion réussie!`
+            : "Connexion réussie!"
         );
         setTimeout(() => {
           if (email === "serigne@gmail.com") {

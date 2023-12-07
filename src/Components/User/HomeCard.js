@@ -5,6 +5,8 @@ import { collection, getDocs, doc , updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Button, Modal } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
+import { toast } from "react-toastify";
+import { addSeconds } from "date-fns";
 
 function HomeCard({
   img,
@@ -42,25 +44,26 @@ function HomeCard({
 
   
   const borrowBook = async (borrowedBookTitle) => {
+    const userName = localStorage.getItem("userName");
     const borrowedBook = books.find((book) => book.title === borrowedBookTitle);
     if (borrowedBook && borrowedBook.isBorrowed) {
       await updateDoc(doc(db, "books", borrowedBook.id), {
         stock: borrowedBook.stock + 1,
         isBorrowed: false,
       });
-      alert(`Livre rendu : ${borrowedBookTitle}`);
+      toast.success(`L'utilisateur ${userName} a rendu le livre ${borrowedBookTitle}`);
       loadBooks();
     }else if (borrowedBook && borrowedBook.stock > 0) {
       await updateDoc(doc(db, "books", borrowedBook.id), {
         stock: borrowedBook.stock - 1,
         isBorrowed: true
       });
-      alert(`Livre emprunté : ${borrowedBookTitle}`);
+      toast.success(`Livre ${borrowedBookTitle} emprunté par ${userName} avec succès`);
       loadBooks();
     } else if (borrowedBook) {
-      alert(`Stock épuisé pour le livre : ${borrowedBookTitle}`);
+      toast.error(`Stock épuisé pour le livre : ${borrowedBookTitle}`);
     } else {
-      alert(`Livre non trouvé avec l'ID : ${borrowedBookTitle}`);
+      toast.error(`Livre ${borrowedBookTitle} non trouvé`);
     }
   };
 
@@ -79,7 +82,7 @@ function HomeCard({
   const bookBorrowed = books.find(
     (book) => book.title === title && book.isBorrowed
   );
-;
+  
 
   return (
     <Card

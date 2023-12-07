@@ -50,6 +50,7 @@ function App() {
         toggle={toggle}
         sidebarBg="#282c34"
       >
+        <ToastContainer />
         <Routes>
           <Route path="/admin/dashboardAdmin" element={<DashboardAdmin />} />
           <Route path="/admin/archived" element={<Archive />} />
