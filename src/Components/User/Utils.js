@@ -6,8 +6,8 @@ export const menuUser = [
   },
   { title: "Books", icon: "bi bi-book-half fs-5 me-3", path: "/user/books" },
   {
-    title: "Statistics",
-    icon: "bi bi-graph-up-arrow fs-5 me-3",
-    path: "/user/statistics",
+    title: "Books Borrowed",
+    icon: "bi bi-bookmark-check-fill fs-5 me-3",
+    path: "/user/bookBorrowed",
   },
 ];

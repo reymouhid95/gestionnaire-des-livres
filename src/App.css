@@ -177,10 +177,13 @@ tbody .archiver {
 #cardImgContent {
   display: flex;
   justify-content: center;
+  padding-top: 4%;
+  height: 70% !important;
 }
 
 #cardImg {
-  width: 90% !important;
+  width: 70% !important;
+  height: 100% !important;
 }
 
 #cardImg:hover {
@@ -222,6 +225,10 @@ tbody .archiver {
 
   .carte #title {
     font-size: 12px !important;
+  }
+
+  #cardImg{
+    width: 70% !important;
   }
 
   .books .carte {
@@ -600,8 +607,9 @@ thead th {
   transition: 2s !important;
 }
 
-.btn-archived{
-  background-color: rgb(237, 192, 192) !important;
+.btn-borrowed{
+  border: none;
+  background-color: rgb(165, 165, 165) !important;
 }
 
 /* .block1, .block2{

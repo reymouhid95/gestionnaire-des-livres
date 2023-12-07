@@ -2,9 +2,6 @@ import React from 'react';
 import Chart from '../Components/Chart';
 import { Link } from 'react-router-dom';
 
-
-
-
 function Home() {
     return (
         <Link to="/statistics" style={{textDecoration: "none"}}>

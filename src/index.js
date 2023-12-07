@@ -11,6 +11,8 @@ import Home from './Pages/Statistics'
 import DashboardUser from './Pages/Pages-User/DashboardUser';
 import DashboardAdmin from './Pages/Pages-Admin/DashboardAdmin';
 import Archive from './Pages/Pages-Admin/Archive';
+import BookBorrowedContent from './Pages/Pages-User/BookBorrowedContent';
+// import { ToastProvider } from "react-hot-toast";
 
 const route = createBrowserRouter([
   {
@@ -42,8 +44,8 @@ const route = createBrowserRouter([
         element: <Books />,
       },
       {
-        path: "user/statistics",
-        element: <Home />,
+        path: "/user/bookBorrowed",
+        element: <BookBorrowedContent />,
       },
     ],
   },

@@ -8,6 +8,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import { toast, ToastContainer } from 'react-toastify';
+// import Toaster from "react-hot-toast";
 // import Aos from 'aos';
 // import 'aos/dist/aos.css';
 
@@ -31,23 +32,33 @@ function HomeCardContent() {
   }, []);
 
   useEffect(() => {
+    console.log(books);
     loadBooks();
   }, [loadBooks]);
 
+  const toastComps = () => {
+    return toast.success("Livre emprunté")
+  }
 
-  // const borrowBook = async (id) => {
-  //   const bookBorrowed = books.find((book) => book.id === id);
+    // const borrowBook = async (borrowedBookTitle) => {
+    //   const borrowedBook = books.find(
+    //     (book) => book.title === borrowedBookTitle
+    //   );
+    //   if (borrowedBook && borrowedBook.stock > 0) {
+    //     await updateDoc(doc(db, "books", borrowedBook.id), {
+    //       stock: borrowedBook.stock - 1,
+    //     });
+    //     alert(`Livre emprunté : ${borrowedBook.title}`);
+    //     loadBooks();
+    //   } else if (borrowedBook) {
+    //     alert(`Stock épuisé pour le livre : ${borrowedBookTitle}`);
+    //   } else {
+    //     alert(`Livre non trouvé avec l'ID : ${borrowedBookTitle}`);
+    //   }
+    // };
 
-  //   if (bookBorrowed && bookBorrowed.stock > 0) {
-  //     await updateDoc(db.doc(`books/${id}`), {
-  //       stock: bookBorrowed.stock - 1,
-  //     });
-  //     loadBooks();
-  //     alert(`Livre emprunté : ${bookBorrowed.title}`);
-  //   } else {
-  //     alert(`Stock épuisé pour le livre : ${bookBorrowed.title}`);
-  //   }
-  // };
+  
+
 
   return (
     <div className="m-0 px-0 homeCard w-100">
@@ -64,9 +75,10 @@ function HomeCardContent() {
               key={index}
               description={book.description}
               auth={book.author}
-              id={book.id}
+              Id={book.id}
               archived={book.archived}
               stock={book.stock}
+              toastComp={toastComps}
             />
           );
         })}
