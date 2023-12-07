@@ -1,20 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
-import SignUp from "./Components/Inscription";
+import App from "./App";
 import SignIn from "./Components/Connexion";
-import Books from "./Pages/Pages-User/Books";
-import Home from "./Pages/Statistics";
-import DashboardUser from "./Pages/Pages-User/DashboardUser";
-import DashboardAdmin from "./Pages/Pages-Admin/DashboardAdmin";
+import SignUp from "./Components/Inscription";
 import Archive from "./Pages/Pages-Admin/Archive";
+import DashboardAdmin from "./Pages/Pages-Admin/DashboardAdmin";
+import BookBorrowedContent from "./Pages/Pages-User/BookBorrowedContent";
+import Books from "./Pages/Pages-User/Books";
+import DashboardUser from "./Pages/Pages-User/DashboardUser";
+import Home from "./Pages/Statistics";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
 
 const route = createBrowserRouter([
   {
@@ -46,8 +47,8 @@ const route = createBrowserRouter([
         element: <Books />,
       },
       {
-        path: "user/statistics",
-        element: <Home />,
+        path: "/user/bookBorrowed",
+        element: <BookBorrowedContent />,
       },
     ],
   },

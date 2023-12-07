@@ -33,6 +33,8 @@ function FormBook() {
   });
   const [selectedBook, setSelectedBook] = useState(null);
   const [isAdding, setIsAdding] = useState(true);
+  const [isArchived, setIsArchived] = useState(false);
+  const [isUnarchived, setIsUnarchived] = useState(false);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -66,11 +68,8 @@ function FormBook() {
   }, [loadBooks]);
 
   // useEffect(() => {
-  //   // Vérifier si l'état de rendu est activé
   //   if (isReturning) {
-  //     // Exécuter la fonction handleReturnBook avec le dernier titre rendu
   //     handleReturnBook(lastReturnedTitle);
-  //     // Désactiver l'état de rendu
   //     setIsReturning(false);
   //   }
   // }, [stocks, isReturning]);
@@ -101,7 +100,7 @@ function FormBook() {
       return;
     }
 
-    // Ajouter le livre avec un stock initial de 1
+    // Ajouter le livre avec un stock initial de 5
     const newBook = { ...formData, stock: 5 };
     await addDoc(collection(db, "books"), newBook);
 
@@ -244,15 +243,13 @@ function FormBook() {
       try {
         const selectedBook = books.find((book) => book.id === bookId);
         if (!selectedBook) {
-          console.error("No selected book to archive.");
+          console.error("Pas de livre selectionné pour être archivé!");
           return;
         }
-
         const updatedBookData = {
           ...selectedBook,
           archived: !selectedBook.archived,
         };
-
         await updateDoc(doc(db, "books", bookId), updatedBookData);
         setBooks((prevBooks) =>
           prevBooks.map((book) =>
@@ -261,15 +258,17 @@ function FormBook() {
         );
 
         if (updatedBookData.archived) {
-          setToastMessage("Livre archivé!");
+          sesetIsArchived(true);
+          setIsUnarchived(false);
         } else {
-          setToastMessage("Livre désarchivé!");
+          setIsArchived(false);
+          setIsUnarchived(true);
         }
       } catch (error) {
-        console.error("Error updating book:", error);
+        console.error("Erreur de mise à jour du livre:", error);
       }
     },
-    [books, setBooks]
+    [books, selectedBook, setBooks, loadBooks]
   );
 
   // Supprimer un livre
@@ -305,9 +304,9 @@ function FormBook() {
 
   // L'affichage
   return (
-    <div className="m-0" id="tableContent">
-      <ToastContainer />
-      {toastMessage && toast.success(toastMessage)}
+    <div className="m-0">
+      {isArchived && toast.success("Livre archivé avec succès!")}
+      {isUnarchived && toast.success("Livre désarchivé avec succès!")}
       <Form onSubmit={handleSubmit}>
         <Row className="w-100 m-0 p-0">
           <div className="d-flex justify-content-end">

@@ -136,7 +136,6 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
 
   const handleArchivedBook = async (bookId) => {
     onArchivedBook(bookId);
-
     try {
       const docRef = doc(db, "archivedBooks", "archivedBooksData");
       await setDoc(docRef, { ...bookArchives, [bookId]: true });
@@ -152,7 +151,6 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
 
   const handleUnarchivedBook = async (bookId) => {
     onArchivedBook(bookId);
-
     try {
       const docRef = doc(db, "archivedBooks", "archivedBooksData");
       await setDoc(docRef, { ...bookArchives, [bookId]: false });
@@ -168,7 +166,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
 
   // L'affichage
   return (
-    <div className=" m-0">
+    <div className="m-0">
       <div className="contentData">
         <div className="mb-1">
           <div className="searchContent pb-4">

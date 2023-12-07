@@ -1,5 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import { db } from "../../firebase-config";
 import HomeCard from "./HomeCard";
 import SearchBooks from "./SearchBooks";
@@ -20,7 +21,7 @@ function CardBooks() {
       setBooks(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      alert(
+      toast.error(
         "Erreur de chargement. Veuillez vérifier votre connexion internet!"
       );
     }
@@ -54,6 +55,7 @@ function CardBooks() {
 
   return (
     <div className="container-fluid m-0 px-0 homeCard w-100">
+      <ToastContainer />
       <SearchBooks
         books={books}
         filter={filter}

@@ -1,7 +1,7 @@
 export const menuAdmin = [
   {
-    title: "Home",
-    icon: "bi bi-house-door fs-5 me-3",
+    title: "Dashboard",
+    icon: "bi bi-clipboard-data fs-5 me-3",
     path: "/admin/dashboardAdmin",
   },
   {

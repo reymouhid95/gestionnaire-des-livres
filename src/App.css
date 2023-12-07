@@ -10,7 +10,6 @@
 }
 
 .sidebar {
-  /* background-color: #282c34; */
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
   color: #fff;
   z-index: 1000;
@@ -18,11 +17,9 @@
 
 .sidebar a i {
   color: #fff;
-  /* font-size: 21px !important; */
 }
 
 .sidebar .linkSidebar a {
-  /* background-color: #282c34; */
   background: transparent;
   color: #fff;
   border: none;
@@ -178,10 +175,13 @@ tbody .archiver {
 #cardImgContent {
   display: flex;
   justify-content: center;
+  padding-top: 4%;
+  height: 70% !important;
 }
 
 #cardImg {
-  width: 90% !important;
+  width: 70% !important;
+  height: 100% !important;
 }
 
 #cardImg:hover {
@@ -198,14 +198,6 @@ tbody .archiver {
   display: flex !important;
   justify-content: center !important;
 }
-/* .modal-view p{
-  display: flex;
-  flex-wrap: wrap;
-} */
-
-/* td{
-  width: max-content !important;
-} */
 
 @media screen and (max-width: 768px) {
   .carte {
@@ -223,6 +215,10 @@ tbody .archiver {
 
   .carte #title {
     font-size: 12px !important;
+  }
+
+  #cardImg {
+    width: 70% !important;
   }
 
   .books .carte {
@@ -601,6 +597,11 @@ thead th {
   transition: 2s !important;
 }
 
+.btn-borrowed {
+  border: none;
+  background-color: rgb(165, 165, 165) !important;
+}
+
 .backOne {
   width: 100%;
   background-size: cover;
@@ -668,7 +669,7 @@ thead th {
   border-collapse: collapse;
   border: 1px solid rgb(18, 143, 189);
   overflow: hidden;
-  max-width: 10px;
+  max-width: 50px;
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: center;
