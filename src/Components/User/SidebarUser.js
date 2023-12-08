@@ -1,7 +1,5 @@
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
-import Aos from "aos";
-import "aos/dist/aos.css";
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import SidebarComponent from "./SidebarComponent";
 import { menuUser } from "./Utils";
@@ -11,9 +9,7 @@ function SidebarUser() {
     localStorage.removeItem("utilisateur");
     window.location.replace("/connexion");
   };
-  useEffect(() => {
-    Aos.init({ duration: 2000 });
-  }, []);
+
   return (
     <div className="vh-100 sidebar p-2">
       <div className="m-2" id="logo">
@@ -21,7 +17,7 @@ function SidebarUser() {
         <span className="brand-name fs-1 fw-bold mx-2">eBook</span>
       </div>
       <hr className="text-white border-3 mt-5" style={{ color: "#fff" }} />
-      <div data-aos="fade-left" className="linkSidebar">
+      <div className="linkSidebar">
         {menuUser.map((elem, index) => (
           <SidebarComponent {...elem} key={index} />
         ))}

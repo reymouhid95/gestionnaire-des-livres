@@ -122,7 +122,7 @@ function NavAdmin({ Toggle }) {
 
 
   return (
-    <Box sx={{ flexGrow: 1 }} >
+    <Box sx={{ flexGrow: 1 }} className="box-navabar">
       <AppBar position="static">
         <Toolbar className="navbar py-4">
           <IconButton
