@@ -11,12 +11,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
 import Auth from "../assets/auth-illustration.svg";
 import { auth } from "../firebase-config";
 
+// Composant principal
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,9 +30,7 @@ function SignIn() {
   useEffect(() => {
     // Vérifiez si l'utilisateur est déjà connecté
     const user = JSON.parse(localStorage.getItem("utilisateur"));
-
     if (user) {
-      // Si l'utilisateur est connecté, redirigez-le vers le tableau de bord approprié
       if (user.email === "serigne@gmail.com") {
         navigate("/admin/dashboardAdmin");
       } else {
@@ -39,6 +38,7 @@ function SignIn() {
       }
     }
   }, [navigate]);
+
   // Connecter un utilisateur
   const handleSignIn = () => {
     if (!email) {
@@ -50,9 +50,9 @@ function SignIn() {
       return;
     }
 
-    // Set loading to true when starting the sign-in process
     setLoading(true);
 
+    // Connecter l'utilisateur
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -74,10 +74,9 @@ function SignIn() {
       })
       .catch((error) => {
         toast.error("Vérifiez les identifiants!");
-        setEmail("");
+        setPassword("");
       })
       .finally(() => {
-        // Reset loading to false after the sign-in process is completed
         setTimeout(() => {
           setLoading(false);
           setLoadingComplete(true);
@@ -104,6 +103,7 @@ function SignIn() {
     }
   };
 
+  // Affichage
   return (
     <>
       <Row className="m-0 connexion">
@@ -114,6 +114,7 @@ function SignIn() {
               eBook
             </span>
             <h1 className="mb-2">Connexion</h1>
+
             <InputGroup className="mb-3">
               <InputGroup.Text id="basic-addon1">
                 <MailLockIcon />
