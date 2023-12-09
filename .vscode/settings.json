@@ -7,7 +7,7 @@
     "editor.renderWhitespace": "trailing",
     "editor.wordWrap": "on",
     "editor.formatOnPaste": true,
-    "editor.occurrencesHighlight": false,
+    "editor.occurrencesHighlight": "off",
     "editor.suggest.insertMode": "replace",
     "[javascript]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -55,8 +55,8 @@
     "editor.fontWeight": "400",
     "editor.mouseWheelZoom": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll": true,
-      "source.sortImports": true
+      "source.fixAll": "explicit",
+      "source.sortImports": "explicit"
     },
     "javascript.updateImportsOnFileMove.enabled": "always",
     "editor.formatOnSave": true,

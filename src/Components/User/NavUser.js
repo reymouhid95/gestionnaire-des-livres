@@ -11,10 +11,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
+import { Button, Form } from "react-bootstrap";
 
 function NavUser({ Toggle }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [avatarImage, setAvatarImage] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -36,6 +38,20 @@ function NavUser({ Toggle }) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setAvatarImage(reader.result);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -54,6 +70,9 @@ function NavUser({ Toggle }) {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem>
+        <input type="file" accept="image/*" onChange={handleAvatarChange} />
+      </MenuItem>
     </Menu>
   );
 
@@ -97,6 +116,15 @@ function NavUser({ Toggle }) {
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
+      </MenuItem>
+      <MenuItem>
+        <Form>
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarChange}
+          />
+        </Form>
       </MenuItem>
     </Menu>
   );
@@ -142,7 +170,15 @@ function NavUser({ Toggle }) {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <AccountCircle />
+              {avatarImage ? (
+                <img
+                  src={avatarImage}
+                  alt="Avatar"
+                  style={{ borderRadius: "50%", width: 32, height: 32 }}
+                />
+              ) : (
+                <AccountCircle />
+              )}
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>

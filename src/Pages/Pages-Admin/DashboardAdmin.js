@@ -9,7 +9,6 @@ function Dashboard() {
     const user = JSON.parse(localStorage.getItem("utilisateur"));
 
     if (user) {
-      // Si l'utilisateur est connecté, redirigez-le vers le tableau de bord approprié
       if (user.email !== "serigne@gmail.com") {
         navigate("/user/dashboardUser");
       }
