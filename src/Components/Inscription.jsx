@@ -8,13 +8,14 @@ import PersonIcon from "@mui/icons-material/Person";
 import SendIcon from "@mui/icons-material/Send";
 import { Button } from "@mui/material";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import Auth from "../assets/auth-illustration.svg";
-import { auth } from "../firebase-config";
+import { auth, db } from "../firebase-config";
 
 function SignUp() {
   const [name, setName] = useState("");
@@ -28,30 +29,37 @@ function SignUp() {
   const [loading, setLoading] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (isEmailUnique) {
       setLoading(true);
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          localStorage.setItem("userName", name);
-          setEmail("");
-          setPassword("");
-          setConfirmPassword("");
-          setName("");
-          toast.success("Inscription réussie!");
-          setTimeout(() => {
-            navigate("/connexion");
-          }, 3000);
-        })
-        .catch((error) => {
-          console.error("Erreur d'inscription :", error.message);
-          toast.error("Inscription échouée!");
-        })
-        .finally(() => {
-          setLoading(false);
-          setLoadingComplete(true);
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        // Ajouter l'utilisateur dans le firestore
+        await addDoc(collection(db, "users"), {
+          uid: userCredential.user.uid,
+          name: name,
+          email: email,
         });
+        localStorage.setItem("userName", name);
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setName("");
+        toast.success("Inscription réussie!");
+        setTimeout(() => {
+          navigate("/connexion");
+        }, 3000);
+      } catch (error) {
+        console.error("Erreur d'inscription :", error.message);
+        toast.error("Inscription échouée!");
+      } finally {
+        setLoading(false);
+        setLoadingComplete(true);
+      }
     } else {
       toast.error("Inscription échouée!");
     }
