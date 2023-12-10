@@ -1,6 +1,6 @@
 export const menuAdmin = [
   {
-    title: "Dashboard",
+    title: "Books Database",
     icon: "bi bi-clipboard-data fs-5 me-3",
     path: "/admin/dashboardAdmin",
   },

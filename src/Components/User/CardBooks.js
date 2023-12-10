@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { db } from "../../firebase-config";
 import HomeCard from "./HomeCard";
 import SearchBooks from "./SearchBooks";
@@ -55,7 +55,6 @@ function CardBooks() {
 
   return (
     <div className="container-fluid m-0 px-0 homeCard w-100">
-      <ToastContainer />
       <SearchBooks
         books={books}
         filter={filter}

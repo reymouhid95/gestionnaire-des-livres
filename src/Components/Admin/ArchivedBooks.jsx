@@ -1,8 +1,5 @@
-import React from "react";
-import { Table, Button } from "react-bootstrap";
-import * as Icon from "react-bootstrap-icons";
-import { useState, useEffect, useCallback } from "react";
-import { db } from "../../firebase-config";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   collection,
   doc,
@@ -11,6 +8,10 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Table } from "react-bootstrap";
+import * as Icon from "react-bootstrap-icons";
+import { db } from "../../firebase-config";
 import Paginations from "./Paginations";
 
 function ArchivedBooks() {
@@ -160,24 +161,26 @@ function ArchivedBooks() {
   };
 
   return (
-    <div className="dashboard" id="bookArchived">
+    <div className="dashboard mt-5" id="bookArchived">
       <Table
         responsive
         striped
         bordered
         hover
+        className="mx-5 data"
         variant="bg-body-secondary"
         id="table"
+        size="sm"
       >
         <thead>
           <tr>
-            <th className="text-white text-start">#</th>
-            <th className="text-white text-start">Titre</th>
-            <th className="text-white text-start">Auteur</th>
-            <th className="text-white text-start">Genre</th>
-            <th className="text-white text-start">Lien</th>
-            <th className="text-white text-start">Description</th>
-            <th className="text-white text-start">Actions</th>
+            <th className="text-white text-center">#</th>
+            <th className="text-white text-center">Title</th>
+            <th className="text-white text-center">Author</th>
+            <th className="text-white text-center">Gender</th>
+            <th className="text-white text-center">Link</th>
+            <th className="text-white text-center">Description</th>
+            <th className="text-white text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -193,8 +196,8 @@ function ArchivedBooks() {
                 <td>{book.description}</td>
                 <td>
                   <Button
-                    variant="outline-success"
-                    className="mb-2 mx-1 text-warning border border-none"
+                    variant="outline-warning"
+                    className="mb-2 mx-1 border border-none"
                     onClick={() =>
                       book.archived
                         ? handleUnarchivedBook(book.id)

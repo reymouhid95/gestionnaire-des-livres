@@ -5,12 +5,12 @@
   font-family: Georgia, "Times New Roman", Times, serif;
 }
 
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .sidebar {
-  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
+  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
   color: #fff;
   z-index: 1000;
 }
@@ -26,7 +26,7 @@
 }
 
 .linkSidebar a:hover {
-  background: hsl(199, 90%, 29%);
+  background: hsl(189, 91%, 29%);
   color: #fff;
   cursor: pointer;
 }
@@ -62,17 +62,20 @@
 }
 
 .navbar {
-  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
+  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
+}
+
+.box-navabar {
   position: -webkit-sticky;
   position: sticky !important;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  z-index: 1000;
+  top: 0 !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  left: 0 !important;
+  z-index: 1000 !important;
 }
 .title-seller {
-  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
+  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
 }
 
 .imgCarousel1 {
@@ -544,7 +547,7 @@ tbody .archiver {
 }
 
 .soumission:hover {
-  background-color: green !important;
+  background-color: hsl(187, 84%, 17%) !important;
   color: #fff !important;
   transition: 2s !important;
 }
@@ -567,11 +570,11 @@ tbody .archiver {
 }
 
 thead th {
-  background-color: hsl(199, 100%, 33%) !important;
+  background-color: hsl(187, 84%, 17%) !important;
 }
 
 .bookArchived thead th {
-  background-color: hsl(199, 100%, 33%) !important;
+  background-color: hsl(187, 84%, 17%) !important;
 }
 
 .color {
@@ -641,9 +644,9 @@ thead th {
 .connexion,
 .inscription {
   background-image: linear-gradient(
-    to right,
-    rgb(6, 71, 71),
-    rgba(6, 48, 71, 0.81)
+    to left,
+    hsl(187, 84%, 17%),
+    hsl(182, 81%, 28%)
   ) !important;
 }
 
@@ -667,10 +670,15 @@ thead th {
 
 .data td {
   border-collapse: collapse;
-  border: 1px solid rgb(18, 143, 189);
+  border: 1px solid hsl(187, 84%, 17%);
   overflow: hidden;
   max-width: 50px;
   white-space: nowrap;
   text-overflow: ellipsis;
   text-align: center;
+}
+
+.sign {
+  width: 100%;
+  height: 81.7vh !important;
 }

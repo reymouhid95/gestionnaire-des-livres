@@ -3,6 +3,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // Importation des bibliothèques et outils
 // import { addSeconds, differenceInDays } from "date-fns";
+import SendIcon from "@mui/icons-material/Send";
+import { Button, TextField } from "@mui/material";
 import {
   addDoc,
   collection,
@@ -12,7 +14,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { Col, Form, Modal, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { db } from "../../firebase-config";
 import TableBook from "./BookTable";
@@ -208,36 +210,38 @@ function FormBook() {
   };
 
   // Surveiller l'état du bouton
-  const buttonText = isAdding ? "Ajouter" : "Mise à jour";
+  const buttonText = isAdding ? "Add" : "Update";
 
   // L'affichage
   return (
     <div className="m-0">
-      {isArchived && toast.success("Livre archivé avec succès!")}
-      {isUnarchived && toast.success("Livre désarchivé avec succès!")}
+      {isArchived && toast.success("Livre archivé!")}
+      {isUnarchived && toast.success("Livre désarchivé!")}
       <Form onSubmit={handleSubmit}>
-        <Row className="w-100 m-0 p-0">
+        <Row>
           <div className="d-flex justify-content-end">
             <Button
-              className="soumission mt-2 mb-3 ms-5"
+              className="soumission mt-5 mx-5"
               style={{ width: "max-content" }}
               onClick={handleShow}
             >
-              Ajouter
+              New Book
             </Button>
           </div>
           <Modal show={show} onHide={handleClose} keyboard={false}>
             <Modal.Header closeButton>
-              <Modal.Title>Infos du stock</Modal.Title>
+              <Modal.Title>Inventory information</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className="row d-flex g-2">
                 <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
+                  <TextField
+                    id="standard-basic"
+                    label="Title"
+                    variant="filled"
                     type="text"
                     name="title"
                     value={formData.title}
-                    placeholder="Titre du livre"
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
                     }
@@ -245,11 +249,13 @@ function FormBook() {
                   />
                 </Col>
                 <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
+                  <TextField
+                    id="standard-basic"
+                    label="Author"
+                    variant="filled"
                     type="text"
                     name="author"
                     value={formData.author}
-                    placeholder="Nom de l'auteur"
                     onChange={(e) =>
                       setFormData({ ...formData, author: e.target.value })
                     }
@@ -259,11 +265,13 @@ function FormBook() {
               </div>
               <div className="row g-2 d-flex flex-wrap">
                 <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
+                  <TextField
+                    id="standard-basic"
+                    label="Gender"
+                    variant="filled"
                     type="text"
                     name="genre"
                     value={formData.genre}
-                    placeholder="Genre du livre"
                     onChange={(e) =>
                       setFormData({ ...formData, genre: e.target.value })
                     }
@@ -271,11 +279,13 @@ function FormBook() {
                   />
                 </Col>
                 <Col md={6} sm={12} xs={12} className="mb-2">
-                  <Form.Control
-                    type="text"
+                  <TextField
+                    id="standard-basic"
+                    label="Link"
+                    variant="filled"
+                    type="url"
                     name="url"
                     value={formData.url}
-                    placeholder="Lien du livre"
                     onChange={(e) =>
                       setFormData({ ...formData, url: e.target.value })
                     }
@@ -284,11 +294,15 @@ function FormBook() {
                   />
                 </Col>
                 <Col md={12} sm={12} xs={12} className="mb-2">
-                  <Form.Control
-                    as="textarea"
+                  <TextField
+                    id="filled-multiline-flexible"
+                    label="Description"
+                    multiline
+                    maxRows={5}
+                    variant="filled"
+                    fullWidth
                     name="description"
                     value={formData.description}
-                    placeholder="Description du livre"
                     onChange={(e) =>
                       setFormData({
                         ...formData,
@@ -302,6 +316,7 @@ function FormBook() {
               <div className="d-flex justify-content-center">
                 <Button
                   type="submit"
+                  endIcon={<SendIcon />}
                   className="soumission mt-2 mb-3"
                   onClick={handleSubmit}
                   style={{ width: "max-content" }}

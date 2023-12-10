@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 function NavUser({ Toggle }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -130,7 +130,7 @@ function NavUser({ Toggle }) {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} className="box-navabar">
       <AppBar position="static">
         <Toolbar className="navbar py-3">
           <IconButton

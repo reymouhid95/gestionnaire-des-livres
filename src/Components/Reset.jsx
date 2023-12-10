@@ -23,7 +23,6 @@ const PasswordReset = () => {
 
   // Méthode pour pouvoir réinitialiser le mot de passe
   const handlePasswordReset = () => {
-    // Set loading to true when starting the sign-in process
     setLoading(true);
     sendPasswordResetEmail(auth, email)
       .then(() => {
@@ -37,7 +36,6 @@ const PasswordReset = () => {
         toast.error("Merci de vérifier l'adresse email saisie.");
       })
       .finally(() => {
-        // Reset loading to false after the sign-in process is completed
         setTimeout(() => {
           setLoading(false);
           setLoadingComplete(true);
@@ -56,7 +54,7 @@ const PasswordReset = () => {
       <ToastContainer />
       <div>
         <a href="#" onClick={handleShow} className="mx-2 fw-bold">
-          Mot de passe oublié ? <span className="text-info">cliquez ici!</span>
+          Forgot password ? <span className="text-info">click here!</span>
         </a>
       </div>
 
@@ -84,7 +82,7 @@ const PasswordReset = () => {
               className="mb-3"
               disabled={loading}
             >
-              Envoyer{" "}
+              Send{" "}
               {!loadingComplete && loading && (
                 <Spinner
                   as="span"

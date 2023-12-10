@@ -187,11 +187,6 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
             </Col>
           </div>
         </div>
-        <div>
-          <Button className="soumission" onClick={handleShowListModal}>
-            Afficher la liste
-          </Button>
-        </div>
         <div className="tableau">
           <Table
             responsive
@@ -205,13 +200,13 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
           >
             <thead>
               <tr>
-                <th className="text-light text-center py-3">#</th>
-                <th className="text-light text-center py-3">Titre</th>
-                <th className="text-light text-center py-3">Auteur</th>
-                <th className="text-light text-center py-3">Genre</th>
-                <th className="text-light text-center py-3">Lien</th>
-                <th className="text-light text-center py-3">Description</th>
-                <th className="text-light text-center py-3">Actions</th>
+                <th className="text-light text-center">#</th>
+                <th className="text-light text-center">Title</th>
+                <th className="text-light text-center">Author</th>
+                <th className="text-light text-center">Gendee</th>
+                <th className="text-light text-center">Link</th>
+                <th className="text-light text-center">Description</th>
+                <th className="text-light text-center">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -233,21 +228,30 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                   <td>
                     <div>
                       <Button
+                        variant="outline-primary border border-none"
+                        className="mb-2 mx-1"
+                        onClick={handleShowListModal}
+                      >
+                        <Icon.List />
+                      </Button>
+                      <Button
                         variant="outline-info border border-none"
                         className="mb-2 mx-1"
+                        onClick={() => handleShowModal(book)}
                       >
-                        <Icon.Eye onClick={() => handleShowModal(book)} />
+                        <Icon.Eye />
                       </Button>
                       <Button
                         variant="outline-success"
-                        className="mb-2 mx-1 text-warning border border-none"
+                        className="mb-2 mx-1 border border-none"
                         style={{ display: !book.archived ? "inline" : "none" }}
+                        onClick={() => onEditBook(book)}
                       >
-                        <Icon.Pen onClick={() => onEditBook(book)} />
+                        <Icon.Pen />
                       </Button>
                       <Button
-                        variant="outline-success"
-                        className="mb-2 mx-1 text-warning border border-none"
+                        variant="outline-warning"
+                        className="mb-2 mx-1 border border-none"
                         onClick={() =>
                           book.archived
                             ? handleUnarchivedBook(book.id)
@@ -263,8 +267,9 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                       <Button
                         variant="outline-danger"
                         className="mb-2 mx-1 border border-none"
+                        onClick={() => onDeleteBook(book.id)}
                       >
-                        <Icon.Trash onClick={() => onDeleteBook(book.id)} />
+                        <Icon.Trash />
                       </Button>
                     </div>
                   </td>

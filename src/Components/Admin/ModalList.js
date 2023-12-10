@@ -4,7 +4,7 @@ function ListModal({ show, handleClose, books }) {
   return (
     <Modal show={show} onHide={handleClose} className="text-center">
       <Modal.Header closeButton>
-        <Modal.Title>Liste des livres</Modal.Title>
+        <Modal.Title>List of books</Modal.Title>
       </Modal.Header>
       <Modal.Body className="fw-bold">
         {books.map((book) => (

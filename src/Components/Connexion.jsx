@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
-import Auth from "../assets/auth-illustration.svg";
+import Sign2 from "../assets/signin2.svg";
 import { auth } from "../firebase-config";
 
 // Composant principal
@@ -113,7 +113,7 @@ function SignIn() {
               <AutoStoriesIcon className="mb-3 logo" />
               eBook
             </span>
-            <h1 className="mb-2">Connexion</h1>
+            <h1 className="mb-2">Connection</h1>
 
             <InputGroup className="mb-3">
               <InputGroup.Text id="basic-addon1">
@@ -134,7 +134,7 @@ function SignIn() {
                 <LockIcon />
               </InputGroup.Text>
               <Form.Control
-                placeholder="Mot de passe"
+                placeholder="Password"
                 aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={password}
@@ -151,7 +151,7 @@ function SignIn() {
               className="mb-3"
               disabled={loading}
             >
-              Se connecter{" "}
+              Sign In{" "}
               {!loadingComplete && loading && (
                 <Spinner
                   as="span"
@@ -166,19 +166,19 @@ function SignIn() {
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
             <p className="fw-bold">
-              Vous n'avez pas de compte ?{" "}
+              Don't have a account ?{" "}
               <Link to="/inscription">
-                <span className="text-info fw-bold">Cliquez ici</span>
+                <span className="text-info fw-bold">Click here</span>
               </Link>
             </p>
           </Form>
         </Col>
         <Col md={6} className="backThree text-center text-light fw-bold">
-          <h1 className="my-3">Bienvenue sur eBook</h1>
+          <h1 className="my-3">Welcome to eBook</h1>
           <p className="my-3">
-            La plateforme qui vous rendra autonome dans vos études.
+            The platform that will make you autonomous in your studies.
           </p>
-          <img src={Auth} alt="Image-auth" className="img-fluid" />
+          <img src={Sign2} alt="Image-auth" className="sign" />
         </Col>
       </Row>
     </>
