@@ -1,39 +1,47 @@
 import Aos from "aos";
 import "aos/dist/aos.css";
 import React, { useEffect, useState, useCallback } from "react";
-import { collection, getDocs, doc , updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove
+} from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Button, Modal } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import { toast } from "react-toastify";
 import { addSeconds, differenceInSeconds, isPast } from "date-fns";
 
-function HomeCard({
-  img,
-  title,
-  description,
-  auth,
-  genre,
-  toastComp,
-  stock,
-  onBorrowBook,
-  Id,
-  archived,
-}) {
+function HomeCard({ img, title, description, auth, genre, Id, archived }) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [books, setBooks] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [notificationsCollection, setNotificationsCollection] = useState(
+    collection(db, "notifications")
+  );
 
   const loadBooks = useCallback(async () => {
     try {
       const bookCollection = collection(db, "books");
+      const usersCollection = collection(db, "users");
       const snapshot = await getDocs(bookCollection);
+      const usersSnapshot = await getDocs(usersCollection);
       const bookData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
+      const usersData = usersSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setBooks(bookData);
+      setUsers(usersData);
     } catch (error) {
       console.error("Error loading books:", error);
       alert(
@@ -42,73 +50,98 @@ function HomeCard({
     }
   }, []);
 
-  
- const borrowBook = async (borrowedBookTitle) => {
-   const userName = localStorage.getItem("userName");
-   const borrowedBook = books.find((book) => book.title === borrowedBookTitle);
-   if (borrowedBook && borrowedBook.isBorrowed) {
-     await updateDoc(doc(db, "books", borrowedBook.id), {
-       stock: borrowedBook.stock + 1,
-       isBorrowed: false,
-       returnDate: null, // Clear return date when returning
-     });
-     toast.success(
-       `L'utilisateur ${userName} a rendu le livre ${borrowedBookTitle}`
-     );
-     loadBooks();
-   } else if (borrowedBook && borrowedBook.stock > 0) {
-     const returnDate = addSeconds(new Date(), 10); 
-     await updateDoc(doc(db, "books", borrowedBook.id), {
-       stock: borrowedBook.stock - 1,
-       isBorrowed: true,
-       returnDate: returnDate.toISOString(),
-     });
-     toast.success(
-       `Livre ${borrowedBookTitle} emprunté par ${userName} avec succès`
-     );
-     loadBooks();
-   } else if (borrowedBook) {
-     toast.error(`Stock épuisé pour le livre : ${borrowedBookTitle}`);
-   } else {
-     toast.error(`Livre ${borrowedBookTitle} non trouvé`);
-   }
- };
+  //Fonction pour l'emprunt de livre
+  const borrowBook = async (borrowedBookTitle) => {
+    const userName = localStorage.getItem("userName");
+    const userEmail = JSON.parse(localStorage.getItem("utilisateur"));
+    const borrowedBook = books.find((book) => book.title === borrowedBookTitle);
+    const userBookBorrowed = users.find((user) => user.name === userName)
 
-  
+    if (borrowedBook && borrowedBook.isBorrowed) {
+      await updateDoc(doc(db, "books", borrowedBook.id), {
+        stock: borrowedBook.stock + 1,
+        isBorrowed: false,
+        returnDate: null,
+      });
+
+       if (userBookBorrowed) {
+         // Supprimez le livre du tableau dans le document utilisateur
+         await updateDoc(doc(db, "users", userBookBorrowed.id), {
+           livre: arrayRemove(borrowedBookTitle),
+         });
+       } else {
+         console.error("Utilisateur non trouvé dans la collection 'users'");
+       }
+
+      const notificationMessage = `${userName} a rendu le livre ${borrowedBookTitle}!`;
+      await addDoc(notificationsCollection, { message: notificationMessage });
+
+      toast.info(notificationMessage);
+      loadBooks();
+    } else if (borrowedBook && borrowedBook.stock > 0) {
+      const returnDate = addSeconds(new Date(), 10);
+      await updateDoc(doc(db, "books", borrowedBook.id), {
+        stock: borrowedBook.stock - 1,
+        isBorrowed: true,
+        returnDate: returnDate.toISOString(),
+      });
+
+      await updateDoc(doc(db, "users", userBookBorrowed.id), {
+        livre: arrayUnion(`${borrowedBookTitle} ,`),
+      });
+
+      const notificationMessage = `Vous avez emprunté le livre ${borrowedBookTitle}`;
+      const notificationMessageAdmin = `${userName} a emprunté le livre ${borrowedBookTitle}`;
+      await addDoc(notificationsCollection, {
+        message: notificationMessage,
+        messageForAdmin: notificationMessageAdmin,
+      });
+
+      toast.success(notificationMessage);
+      loadBooks();
+    } else if (borrowedBook) {
+      const notificationMessage = `Stock épuisé pour le livre : ${borrowedBookTitle}!`;
+      await addDoc(notificationsCollection, {
+        message: notificationMessage,
+      });
+
+      toast.warning(notificationMessage);
+    } else {
+      const notificationMessage = `Livre ${borrowedBookTitle} non trouvé!`;
+      await addDoc(notificationsCollection, { message: notificationMessage });
+
+      toast.warning(notificationMessage);
+    }
+  };
+
   useEffect(() => {
     const checkReturnStatus = async () => {
       const borrowedBooks = books.filter((book) => book.isBorrowed);
-
       for (const borrowedBook of borrowedBooks) {
         const returnDate = new Date(borrowedBook.returnDate);
         const secondsUntilReturn = differenceInSeconds(returnDate, new Date());
-
         if (isPast(returnDate)) {
-          // The return date has passed, automatically return the book
           await updateDoc(doc(db, "books", borrowedBook.id), {
             stock: borrowedBook.stock + 1,
             isBorrowed: false,
-            returnDate: null, // Reset returnDate after returning
+            returnDate: null,
           });
-
-          toast.success(
-            `Délai dépassé, livre ${borrowedBook.title} recupéré.`
+          toast.info(
+            `Délai dépassé. Le livre ${borrowedBook.title} a été recupéré!`
           );
           loadBooks();
         } else {
-          // Log or notify that the return will happen in the future
-          toast.success(
-            `Récupération du livre ${borrowedBook.title} imminent.`
+          toast.warning(
+            `Expiration du délai de l'emprunt du livre ${borrowedBook.title} imminente.`
           );
         }
       }
     };
 
-    const interval = setInterval(checkReturnStatus, 5000); // Check every second
-
-    return () => clearInterval(interval); // Cleanup on component unmount
+    // Déclaration de l'intervalle pour récupérer le livre
+    const interval = setInterval(checkReturnStatus, 3000);
+    return () => clearInterval(interval);
   }, [books, loadBooks]);
-
 
   useEffect(() => {
     loadBooks();
@@ -121,7 +154,6 @@ function HomeCard({
   const bookBorrowed = books.find(
     (book) => book.title === title && book.isBorrowed
   );
-  
 
   return (
     <Card

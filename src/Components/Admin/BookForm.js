@@ -161,49 +161,6 @@ function FormBook() {
     }
   };
 
-  // Fonction pour gérer le retour automatique des livres
-  // const handleAutoReturn = async () => {
-  //   const currentDate = new Date();
-  //   const overdueBooks = books.filter(
-  //     (book) =>
-  //       book.isBorrowed &&
-  //       book.dueDate &&
-  //       differenceInDays(new Date(), book.dueDate) > 0
-  //   );
-
-  //   // Retour automatique des livres et mise à jour de la base de données
-  //   await Promise.all(
-  //     overdueBooks.map(async (book) => {
-  //       await updateDoc(doc(db, "books", book.id), {
-  //         isBorrowed: false,
-  //         dueDate: null,
-  //         stock: stocks[book.title] + 1,
-  //       });
-  //       setStocks((prevStocks) => ({
-  //         ...prevStocks,
-  //         [book.title]: stocks[book.title] + 1,
-  //       }));
-
-  //       // L'lerte pour informer l'utilisateur du retour automatique
-  //       toast.info(
-  //         `Retour automatique du livre "${book.title}" en raison de la date d'échéance dépassée!`
-  //       );
-  //     })
-  //   );
-
-  //   await checkStockAndReload();
-  // };
-
-  // Nettoyage au démontage
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     handleAutoReturn();
-  //     checkStockAndReload();
-  //   }, 20 * 1000);
-
-  //   return () => clearInterval(intervalId);
-  // }, [handleAutoReturn]);
-
   const archive = useCallback(
     async (bookId) => {
       try {

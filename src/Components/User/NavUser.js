@@ -1,26 +1,84 @@
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MenuIcon from "@mui/icons-material/Menu";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import * as React from "react";
 import AppBar from "@mui/material/AppBar";
-import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import Badge from "@mui/material/Badge";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MailIcon from "@mui/icons-material/Mail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MoreIcon from "@mui/icons-material/MoreVert";
+import { db } from "../../firebase-config";
+import {
+  collection,
+  getDocs,
+  doc,
+  onSnapshot,
+} from "firebase/firestore";
+import { toast } from "react-toastify";
+// import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
-function NavUser({ Toggle }) {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+function NavAdmin({ Toggle }) {
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorElNotif, setAnchorElNotif] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [notifs, setNotifs] = React.useState([]);
+  const [newNotificationsCount, setNewNotificationsCount] = React.useState(0);
+  const [previousNotifications, setPreviousNotifications] = React.useState([]);
 
   const isMenuOpen = Boolean(anchorEl);
+  const isMenuOpenNotif = Boolean(anchorElNotif);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const loadBooks = React.useCallback(() => {
+    try {
+      const bookCollection = collection(db, "notifications");
+      const unsubscribe = onSnapshot(bookCollection, (snapshot) => {
+        const bookData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setNotifs(bookData);
+      });
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Error loading books:", error);
+      toast.error(
+        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
+      );
+    }
+  }, []);
+
+  React.useEffect(() => {
+    loadBooks();
+  }, [loadBooks]);
+  
+  React.useEffect(() => {
+    // Récupérer les notifications lues depuis le stockage local
+    const readNotifications =
+      JSON.parse(localStorage.getItem("readNotifications")) || [];
+
+    // Filtrer les nouvelles notifications qui ne sont pas lues
+    const newUnreadNotifications = notifs.filter(
+      (notif) => !readNotifications.includes(notif.id)
+    );
+
+    // Mettre à jour le compteur de nouvelles notifications
+    setNewNotificationsCount(newUnreadNotifications.length);
+  }, [notifs]);
+
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuOpenNotif = (event) => {
+    setAnchorElNotif(event.currentTarget);
   };
 
   const handleMobileMenuClose = () => {
@@ -29,11 +87,26 @@ function NavUser({ Toggle }) {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setAnchorElNotif(null);
     handleMobileMenuClose();
+    setNewNotificationsCount(0);
+
+    // Stocker les notifications lues dans le stockage local
+    const readNotifications = notifs.map((notif) => notif.id);
+    localStorage.setItem(
+      "readNotifications",
+      JSON.stringify(readNotifications)
+    );
   };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  // const navigate = useNavigate();
+  const deconnexion = () => {
+    localStorage.removeItem("utilisateur");
+    window.location.replace("/connexion");
   };
 
   const menuId = "primary-search-account-menu";
@@ -41,19 +114,55 @@ function NavUser({ Toggle }) {
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: "top",
+        vertical: "bottom",
         horizontal: "right",
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
         vertical: "top",
-        horizontal: "right",
+        horizontal: "center",
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={deconnexion}>Déconnexion</MenuItem>
+    </Menu>
+  );
+
+  const renderMenuNotif = (
+    <Menu
+      anchorEl={anchorElNotif}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "center",
+      }}
+      open={isMenuOpenNotif}
+      onClose={handleMenuClose}
+      className="notifsContent"
+    >
+      <div>
+        <h6 className="text-center fw-bold">Notifications</h6>
+        <hr />
+        {notifs.map((notif, index) => (
+          <MenuItem key={notif.id}>
+            <p
+              className={`notifs px-2 py-2 rounded ${
+                index === notifs.length-1 ? "last-notification" : ""
+              }`}
+            >
+              {notif.message}
+            </p>
+          </MenuItem>
+        ))}
+      </div>
     </Menu>
   );
 
@@ -73,8 +182,17 @@ function NavUser({ Toggle }) {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
+      style={{width: "100px !important"}}
     >
       <MenuItem>
+        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+          <Badge badgeContent={4} color="error">
+            <MailIcon />
+          </Badge>
+        </IconButton>
+        <p>Messages</p>
+      </MenuItem>
+      <MenuItem onClick={handleProfileMenuOpenNotif}>
         <IconButton
           size="large"
           aria-label="show 17 new notifications"
@@ -104,7 +222,7 @@ function NavUser({ Toggle }) {
   return (
     <Box sx={{ flexGrow: 1 }} className="box-navabar">
       <AppBar position="static">
-        <Toolbar className="navbar py-3">
+        <Toolbar className="navbar py-4">
           <IconButton
             size="large"
             edge="start"
@@ -126,12 +244,18 @@ function NavUser({ Toggle }) {
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
               size="large"
+              onClick={handleProfileMenuOpenNotif}
+              aria-controls={menuId}
               aria-label="show 17 new notifications"
               color="inherit"
             >
-              <Badge badgeContent={17} color="error">
+              {newNotificationsCount > 0 ? (
+                <Badge badgeContent={newNotificationsCount} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              ) : (
                 <NotificationsIcon />
-              </Badge>
+              )}
             </IconButton>
             <IconButton
               size="large"
@@ -161,8 +285,9 @@ function NavUser({ Toggle }) {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {renderMenuNotif}
     </Box>
   );
 }
 
-export default NavUser;
+export default NavAdmin;

@@ -20,6 +20,7 @@ import {
 import 'rsuite/dist/rsuite-no-reset.min.css';
 import { useState } from 'react';
 import BookBorrowedContent from './Pages/Pages-User/BookBorrowedContent';
+import ListOfUsers from './Pages/Pages-Admin/ListOfUsers';
 
 
 
@@ -54,7 +55,7 @@ function App() {
         <Routes>
           <Route path="/admin/dashboardAdmin" element={<DashboardAdmin />} />
           <Route path="/admin/archived" element={<Archive />} />
-          <Route path="/admin/statistics" element={<Home />} />
+          <Route path="/admin/userList" element={<ListOfUsers />} />
 
           <Route path="/user/dashboardUser" element={<DashboardUser />} />
           <Route path="/user/bookBorrowed" element={<BookBorrowedContent />} />

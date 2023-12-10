@@ -32,32 +32,12 @@ function HomeCardContent() {
   }, []);
 
   useEffect(() => {
-    console.log(books);
     loadBooks();
   }, [loadBooks]);
 
   const toastComps = () => {
     return toast.success("Livre emprunté")
   }
-
-    // const borrowBook = async (borrowedBookTitle) => {
-    //   const borrowedBook = books.find(
-    //     (book) => book.title === borrowedBookTitle
-    //   );
-    //   if (borrowedBook && borrowedBook.stock > 0) {
-    //     await updateDoc(doc(db, "books", borrowedBook.id), {
-    //       stock: borrowedBook.stock - 1,
-    //     });
-    //     alert(`Livre emprunté : ${borrowedBook.title}`);
-    //     loadBooks();
-    //   } else if (borrowedBook) {
-    //     alert(`Stock épuisé pour le livre : ${borrowedBookTitle}`);
-    //   } else {
-    //     alert(`Livre non trouvé avec l'ID : ${borrowedBookTitle}`);
-    //   }
-    // };
-
-  
 
 
   return (
