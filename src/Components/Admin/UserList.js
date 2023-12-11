@@ -69,11 +69,11 @@ function UserList() {
       >
         <thead>
           <tr>
-            <th className="text-white text-start">#</th>
-            <th className="text-white text-start">Nom</th>
-            <th className="text-white text-start">Email</th>
-            <th className="text-white text-start">Livres empruntés</th>
-            <th className="text-white text-start">Actions</th>
+            <th className="text-white text-center">#</th>
+            <th className="text-white text-center">Nom</th>
+            <th className="text-white text-center">Email</th>
+            <th className="text-white text-center">Livres empruntés</th>
+            <th className="text-white text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
