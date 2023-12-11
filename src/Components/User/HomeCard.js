@@ -73,7 +73,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
         console.error("User not found in the 'users' collection");
       }
 
-      const notificationMessage = `${userName} a rendu le livre ${borrowedBookTitle}!`;
+      const notificationMessage = `${userName} returned the book ${borrowedBookTitle}!`;
       await addDoc(notificationsCollection, { message: notificationMessage });
 
       toast.info(notificationMessage);

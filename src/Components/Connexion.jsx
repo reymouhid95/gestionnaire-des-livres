@@ -76,6 +76,12 @@ function SignIn() {
     // Connecter l'utilisateur
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        const userBlocked = users.find((user) => user.email === email);
+        if (userBlocked.bloqued) {
+          setLoading(false);
+          toast.error("Your account has been bloked!");
+          return;
+        }
         const user = userCredential.user;
         localStorage.setItem("utilisateur", JSON.stringify(user));
         setEmail("");

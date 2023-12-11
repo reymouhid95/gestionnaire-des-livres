@@ -113,7 +113,7 @@ function NavUser({ Toggle }) {
       }
     } catch (error) {
       console.error("Error loading users:", error);
-      toast.error("Loading error. Please check your internet connection!");
+      toast.error("Loading error. Please check your internet connection!!");
     }
   }, [loadUserDetails, loadAvatar]);
 

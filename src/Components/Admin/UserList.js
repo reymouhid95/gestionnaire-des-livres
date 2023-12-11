@@ -13,7 +13,6 @@ function UserList() {
   const indexOfLastUser = currentPage * booksPerPage;
   const indexOfFirstUser = indexOfLastUser - booksPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-  // const [userBloqued, setUserBloqued] = useState(false);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -25,14 +24,14 @@ function UserList() {
       const bloqued = userBloqued.bloqued;
       // Mettre à jour la clé "blocked" avec la nouvelle valeur
       await updateDoc(doc(db, "users", userBloqued.id), {
-        bloqued: !bloqued, // Inverser la valeur actuelle
+        bloqued: !bloqued,
       });
 
       // Recharger les utilisateurs après la mise à jour
       loadUsers();
     } catch (error) {
       console.error("Error updating user:", error);
-      toast.error("Erreur lors de la mise à jour de l'utilisateur.");
+      toast.error("Error updating user!");
     }
   };
 
@@ -47,9 +46,7 @@ function UserList() {
       setUsers(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      toast.error("Loading error. Please check your internet connection!!");
     }
   }, []);
 
@@ -58,7 +55,7 @@ function UserList() {
   }, [loadUsers]);
 
   return (
-    <div className="dashboard mt-5">
+    <div className="dashboard">
       <Table
         responsive
         striped
@@ -69,11 +66,11 @@ function UserList() {
       >
         <thead>
           <tr>
-            <th className="text-white text-center">#</th>
-            <th className="text-white text-center">Name</th>
-            <th className="text-white text-center">Email</th>
-            <th className="text-white text-center">Borrowed books</th>
-            <th className="text-white text-center">Actions</th>
+            <th className="text-white text-start">#</th>
+            <th className="text-white text-start">Name</th>
+            <th className="text-white text-start">Email</th>
+            <th className="text-white text-start">Books borrowed</th>
+            <th className="text-white text-start">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -98,7 +95,6 @@ function UserList() {
                     />
                   )}
                 </Button>
-                <span>block</span>
               </td>
             </tr>
           ))}
