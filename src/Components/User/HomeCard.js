@@ -46,9 +46,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       setUsers(usersData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      toast.error("Loading error. Please check your internet connection!");
     }
   }, []);
 
@@ -72,7 +70,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
           livre: arrayRemove(borrowedBookTitle),
         });
       } else {
-        console.error("Utilisateur non trouvé dans la collection 'users'");
+        console.error("User not found in the 'users' collection");
       }
 
       const notificationMessage = `${userName} a rendu le livre ${borrowedBookTitle}!`;
@@ -92,8 +90,8 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
         livre: arrayUnion(`${borrowedBookTitle} ,`),
       });
 
-      const notificationMessage = `Vous avez emprunté le livre ${borrowedBookTitle}`;
-      const notificationMessageAdmin = `${userName} a emprunté le livre ${borrowedBookTitle}`;
+      const notificationMessage = `You borrowed the book ${borrowedBookTitle}`;
+      const notificationMessageAdmin = `${userName} borrowed the book ${borrowedBookTitle}`;
       await addDoc(notificationsCollection, {
         message: notificationMessage,
         messageForAdmin: notificationMessageAdmin,
@@ -102,14 +100,14 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       toast.success(notificationMessage);
       loadBooks();
     } else if (borrowedBook) {
-      const notificationMessage = `Stock épuisé pour le livre : ${borrowedBookTitle}!`;
+      const notificationMessage = `Sold out for the book : ${borrowedBookTitle}!`;
       await addDoc(notificationsCollection, {
         message: notificationMessage,
       });
 
       toast.warning(notificationMessage);
     } else {
-      const notificationMessage = `Livre ${borrowedBookTitle} non trouvé!`;
+      const notificationMessage = `Book ${borrowedBookTitle} not found!`;
       await addDoc(notificationsCollection, { message: notificationMessage });
 
       toast.warning(notificationMessage);
@@ -128,12 +126,12 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
             returnDate: null,
           });
           toast.info(
-            `Délai dépassé. Le livre ${borrowedBook.title} a été recupéré!`
+            `Deadline exceeded. The book ${borrowedBook.title} has been recovered!`
           );
           loadBooks();
         } else {
           toast.warning(
-            `Expiration du délai de l'emprunt du livre ${borrowedBook.title} imminente.`
+            `Deadline for borrowing book ${borrowedBook.title} imminent!`
           );
         }
       }

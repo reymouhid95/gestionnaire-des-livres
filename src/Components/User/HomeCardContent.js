@@ -18,9 +18,7 @@ function HomeCardContent() {
       setBooks(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      toast.error("Loading error. Please check your internet connection!");
     }
   }, []);
 
@@ -30,7 +28,7 @@ function HomeCardContent() {
   }, [loadBooks]);
 
   const toastComps = () => {
-    return toast.success("Livre emprunté");
+    return toast.success("Book borrowed");
   };
 
   return (

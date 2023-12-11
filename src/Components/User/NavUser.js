@@ -66,9 +66,7 @@ function NavUser({ Toggle }) {
       return () => unsubscribe();
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      toast.error("Loading error. Please check your internet connection!");
     }
   }, []);
 
@@ -115,9 +113,7 @@ function NavUser({ Toggle }) {
       }
     } catch (error) {
       console.error("Error loading users:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      toast.error("Loading error. Please check your internet connection!");
     }
   }, [loadUserDetails, loadAvatar]);
 

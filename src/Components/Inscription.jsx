@@ -81,7 +81,7 @@ function SignUp() {
     if (invalidEmailSuffixRegex.test(newEmail)) {
       setIsEmailValid(false);
       toast.error(
-        "L'adresse e-mail ne peut pas contenir de caractères après le '.com'. Veuillez l'enlever pour pouvoir vous inscrire!"
+        "The e-mail address cannot contain characters after the '.com'. Please remove it so you can register!!"
       );
     }
     if (existingEmails.includes(newEmail)) {
@@ -102,11 +102,11 @@ function SignUp() {
     if (email && password && password === confirmPassword) {
       handleSignUp();
     } else if (!isEmailValid) {
-      toast.error("Veuillez saisir une adresse e-mail valide !");
+      toast.error("Please enter a valid email address!");
     } else if (!isEmailUnique) {
-      toast.error("Cette adresse e-mail est déjà utilisée !");
+      toast.error("This email address is already in use!");
     } else {
-      toast.error("Les mots de passe ne correspondent pas !");
+      toast.error("Passwords don't match!");
     }
   };
 

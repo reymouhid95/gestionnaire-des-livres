@@ -27,13 +27,13 @@ const PasswordReset = () => {
     sendPasswordResetEmail(auth, email)
       .then(() => {
         setEmail("");
-        toast.success("Mail envoyé dans votre boite mail!");
+        toast.success("Email sent to your inbox!");
         setTimeout(() => {
           setShow(false);
         }, 3000);
       })
       .catch(() => {
-        toast.error("Merci de vérifier l'adresse email saisie.");
+        toast.error("Please check the email address entered!");
       })
       .finally(() => {
         setTimeout(() => {

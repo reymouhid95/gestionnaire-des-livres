@@ -52,9 +52,7 @@ function SignIn() {
       setUsers(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      toast.error("Loading error. Please check your internet connection!");
     }
   }, []);
 
@@ -84,8 +82,8 @@ function SignIn() {
         setPassword("");
         toast.success(
           email === "serigne@gmail.com"
-            ? "Administrateur connecté!"
-            : "Utilisateur connecté!"
+            ? "Logged-in administrator!"
+            : "Logged-in user!"
         );
         setTimeout(() => {
           if (email === "serigne@gmail.com") {
@@ -96,7 +94,7 @@ function SignIn() {
         }, 3000);
       })
       .catch((error) => {
-        toast.error("Vérifiez les identifiants!");
+        toast.error("Verify credentials!");
         setPassword("");
       })
       .finally(() => {

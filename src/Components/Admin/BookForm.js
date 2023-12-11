@@ -56,9 +56,7 @@ function FormBook() {
       setBooks(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      toast.error("Loading error. Please check your internet connection!");
     }
   }, []);
 
@@ -70,7 +68,7 @@ function FormBook() {
   const handleAddBook = useCallback(async () => {
     const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
     if (!urlRegex.test(formData.url)) {
-      toast.error("Veuillez entrer un lien valide dans le champ URL!");
+      toast.error("Please enter a valid link in the URL field!");
       urlInputRef.current.focus();
       return;
     }
@@ -78,7 +76,7 @@ function FormBook() {
     // Vérifier si tous les champs requis sont remplis
     const requiredFields = ["title", "author", "genre", "url", "description"];
     if (requiredFields.some((field) => formData[field].trim() === "")) {
-      toast.error("Veuillez remplir tous les champs.");
+      toast.error("Please fill in all fields!");
       return;
     }
 
@@ -87,7 +85,7 @@ function FormBook() {
       (book) => JSON.stringify(book) === JSON.stringify(formData)
     );
     if (existingBook) {
-      toast.warning("Ce livre existe déjà!");
+      toast.warning("This book already exists!");
       return;
     }
 
@@ -152,7 +150,7 @@ function FormBook() {
       try {
         const selectedBook = books.find((book) => book.id === bookId);
         if (!selectedBook) {
-          console.error("Pas de livre selectionné pour être archivé!");
+          console.error("No book selected for archiving!");
           return;
         }
         const updatedBookData = {
@@ -216,7 +214,7 @@ function FormBook() {
   return (
     <div className="m-0">
       {isArchived && toast.success("Book archived!")}
-      {isUnarchived && toast.success("Livre désarchivé!")}
+      {isUnarchived && toast.success("Book unarchived!")}
       <Form onSubmit={handleSubmit}>
         <Row>
           <div className="d-flex justify-content-end">

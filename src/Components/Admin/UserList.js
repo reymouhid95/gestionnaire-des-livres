@@ -70,9 +70,9 @@ function UserList() {
         <thead>
           <tr>
             <th className="text-white text-center">#</th>
-            <th className="text-white text-center">Nom</th>
+            <th className="text-white text-center">Name</th>
             <th className="text-white text-center">Email</th>
-            <th className="text-white text-center">Livres empruntés</th>
+            <th className="text-white text-center">Borrowed books</th>
             <th className="text-white text-center">Actions</th>
           </tr>
         </thead>
@@ -98,7 +98,7 @@ function UserList() {
                     />
                   )}
                 </Button>
-                <span>bloquer</span>
+                <span>block</span>
               </td>
             </tr>
           ))}

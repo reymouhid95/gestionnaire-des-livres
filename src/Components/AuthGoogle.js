@@ -30,7 +30,7 @@ const GoogleAuth = () => {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error("Erreur lors de la connexion avec Google:", error);
+      console.error("Error logging in with Google:", error);
     }
   };
 

@@ -39,9 +39,7 @@ function ArchivedBooks() {
       setBooks(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      alert(
-        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
-      );
+      alert("Loading error. Please check your internet connection!");
     }
   }, []);
 
