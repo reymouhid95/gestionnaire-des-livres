@@ -193,7 +193,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
             striped
             bordered
             hover
-            className="mx-5 data"
+            className="data"
             variant="bg-body-secondary"
             id="table"
             size="sm"
@@ -203,7 +203,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                 <th className="text-light text-center">#</th>
                 <th className="text-light text-center">Title</th>
                 <th className="text-light text-center">Author</th>
-                <th className="text-light text-center">Gendee</th>
+                <th className="text-light text-center">Gender</th>
                 <th className="text-light text-center">Link</th>
                 <th className="text-light text-center">Description</th>
                 <th className="text-light text-center">Actions</th>

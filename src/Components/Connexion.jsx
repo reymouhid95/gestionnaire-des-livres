@@ -8,14 +8,15 @@ import MailLockIcon from "@mui/icons-material/MailLock";
 import SendIcon from "@mui/icons-material/Send";
 import { Button } from "@mui/material";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { useCallback, useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
 import Sign2 from "../assets/signin2.svg";
-import { auth } from "../firebase-config";
+import { auth, db } from "../firebase-config";
 
 // Composant principal
 function SignIn() {
@@ -26,6 +27,7 @@ function SignIn() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     // Vérifiez si l'utilisateur est déjà connecté
@@ -38,6 +40,27 @@ function SignIn() {
       }
     }
   }, [navigate]);
+
+  const loadUsers = useCallback(async () => {
+    try {
+      const bookCollection = collection(db, "users");
+      const snapshot = await getDocs(bookCollection);
+      const bookData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUsers(bookData);
+    } catch (error) {
+      console.error("Error loading books:", error);
+      toast.error(
+        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   // Connecter un utilisateur
   const handleSignIn = () => {

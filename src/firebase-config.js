@@ -1,20 +1,18 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { GoogleAuthProvider, getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-} from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAclnGzuO1WBERhddl6pGLUmWfjIDSXDuw",
-  authDomain: "app-book-react.firebaseapp.com",
-  projectId: "app-book-react",
-  storageBucket: "app-book-react.appspot.com",
-  messagingSenderId: "703578951549",
-  appId: "1:703578951549:web:c92d461dd9c37e54e5c614",
+  apiKey: "AIzaSyAauSvZZEFY4LCUXUcZ4naRhTpakHMkL84",
+  authDomain: "book-app-react-afdba.firebaseapp.com",
+  projectId: "book-app-react-afdba",
+  storageBucket: "book-app-react-afdba.appspot.com",
+  messagingSenderId: "777619475154",
+  appId: "1:777619475154:web:96baee513e68b15cf1fb0b",
+  measurementId: "G-6CTD8LXRM2",
 };
 
 // Initialize Firebase
@@ -22,6 +20,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
-const provider = new FacebookAuthProvider();
+const storage = getStorage(app);
 
-export { db, auth, googleProvider, provider };
+export { auth, db, googleProvider, storage };

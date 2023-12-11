@@ -74,6 +74,20 @@
   left: 0 !important;
   z-index: 1000 !important;
 }
+
+.notifsContent {
+  padding-left: 4% !important;
+  padding-right: 4% !important;
+}
+
+.notifs {
+  background-color: rgb(232, 232, 232) !important;
+}
+
+#tableUser {
+  width: 150% !important;
+}
+
 .title-seller {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
 }

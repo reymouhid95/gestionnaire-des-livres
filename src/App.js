@@ -11,10 +11,10 @@ import NavUser from "./Components/User/NavUser";
 import SidebarUser from "./Components/User/SidebarUser";
 import Archive from "./Pages/Pages-Admin/Archive";
 import DashboardAdmin from "./Pages/Pages-Admin/DashboardAdmin";
+import ListOfUsers from "./Pages/Pages-Admin/ListOfUsers";
 import BookBorrowedContent from "./Pages/Pages-User/BookBorrowedContent";
 import Books from "./Pages/Pages-User/Books";
 import DashboardUser from "./Pages/Pages-User/DashboardUser";
-import Home from "./Pages/Statistics";
 import Template from "./layouts/Template";
 
 function App() {
@@ -45,7 +45,7 @@ function App() {
         <Routes>
           <Route path="/admin/dashboardAdmin" element={<DashboardAdmin />} />
           <Route path="/admin/archived" element={<Archive />} />
-          <Route path="/admin/statistics" element={<Home />} />
+          <Route path="/admin/userList" element={<ListOfUsers />} />
 
           <Route path="/user/dashboardUser" element={<DashboardUser />} />
           <Route path="/user/bookBorrowed" element={<BookBorrowedContent />} />

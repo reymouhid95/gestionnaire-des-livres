@@ -44,25 +44,26 @@ function SignUp() {
           uid: userCredential.user.uid,
           name: name,
           email: email,
+          bloqued: false,
         });
         localStorage.setItem("userName", name);
         setEmail("");
         setPassword("");
         setConfirmPassword("");
         setName("");
-        toast.success("Inscription réussie!");
+        toast.success("Registration successfuly!");
         setTimeout(() => {
           navigate("/connexion");
         }, 3000);
       } catch (error) {
-        console.error("Erreur d'inscription :", error.message);
-        toast.error("Inscription échouée!");
+        console.error("Registration error :", error.message);
+        toast.error("Registration failed!");
       } finally {
         setLoading(false);
         setLoadingComplete(true);
       }
     } else {
-      toast.error("Inscription échouée!");
+      toast.error("Registration failed!");
     }
   };
 
@@ -74,13 +75,13 @@ function SignUp() {
     const newEmail = e.target.value;
     setEmail(newEmail);
     setIsEmailUnique(true);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
     setIsEmailValid(emailRegex.test(newEmail));
     const invalidEmailSuffixRegex = /\.com[0-9a-zA-Z]+$/;
     if (invalidEmailSuffixRegex.test(newEmail)) {
       setIsEmailValid(false);
       toast.error(
-        "L'adresse e-mail ne peut pas contenir de caractères après le '.com'. Veuillez l'enlever pour pouvoir vous inscrire !"
+        "L'adresse e-mail ne peut pas contenir de caractères après le '.com'. Veuillez l'enlever pour pouvoir vous inscrire!"
       );
     }
     if (existingEmails.includes(newEmail)) {

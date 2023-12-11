@@ -10,10 +10,10 @@ import SignIn from "./Components/Connexion";
 import SignUp from "./Components/Inscription";
 import Archive from "./Pages/Pages-Admin/Archive";
 import DashboardAdmin from "./Pages/Pages-Admin/DashboardAdmin";
+import ListOfUsers from "./Pages/Pages-Admin/ListOfUsers";
 import BookBorrowedContent from "./Pages/Pages-User/BookBorrowedContent";
 import Books from "./Pages/Pages-User/Books";
 import DashboardUser from "./Pages/Pages-User/DashboardUser";
-import Home from "./Pages/Statistics";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
@@ -31,8 +31,8 @@ const route = createBrowserRouter([
         element: <DashboardAdmin />,
       },
       {
-        path: "admin/statistics",
-        element: <Home />,
+        path: "admin/userList",
+        element: <ListOfUsers />,
       },
       {
         path: "admin/archived",

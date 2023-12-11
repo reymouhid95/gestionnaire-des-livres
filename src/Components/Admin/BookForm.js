@@ -109,7 +109,7 @@ function FormBook() {
       url: "",
       description: "",
     });
-    toast.success("Livre ajouté avec succès!");
+    toast.success("Book added!");
   }, [formData, loadBooks]);
 
   // Mettre à jour un livre
@@ -140,7 +140,7 @@ function FormBook() {
         url: "",
         description: "",
       });
-      toast.success("Données modifiées avec success!");
+      toast.success("Data updated!");
       setIsAdding(true);
       setSelectedBook(null);
     }
@@ -167,14 +167,14 @@ function FormBook() {
         );
 
         if (updatedBookData.archived) {
-          sesetIsArchived(true);
+          setIsArchived(true);
           setIsUnarchived(false);
         } else {
           setIsArchived(false);
           setIsUnarchived(true);
         }
       } catch (error) {
-        console.error("Erreur de mise à jour du livre:", error);
+        console.error("Update error:", error);
       }
     },
     [books, selectedBook, setBooks, loadBooks]
@@ -192,7 +192,7 @@ function FormBook() {
         } = prevStocks;
         return rest;
       });
-      toast.success("Stock supprimé avec succès!");
+      toast.success("Stock deleted!");
     },
     [books]
   );
@@ -215,7 +215,7 @@ function FormBook() {
   // L'affichage
   return (
     <div className="m-0">
-      {isArchived && toast.success("Livre archivé!")}
+      {isArchived && toast.success("Book archived!")}
       {isUnarchived && toast.success("Livre désarchivé!")}
       <Form onSubmit={handleSubmit}>
         <Row>

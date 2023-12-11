@@ -167,7 +167,7 @@ function ArchivedBooks() {
         striped
         bordered
         hover
-        className="mx-5 data"
+        className="data"
         variant="bg-body-secondary"
         id="table"
         size="sm"

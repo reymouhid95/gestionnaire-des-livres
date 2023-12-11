@@ -10,8 +10,8 @@ export const menuAdmin = [
     path: "/admin/archived",
   },
   {
-    title: "Statistics",
-    icon: "bi bi-graph-up-arrow fs-5 me-3",
-    path: "/admin/statistics",
+    title: "List Of Users",
+    icon: "bi bi-bookmark-check fs-5 me-3",
+    path: "/admin/userList",
   },
 ];
