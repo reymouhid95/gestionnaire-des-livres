@@ -236,14 +236,14 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                       </Button>
                       <Button
                         variant="outline-info border border-none"
-                        className="mb-2 mx-1"
+                        className="mb-2 mx-"
                         onClick={() => handleShowModal(book)}
                       >
                         <Icon.Eye />
                       </Button>
                       <Button
                         variant="outline-success"
-                        className="mb-2 mx-1 border border-none"
+                        className="mb-2  border border-none"
                         style={{ display: !book.archived ? "inline" : "none" }}
                         onClick={() => onEditBook(book)}
                       >
@@ -251,7 +251,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                       </Button>
                       <Button
                         variant="outline-warning"
-                        className="mb-2 mx-1 border border-none"
+                        className="mb-2  border border-none"
                         onClick={() =>
                           book.archived
                             ? handleUnarchivedBook(book.id)
@@ -266,7 +266,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
                       </Button>
                       <Button
                         variant="outline-danger"
-                        className="mb-2 mx-1 border border-none"
+                        className="mb-2 border border-none"
                         onClick={() => onDeleteBook(book.id)}
                       >
                         <Icon.Trash />
