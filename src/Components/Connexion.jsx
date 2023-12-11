@@ -11,10 +11,10 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
-import Auth from "../assets/auth-illustration.svg";
+import Auth from "../assets/signin2.svg";
 import { auth, db } from "../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 
@@ -82,10 +82,17 @@ function SignIn() {
     // Connecter l'utilisateur
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        const userBlocked = users.find((user) => user.email === email);
+        if (userBlocked.bloqued) {
+          setLoading(false);
+          toast.error("Votre compte a été bloqué!");
+          return;
+        }
         const user = userCredential.user;
         localStorage.setItem("utilisateur", JSON.stringify(user));
         setEmail("");
         setPassword("");
+
         toast.success(
           email === "serigne@gmail.com"
             ? "Administrateur connecté!"
@@ -94,7 +101,7 @@ function SignIn() {
         setTimeout(() => {
           if (email === "serigne@gmail.com") {
             navigate("/admin/dashboardAdmin");
-          } else {
+          }else {
             navigate("/user/dashboardUser");
           }
         }, 3000);
@@ -133,6 +140,7 @@ function SignIn() {
   // Affichage
   return (
     <>
+      <ToastContainer />
       <Row className="m-0 connexion">
         <Col md={6} className="backTwo">
           <Form className="form color" onSubmit={handleSubmit}>
@@ -161,7 +169,7 @@ function SignIn() {
                 <LockIcon />
               </InputGroup.Text>
               <Form.Control
-                placeholder="Mot de passe"
+                placeholder="Password"
                 aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={password}
@@ -178,7 +186,7 @@ function SignIn() {
               className="mb-3"
               disabled={loading}
             >
-              Se connecter{" "}
+              Sign In{" "}
               {!loadingComplete && loading && (
                 <Spinner
                   as="span"
@@ -193,17 +201,17 @@ function SignIn() {
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
             <p className="fw-bold">
-              Vous n'avez pas de compte ?{" "}
+              Don't have a account ?{" "}
               <Link to="/inscription">
-                <span className="text-info fw-bold">Cliquez ici</span>
+                <span className="text-info fw-bold">Click here</span>
               </Link>
             </p>
           </Form>
         </Col>
         <Col md={6} className="backThree text-center text-light fw-bold">
-          <h1 className="my-3">Bienvenue sur eBook</h1>
+          <h1 className="my-3">Welcome to eBook</h1>
           <p className="my-3">
-            La plateforme qui vous rendra autonome dans vos études.
+            The platform that will make you autonomous in your studies.
           </p>
           <img src={Auth} alt="Image-auth" className="img-fluid" />
         </Col>

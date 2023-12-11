@@ -9,18 +9,18 @@ const BookDetails = ({ show, handleClose, selectedBook }) => {
         {selectedBook && (
           <div>
             <p>
-              <span className="fw-bold">Titre : </span>
+              <span className="fw-bold">Title : </span>
               {selectedBook.title}
             </p>
             <p>
-              <span className="fw-bold">Auteur : </span>
+              <span className="fw-bold">Author : </span>
               {selectedBook.author}
             </p>
             <p>
-              <span className="fw-bold">Genre : </span> {selectedBook.genre}
+              <span className="fw-bold">Gender : </span> {selectedBook.genre}
             </p>
             <p className="wrap">
-              <span className="fw-bold">Lien : </span>
+              <span className="fw-bold">Link : </span>
               {selectedBook.url}
             </p>
             <p className="wrap">

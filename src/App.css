@@ -11,7 +11,7 @@
 
 .sidebar {
   /* background-color: #282c34; */
-  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
+  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
   color: #fff;
   z-index: 1000;
 }
@@ -29,7 +29,7 @@
 }
 
 .linkSidebar a:hover {
-  background: hsl(199, 90%, 29%);
+  background: hsl(189, 91%, 29%);
   color: #fff;
   cursor: pointer;
 }
@@ -65,7 +65,7 @@
 }
 
 .navbar {
-  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
+  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
   
 }
 
@@ -88,7 +88,7 @@
 }
 
 .title-seller {
-  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(199, 100%, 33%));
+  background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
 }
 
 .imgCarousel1 {
@@ -572,7 +572,7 @@ tbody .archiver {
 }
 
 .soumission:hover {
-  background-color: green !important;
+    background-color: hsl(187, 84%, 17%) !important;
   color: #fff !important;
   transition: 2s !important;
 }
@@ -595,7 +595,7 @@ tbody .archiver {
 }
 
 thead th {
-  background-color: hsl(199, 100%, 33%) !important;
+  background-color: hsl(187, 84%, 17%) !important;
 }
 
 .bookArchived thead th {
@@ -672,10 +672,10 @@ thead th {
 
 .connexion,
 .inscription {
-  background-image: linear-gradient(
-    to right,
-    rgb(6, 71, 71),
-    rgba(6, 48, 71, 0.81)
+    background-image: linear-gradient(
+    to left,
+    hsl(187, 84%, 17%),
+    hsl(182, 81%, 28%)
   ) !important;
 }
 
@@ -699,7 +699,7 @@ thead th {
 
 .data td {
   border-collapse: collapse;
-  border: 1px solid rgb(18, 143, 189);
+  border: 1px solid hsl(187, 84%, 17%);
   overflow: hidden;
   max-width: 50px;
   white-space: nowrap;

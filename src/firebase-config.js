@@ -9,12 +9,13 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAclnGzuO1WBERhddl6pGLUmWfjIDSXDuw",
-  authDomain: "app-book-react.firebaseapp.com",
-  projectId: "app-book-react",
-  storageBucket: "app-book-react.appspot.com",
-  messagingSenderId: "703578951549",
-  appId: "1:703578951549:web:c92d461dd9c37e54e5c614",
+  apiKey: "AIzaSyAauSvZZEFY4LCUXUcZ4naRhTpakHMkL84",
+  authDomain: "book-app-react-afdba.firebaseapp.com",
+  projectId: "book-app-react-afdba",
+  storageBucket: "book-app-react-afdba.appspot.com",
+  messagingSenderId: "777619475154",
+  appId: "1:777619475154:web:96baee513e68b15cf1fb0b",
+  measurementId: "G-6CTD8LXRM2",
 };
 
 // Initialize Firebase

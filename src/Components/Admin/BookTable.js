@@ -212,15 +212,6 @@ function TableBook({
             </Col>
           </div>
         </div>
-        <div>
-          <Button
-            variant=""
-            className="soumission"
-            onClick={handleShowListModal}
-          >
-            Afficher la liste
-          </Button>
-        </div>
         <div className="tableau">
           <Table
             responsive
@@ -234,10 +225,10 @@ function TableBook({
             <thead>
               <tr>
                 <th className="text-light text-center py-3">#</th>
-                <th className="text-light text-center py-3">Titre</th>
-                <th className="text-light text-center py-3">Auteur</th>
-                <th className="text-light text-center py-3">Genre</th>
-                <th className="text-light text-center py-3">Lien</th>
+                <th className="text-light text-center py-3">Title</th>
+                <th className="text-light text-center py-3">Author</th>
+                <th className="text-light text-center py-3">Gender</th>
+                <th className="text-light text-center py-3">Link</th>
                 <th className="text-light text-center py-3">Description</th>
                 <th className="text-light text-center py-3">Actions</th>
               </tr>
@@ -260,6 +251,13 @@ function TableBook({
                   <td>{book.description}</td>
                   <td>
                     <div className="">
+                      <Button
+                        variant="outline-primary border border-none"
+                        className="mb-2 mx-1"
+                        onClick={handleShowListModal}
+                      >
+                        <Icon.List />
+                      </Button>
                       <Button
                         variant="outline-info border border-none"
                         className="mb-2 mx-1"

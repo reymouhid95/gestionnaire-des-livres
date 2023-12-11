@@ -48,8 +48,7 @@ function CarouselAcceuil() {
           <h3>THIS WEEK SALE OF 40%</h3>
           <h1>COUPLE BEAUTY LOVE</h1>
           <p>
-            Bienvenue chez eBook, la platforme qui vous donne le gout de la
-            lecture.
+            eBook is the only platform that will give you a taste for reading.
           </p>
           <Link to="/user/books">
             <button

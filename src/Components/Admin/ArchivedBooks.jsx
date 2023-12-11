@@ -167,10 +167,10 @@ function ArchivedBooks() {
         <thead>
           <tr>
             <th className="text-white text-start">#</th>
-            <th className="text-white text-start">Titre</th>
-            <th className="text-white text-start">Auteur</th>
-            <th className="text-white text-start">Genre</th>
-            <th className="text-white text-start">Lien</th>
+            <th className="text-white text-start">Title</th>
+            <th className="text-white text-start">Author</th>
+            <th className="text-white text-start">Gender</th>
+            <th className="text-white text-start">Link</th>
             <th className="text-white text-start">Description</th>
             <th className="text-white text-start">Actions</th>
           </tr>

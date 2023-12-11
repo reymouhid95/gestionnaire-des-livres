@@ -14,7 +14,7 @@ import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
-import Auth from "../assets/auth-illustration.svg";
+import Auth from "../assets/signup.svg";
 import { auth, db } from "../firebase-config";
 
 function SignUp() {
@@ -117,9 +117,9 @@ function SignUp() {
       <ToastContainer />
       <Row className="m-0 inscription">
         <Col md={6} className="backThree text-center text-light fw-bold">
-          <h1 className="my-3">Bienvenue sur eBook</h1>
+          <h1 className="my-3">Welcome to eBook</h1>
           <p className="my-3">
-            La plateforme qui vous rendra autonome dans vos études.
+            The platform that will make you autonomous in your studies.
           </p>
           <img src={Auth} alt="Image-auth" className="img-fluid" />
         </Col>
@@ -129,13 +129,13 @@ function SignUp() {
               <AutoStoriesIcon className="mb-3 logo" />
               eBook
             </span>
-            <h1 className="mb-2">Inscription</h1>
+            <h1 className="mb-2">Registration</h1>
             <InputGroup className="mb-3">
               <InputGroup.Text id="basic-addon1">
                 <PersonIcon />
               </InputGroup.Text>
               <Form.Control
-                placeholder="Nom"
+                placeholder="Name"
                 aria-label="Username"
                 aria-describedby="basic-addon1"
                 value={name}
@@ -163,7 +163,7 @@ function SignUp() {
                 <LockIcon />
               </InputGroup.Text>
               <Form.Control
-                placeholder="Créer un mot de passe"
+                placeholder="Password"
                 aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={password}
@@ -177,7 +177,7 @@ function SignUp() {
                 <LockIcon />
               </InputGroup.Text>
               <Form.Control
-                placeholder="Confirmer le mot de passe"
+                placeholder="Confirm password"
                 aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={confirmPassword}
@@ -193,7 +193,7 @@ function SignUp() {
               className="mb-3"
               disabled={loading}
             >
-              S'inscrire
+              Sign Up
               {!loadingComplete && loading && (
                 <Spinner
                   as="span"
@@ -208,9 +208,9 @@ function SignUp() {
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
             <p className="fw-bold">
-              Vous avez déjà un compte ?{" "}
+              Already have an account ?{" "}
               <Link to="/connexion">
-                <span className="text-info fw-bold">Cliquez ici</span>
+                <span className="text-info fw-bold">Click here</span>
               </Link>
             </p>
           </Form>

@@ -181,24 +181,24 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
                   : "text-white mt-3 bouton rounded-pill bg-warning border-0"
               }
             >
-              {bookBorrowed ? "Rendre" : "Emprunter"}
+              {bookBorrowed ? "Return" : "Borrow"}
             </Button>
           </div>
 
           <Modal show={show} onHide={handleClose} keyboard={false}>
             <Modal.Header closeButton>
-              <Modal.Title data-aos="fade-left">Détails du livre</Modal.Title>
+              <Modal.Title data-aos="fade-left">Book informations</Modal.Title>
             </Modal.Header>
             <Modal.Body className="content-modal">
               <ul className="list-unstyled" data-aos="fade-left">
                 <li className="mb-3">
-                  <span className="h6 fw-bold">Titre:</span> {title}
+                  <span className="h6 fw-bold">Title:</span> {title}
                 </li>
                 <li className="mb-3">
-                  <span className="h6 fw-bold">Auteur:</span> {auth}
+                  <span className="h6 fw-bold">Author:</span> {auth}
                 </li>
                 <li className="mb-3">
-                  <span className="h6 fw-bold">Genre:</span> {genre}
+                  <span className="h6 fw-bold">Gender:</span> {genre}
                 </li>
                 <li>
                   <span className="h6 fw-bold">Description:</span> {description}

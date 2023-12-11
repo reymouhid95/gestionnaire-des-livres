@@ -15,7 +15,6 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { db } from "../../firebase-config";
 import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 import { toast } from "react-toastify";
-// import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 function NavAdmin({ Toggle }) {
   const [anchorEl, setAnchorEl] = React.useState(null);

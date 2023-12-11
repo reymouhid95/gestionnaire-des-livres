@@ -40,7 +40,7 @@ const PasswordReset = () => {
     <div className="mb-3">
       <div>
         <a href="#" onClick={handleShow} className="mx-2 fw-bold">
-          Mot de place oublié ? <span className="text-info">cliquez ici!</span>
+          Forgot password ? <span className="text-info">click here!</span>
         </a>
       </div>
 
