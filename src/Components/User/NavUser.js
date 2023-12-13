@@ -19,12 +19,16 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
   onSnapshot,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
@@ -40,39 +44,69 @@ function NavUser({ Toggle }) {
   const [notifs, setNotifs] = useState([]);
   const [newNotificationsCount, setNewNotificationsCount] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [users, setUsers] = useState([]);
-  const [newUserName, setNewUserName] = useState("");
-  const [newUserEmail, setNewUserEmail] = useState("");
   const [newAvatarImage, setNewAvatarImage] = useState(null);
+  const [authUser, setAuthUser] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const loadBooks = useCallback(() => {
-    try {
-      const bookCollection = collection(db, "notifications");
-      const unsubscribe = onSnapshot(bookCollection, (snapshot) => {
-        const bookData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setNotifs(bookData);
-      });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const auth = getAuth();
 
-      return () => unsubscribe();
-    } catch (error) {
-      console.error("Error loading books:", error);
-      toast.error("Loading error. Please check your internet connection!");
-    }
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            // L'utilisateur est connecté
+            setAuthUser(user);
+          } else {
+            // L'utilisateur n'est pas connecté
+            setAuthUser(null);
+          }
+        });
+
+        return () => unsubscribe(); // Nettoyage lors du démontage du composant
+      } catch (error) {
+        console.error("Error loading data:", error);
+        toast.error("Error loading. Please check your internet connection!");
+      }
+    };
+
+    fetchData();
   }, []);
 
+  const loadNotifications = useCallback(() => {
+    try {
+      const displayName = authUser ? authUser.displayName : null;
+      const notifCollection = collection(db, "notifications");
+      const unsubscribe = onSnapshot(
+        query(notifCollection, where("name", "==", displayName)),
+        (snapshot) => {
+          const notifData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setNotifs(notifData);
+        }
+      );
+
+      return () => {
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error("Error loading books:", error);
+      toast.error(
+        "Erreur de chargement. Veuillez vérifier votre connexion internet!"
+      );
+    }
+  }, [authUser]);
+
   useEffect(() => {
-    loadBooks();
-  }, [loadBooks]);
+    loadNotifications();
+  }, [loadNotifications]);
 
   const loadAvatar = useCallback((userId) => {
     const profileImageRef = ref(
@@ -86,16 +120,6 @@ function NavUser({ Toggle }) {
       });
   }, []);
 
-  const loadUserDetails = useCallback(
-    (user) => {
-      setUserId(user.id);
-      setUserName(user.name);
-      setUserEmail(user.email);
-      loadAvatar(user.id);
-    },
-    [loadAvatar]
-  );
-
   const loadUsers = useCallback(async () => {
     try {
       const userCollection = collection(db, "users");
@@ -108,14 +132,13 @@ function NavUser({ Toggle }) {
 
       const currentUser = userData[0];
       if (currentUser) {
-        loadUserDetails(currentUser);
         loadAvatar(currentUser.id);
       }
     } catch (error) {
       console.error("Error loading users:", error);
       toast.error("Loading error. Please check your internet connection!!");
     }
-  }, [loadUserDetails, loadAvatar]);
+  }, [loadAvatar]);
 
   useEffect(() => {
     loadUsers();
@@ -135,30 +158,37 @@ function NavUser({ Toggle }) {
     setNewNotificationsCount(newUnreadNotifications.length);
   }, [notifs]);
 
-  const handleModalOpen = () => setOpenModal(true);
+  const handleModalOpen = () => {
+    setOpenModal(true);
+  };
 
   const handleModalClose = async () => {
+    // Réinitialiser les valeurs en cas d'annulation
+    setNewAvatarImage(null);
+
+    // Fermer le Modal
+    setOpenModal(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      // Mettre à jour le nom et l'email dans la base de données
-      await updateDoc(doc(db, "users", userId)).update({
-        name: newUserName,
-        email: newUserEmail,
-      });
+      if (authUser) {
+        // Update the name and email for the authenticated user in the database
+        await updateDoc(doc(db, "users", authUser.uid), {});
 
-      // Mettre à jour la photo de profil si une nouvelle image a été chargée
-      if (newAvatarImage) {
-        const profileImageRef = ref(
-          storage,
-          `path/to/users/${userId}/profile-image.jpg`
-        );
-        await uploadBytes(profileImageRef, newAvatarImage);
+        // Update the profile image if a new image has been uploaded
+        if (newAvatarImage) {
+          const profileImageRef = ref(
+            storage,
+            `path/to/users/${authUser.uid}/profile-image.jpg`
+          );
+          await uploadBytes(profileImageRef, newAvatarImage);
+        }
+
+        // Close the Modal
+        setOpenModal(false);
       }
-
-      // Recharger les données utilisateur avec les nouvelles valeurs
-      loadUsers();
-
-      // Fermer le Modal
-      setOpenModal(false);
     } catch (error) {
       console.error("Error updating profile:", error.message);
     }
@@ -334,11 +364,6 @@ function NavUser({ Toggle }) {
     </Menu>
   );
 
-  // Méthode de contôle du formulaire
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <Box sx={{ flexGrow: 1 }} className="box-navabar">
       <AppBar position="static">
@@ -414,28 +439,14 @@ function NavUser({ Toggle }) {
           <Form onSubmit={handleSubmit}>
             <DialogTitle>Profile</DialogTitle>
             <DialogContent>
-              <p>Name: {newUserName || userName}</p>
-              <p>Email: {newUserEmail || userEmail}</p>
-
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                className="mb-3"
-              />
-              <Form.Control
-                type="text"
-                placeholder="Enter your new name"
-                value={newUserName}
-                onChange={(e) => setNewUserName(e.target.value)}
-                className="mb-3"
-              />
-              <Form.Control
-                type="email"
-                placeholder="Enter your new email"
-                value={newUserEmail}
-                onChange={(e) => setNewUserEmail(e.target.value)}
-              />
+              <div>
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="mb-3"
+                />
+              </div>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleModalClose}>Cancel</Button>

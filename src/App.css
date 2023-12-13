@@ -5,10 +5,6 @@
   font-family: Georgia, "Times New Roman", Times, serif;
 }
 
-/* .App {
-  text-align: center;
-} */
-
 .sidebar {
   background: linear-gradient(to left, hsl(187, 84%, 17%), hsl(182, 81%, 28%));
   color: #fff;

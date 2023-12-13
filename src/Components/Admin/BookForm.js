@@ -237,6 +237,7 @@ function FormBook() {
                     id="standard-basic"
                     label="Title"
                     variant="filled"
+                    fullWidth
                     type="text"
                     name="title"
                     value={formData.title}
@@ -251,6 +252,7 @@ function FormBook() {
                     id="standard-basic"
                     label="Author"
                     variant="filled"
+                    fullWidth
                     type="text"
                     name="author"
                     value={formData.author}
@@ -267,6 +269,7 @@ function FormBook() {
                     id="standard-basic"
                     label="Gender"
                     variant="filled"
+                    fullWidth
                     type="text"
                     name="genre"
                     value={formData.genre}
@@ -281,6 +284,7 @@ function FormBook() {
                     id="standard-basic"
                     label="Link"
                     variant="filled"
+                    fullWidth
                     type="url"
                     name="url"
                     value={formData.url}

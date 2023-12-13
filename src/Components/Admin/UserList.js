@@ -13,6 +13,7 @@ function UserList() {
   const indexOfLastUser = currentPage * booksPerPage;
   const indexOfFirstUser = indexOfLastUser - booksPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const [temporaryBlocked, setTemporaryBlocked] = useState(null);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -22,18 +23,29 @@ function UserList() {
     try {
       const userBloqued = users.find((user) => user.id === UserId);
       const bloqued = userBloqued.bloqued;
+
       // Mettre à jour la clé "blocked" avec la nouvelle valeur
       await updateDoc(doc(db, "users", userBloqued.id), {
-        bloqued: !bloqued,
+        bloqued: !bloqued, // Inverser la valeur actuelle
       });
 
+      await setTemporaryBlocked(UserId);
       // Recharger les utilisateurs après la mise à jour
       loadUsers();
     } catch (error) {
       console.error("Error updating user:", error);
-      toast.error("Error updating user!");
+      toast.error("Erreur lors de la mise à jour de l'utilisateur.");
     }
   };
+
+  useEffect(() => {
+    if (temporaryBlocked !== null) {
+      const timeoutId = setTimeout(() => {
+        setTemporaryBlocked(null);
+      }, 2000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [temporaryBlocked]);
 
   const loadUsers = useCallback(async () => {
     try {
@@ -46,7 +58,7 @@ function UserList() {
       setUsers(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error("Loading error. Please check your internet connection!!");
+      toast.error("Error loading. Please check your internet connection!");
     }
   }, []);
 
@@ -55,7 +67,7 @@ function UserList() {
   }, [loadUsers]);
 
   return (
-    <div className="dashboard">
+    <div className="dashboard mt-5">
       <Table
         responsive
         striped
@@ -66,11 +78,11 @@ function UserList() {
       >
         <thead>
           <tr>
-            <th className="text-white text-start">#</th>
-            <th className="text-white text-start">Name</th>
-            <th className="text-white text-start">Email</th>
-            <th className="text-white text-start">Books borrowed</th>
-            <th className="text-white text-start">Actions</th>
+            <th className="text-white text-center">#</th>
+            <th className="text-white text-center">Name</th>
+            <th className="text-white text-center">Email</th>
+            <th className="text-white text-center">Boroowed books</th>
+            <th className="text-white text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -95,6 +107,11 @@ function UserList() {
                     />
                   )}
                 </Button>
+                {temporaryBlocked === user.id && (
+                  <span className="text-danger">
+                    {user.bloqued ? "blocked" : "Unlocked"}
+                  </span>
+                )}
               </td>
             </tr>
           ))}

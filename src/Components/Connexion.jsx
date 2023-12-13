@@ -12,10 +12,10 @@ import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
-import Sign2 from "../assets/signin2.svg";
+import Auth from "../assets/signin2.svg";
 import { auth, db } from "../firebase-config";
 
 // Composant principal
@@ -24,10 +24,10 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
-  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     // Vérifiez si l'utilisateur est déjà connecté
@@ -52,7 +52,7 @@ function SignIn() {
       setUsers(bookData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error("Loading error. Please check your internet connection!");
+      toast.error("Error loading. Please your internet connection!");
     }
   }, []);
 
@@ -66,6 +66,7 @@ function SignIn() {
       setEmailError("Email is required");
       return;
     }
+
     if (!password) {
       setPasswordError("Password is required");
       return;
@@ -79,17 +80,19 @@ function SignIn() {
         const userBlocked = users.find((user) => user.email === email);
         if (userBlocked.bloqued) {
           setLoading(false);
-          toast.error("Your account has been bloked!");
+          toast.error("Your account has been blocked!");
           return;
         }
         const user = userCredential.user;
         localStorage.setItem("utilisateur", JSON.stringify(user));
+        localStorage.setItem("userName", user.displayName || "");
         setEmail("");
         setPassword("");
+
         toast.success(
           email === "serigne@gmail.com"
-            ? "Logged-in administrator!"
-            : "Logged-in user!"
+            ? "Connection in progress!"
+            : "Connection in progress!"
         );
         setTimeout(() => {
           if (email === "serigne@gmail.com") {
@@ -100,7 +103,7 @@ function SignIn() {
         }, 3000);
       })
       .catch((error) => {
-        toast.error("Verify credentials!");
+        toast.error("Verify your credentials!");
         setPassword("");
       })
       .finally(() => {
@@ -133,6 +136,7 @@ function SignIn() {
   // Affichage
   return (
     <>
+      <ToastContainer />
       <Row className="m-0 connexion">
         <Col md={6} className="backTwo">
           <Form className="form color" onSubmit={handleSubmit}>
@@ -188,7 +192,7 @@ function SignIn() {
                   aria-hidden="true"
                 />
               )}
-              {loading && loadingComplete ? "Connexion..." : null}
+              {loading && loadingComplete ? "Loading..." : null}
             </Button>
             <p className="text-uppercase">Or</p>
             <GoogleAuth />
@@ -205,7 +209,7 @@ function SignIn() {
           <p className="my-3">
             The platform that will make you autonomous in your studies.
           </p>
-          <img src={Sign2} alt="Image-auth" className="sign" />
+          <img src={Auth} alt="Image-auth" className="sign" />
         </Col>
       </Row>
     </>

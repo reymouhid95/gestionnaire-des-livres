@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { addSeconds, differenceInSeconds, isPast } from "date-fns";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   addDoc,
-  arrayRemove,
   arrayUnion,
   collection,
   doc,
@@ -22,8 +21,8 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [books, setBooks] = useState([]);
-  const [notifications, setNotifications] = useState([]);
   const [users, setUsers] = useState([]);
+  const [authUser, setAuthUser] = useState(null);
   const [notificationsCollection, setNotificationsCollection] = useState(
     collection(db, "notifications")
   );
@@ -38,6 +37,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
         id: doc.id,
         ...doc.data(),
       }));
+
       const usersData = usersSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -46,17 +46,45 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       setUsers(usersData);
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error("Loading error. Please check your internet connection!");
+      alert("Error loading. Please check your internet connection!");
     }
   }, []);
 
-  // Méthode pour emprunter et rendre un livre
-  const borrowBook = async (borrowedBookTitle) => {
-    const userName = localStorage.getItem("userName");
-    const userEmail = JSON.parse(localStorage.getItem("utilisateur"));
-    const borrowedBook = books.find((book) => book.title === borrowedBookTitle);
-    const userBookBorrowed = users.find((user) => user.name === userName);
+  useEffect(() => {
+    loadBooks();
+  }, [loadBooks]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const auth = getAuth();
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            // L'utilisateur est connecté
+            setAuthUser(user);
+          } else {
+            // L'utilisateur n'est pas connecté
+            setAuthUser(null);
+          }
+        });
+
+        return () => unsubscribe(); // Nettoyage lors du démontage du composant
+      } catch (error) {
+        console.error("Error loading data:", error);
+        alert("Error loading. Please check your internet connection!");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  //Fonction pour l'emprunt de livre
+  const borrowBook = async (borrowedBookTitle) => {
+    const displayName = authUser ? authUser.displayName : null;
+    const borrowedBook = books.find((book) => book.title === borrowedBookTitle);
+    const userBookBorrowed = users.find((user) => user.name === displayName);
+    console.log(userBookBorrowed);
     if (borrowedBook && borrowedBook.isBorrowed) {
       await updateDoc(doc(db, "books", borrowedBook.id), {
         stock: borrowedBook.stock + 1,
@@ -64,16 +92,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
         returnDate: null,
       });
 
-      if (userBookBorrowed) {
-        // Supprimez le livre du tableau dans le document utilisateur
-        await updateDoc(doc(db, "users", userBookBorrowed.id), {
-          livre: arrayRemove(borrowedBookTitle),
-        });
-      } else {
-        console.error("User not found in the 'users' collection");
-      }
-
-      const notificationMessage = `${userName} returned the book ${borrowedBookTitle}!`;
+      const notificationMessage = `${displayName} returned the book ${borrowedBookTitle}!`;
       await addDoc(notificationsCollection, { message: notificationMessage });
 
       toast.info(notificationMessage);
@@ -87,14 +106,15 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       });
 
       await updateDoc(doc(db, "users", userBookBorrowed.id), {
-        livre: arrayUnion(`${borrowedBookTitle} ,`),
+        livre: arrayUnion(borrowedBookTitle),
       });
 
       const notificationMessage = `You borrowed the book ${borrowedBookTitle}`;
-      const notificationMessageAdmin = `${userName} borrowed the book ${borrowedBookTitle}`;
+      const notificationMessageAdmin = `${displayName} borrowed book ${borrowedBookTitle}`;
       await addDoc(notificationsCollection, {
         message: notificationMessage,
         messageForAdmin: notificationMessageAdmin,
+        name: displayName,
       });
 
       toast.success(notificationMessage);
@@ -113,6 +133,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       toast.warning(notificationMessage);
     }
   };
+
   useEffect(() => {
     const checkReturnStatus = async () => {
       const borrowedBooks = books.filter((book) => book.isBorrowed);
@@ -131,7 +152,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
           loadBooks();
         } else {
           toast.warning(
-            `Deadline for borrowing book ${borrowedBook.title} imminent!`
+            `Deadline for borrowing book ${borrowedBook.title} imminent.`
           );
         }
       }
@@ -143,10 +164,6 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
   }, [books, loadBooks]);
 
   useEffect(() => {
-    loadBooks();
-  }, [loadBooks]);
-
-  useEffect(() => {
     Aos.init({ duration: 2000 });
   }, []);
 
@@ -154,7 +171,6 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     (book) => book.title === title && book.isBorrowed
   );
 
-  // Affichage
   return (
     <Card
       data-aos="fade-up"
@@ -184,9 +200,10 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
               {bookBorrowed ? "Return" : "Borrow"}
             </Button>
           </div>
+
           <Modal show={show} onHide={handleClose} keyboard={false}>
             <Modal.Header closeButton>
-              <Modal.Title data-aos="fade-left">Book info</Modal.Title>
+              <Modal.Title data-aos="fade-left">Book information</Modal.Title>
             </Modal.Header>
             <Modal.Body className="content-modal">
               <ul className="list-unstyled" data-aos="fade-left">
@@ -204,6 +221,11 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
                 </li>
               </ul>
             </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={handleClose} className="text-white bg-secondary">
+                Close
+              </Button>
+            </Modal.Footer>
           </Modal>
         </div>
         <Card.Text className="w-50 d-flex flex-column justify-content-end align-items-end p-0 bolck2">

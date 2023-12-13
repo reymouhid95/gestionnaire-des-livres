@@ -7,14 +7,14 @@ import MailLockIcon from "@mui/icons-material/MailLock";
 import PersonIcon from "@mui/icons-material/Person";
 import SendIcon from "@mui/icons-material/Send";
 import { Button } from "@mui/material";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
-import Sign from "../assets/signup.svg";
+import Auth from "../assets/signup.svg";
 import { auth, db } from "../firebase-config";
 
 function SignUp() {
@@ -29,7 +29,6 @@ function SignUp() {
   const [loading, setLoading] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
 
-  // Incrire un utliisateur
   const handleSignUp = async () => {
     if (isEmailUnique) {
       setLoading(true);
@@ -39,6 +38,11 @@ function SignUp() {
           email,
           password
         );
+
+        await updateProfile(userCredential.user, {
+          displayName: name,
+        });
+
         // Ajouter l'utilisateur dans le firestore
         await addDoc(collection(db, "users"), {
           uid: userCredential.user.uid,
@@ -51,19 +55,19 @@ function SignUp() {
         setPassword("");
         setConfirmPassword("");
         setName("");
-        toast.success("Registration successfuly!");
+        toast.success("Succesful registration!");
         setTimeout(() => {
           navigate("/connexion");
         }, 3000);
       } catch (error) {
         console.error("Registration error :", error.message);
-        toast.error("Registration failed!");
+        toast.error("Failed! enrollment");
       } finally {
         setLoading(false);
         setLoadingComplete(true);
       }
     } else {
-      toast.error("Registration failed!");
+      toast.error("Failed! enrollment!");
     }
   };
 
@@ -75,15 +79,18 @@ function SignUp() {
     const newEmail = e.target.value;
     setEmail(newEmail);
     setIsEmailUnique(true);
-    const emailRegex = /^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setIsEmailValid(emailRegex.test(newEmail));
+
     const invalidEmailSuffixRegex = /\.com[0-9a-zA-Z]+$/;
     if (invalidEmailSuffixRegex.test(newEmail)) {
       setIsEmailValid(false);
       toast.error(
-        "The e-mail address cannot contain characters after the '.com'. Please remove it so you can register!!"
+        "The e-mail address cannot contain characters after the '.com'. Please remove it so you can register!"
       );
     }
+
     if (existingEmails.includes(newEmail)) {
       setIsEmailUnique(false);
     }
@@ -102,11 +109,11 @@ function SignUp() {
     if (email && password && password === confirmPassword) {
       handleSignUp();
     } else if (!isEmailValid) {
-      toast.error("Please enter a valid email address!");
+      toast.error("Please enter a valid email address!!");
     } else if (!isEmailUnique) {
-      toast.error("This email address is already in use!");
+      toast.error("This email address is already in use!!");
     } else {
-      toast.error("Passwords don't match!");
+      toast.error("Passwords don't match!!");
     }
   };
 
@@ -119,7 +126,7 @@ function SignUp() {
           <p className="my-3">
             The platform that will make you autonomous in your studies.
           </p>
-          <img src={Sign} alt="Image-auth" className="sign" />
+          <img src={Auth} alt="Image-auth" className="sign" />
         </Col>
         <Col md={6} className="backTwo">
           <Form className="form color" onSubmit={handleSubmit}>
@@ -148,7 +155,7 @@ function SignUp() {
               </InputGroup.Text>
               <Form.Control
                 placeholder="Email"
-                aria-label="Useremail"
+                aria-label="Username"
                 aria-describedby="basic-addon1"
                 value={email}
                 onChange={handleEmailChange}
@@ -175,7 +182,7 @@ function SignUp() {
                 <LockIcon />
               </InputGroup.Text>
               <Form.Control
-                placeholder="Confirm Password"
+                placeholder="Confirm password"
                 aria-label="Userpassword"
                 aria-describedby="basic-addon1"
                 value={confirmPassword}

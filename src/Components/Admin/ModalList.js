@@ -2,7 +2,7 @@ import { Modal } from "react-bootstrap";
 
 function ListModal({ show, handleClose, books }) {
   return (
-    <Modal show={show} onHide={handleClose} className="text-center">
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>List of books</Modal.Title>
       </Modal.Header>
