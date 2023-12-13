@@ -18,46 +18,85 @@ import {
   getDocs,
   doc,
   onSnapshot,
+  where,
+  query,
+  addDoc,
 } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { toast } from "react-toastify";
 // import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
-function NavAdmin({ Toggle }) {
+function NavUser({ Toggle }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElNotif, setAnchorElNotif] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [authUser, setAuthUser] = React.useState(null);
   const [notifs, setNotifs] = React.useState([]);
   const [newNotificationsCount, setNewNotificationsCount] = React.useState(0);
-  const [previousNotifications, setPreviousNotifications] = React.useState([]);
+  const [readNotifications, setReadNotifications] = React.useState([]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const loadBooks = React.useCallback(() => {
-    try {
-      const bookCollection = collection(db, "notifications");
-      const unsubscribe = onSnapshot(bookCollection, (snapshot) => {
-        const bookData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setNotifs(bookData);
-      });
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const auth = getAuth();
 
-      return () => unsubscribe();
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            // L'utilisateur est connecté
+            setAuthUser(user);
+          } else {
+            // L'utilisateur n'est pas connecté
+            setAuthUser(null);
+          }
+        });
+
+        return () => unsubscribe(); // Nettoyage lors du démontage du composant
+      } catch (error) {
+        console.error("Error loading data:", error);
+        alert(
+          "Erreur de chargement. Veuillez vérifier votre connexion internet!"
+        );
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const loadNotifications = React.useCallback(() => {
+    try {
+      // const userName = localStorage.getItem("userName");
+      const displayName = authUser ? authUser.displayName : null;
+      const notifCollection = collection(db, "notifications");
+      const unsubscribe = onSnapshot(
+        query(notifCollection, where("name", "==", displayName)),
+        (snapshot) => {
+          const notifData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setNotifs(notifData);
+        }
+      );
+
+      return () => {
+        unsubscribe();
+      };
     } catch (error) {
       console.error("Error loading books:", error);
       toast.error(
         "Erreur de chargement. Veuillez vérifier votre connexion internet!"
       );
     }
-  }, []);
+  }, [authUser]);
 
   React.useEffect(() => {
-    loadBooks();
-  }, [loadBooks]);
-  
+    loadNotifications();
+  }, [loadNotifications]);
+
   React.useEffect(() => {
     // Récupérer les notifications lues depuis le stockage local
     const readNotifications =
@@ -71,6 +110,60 @@ function NavAdmin({ Toggle }) {
     // Mettre à jour le compteur de nouvelles notifications
     setNewNotificationsCount(newUnreadNotifications.length);
   }, [notifs]);
+
+  // const updateNotificationCount = () => {
+  //   // Mettre à jour le compteur de nouvelles notifications
+  //   const newCount = notifs.filter((notif) => !notif.read).length;
+  //   setNewNotificationsCount(newCount);
+  // };
+
+// React.useEffect(() => {
+//   const markNotificationsAsRead = async () => {
+//     try {
+//       const displayName = authUser ? authUser.displayName : null;
+//       const readNotificationsCollection = collection(db, "readNotifications");
+
+//       // Récupérer les notifications lues depuis la base de données
+//       const readNotificationsSnapshot = await getDocs(
+//         query(readNotificationsCollection, where("name", "==", displayName))
+//       );
+
+//       // Mettre à jour localement les données des notifications
+//       const readNotifications = readNotificationsSnapshot.docs.length
+//         ? readNotificationsSnapshot.docs[0].data().notifications
+//         : [];
+      
+//       setReadNotifications(readNotifications);
+
+//       setNotifs((prevNotifs) =>
+//         prevNotifs.map((notif) => ({
+//           ...notif,
+//           read: readNotifications.includes(notif.id),
+//         }))
+//       );
+
+//       // Mettre à jour le compteur de nouvelles notifications
+//       updateNotificationCount();
+//     } catch (error) {
+//       console.error("Error marking notifications as read:", error);
+//       toast.error("Erreur de marquage des notifications comme lues.");
+//     }
+//   };
+//   markNotificationsAsRead();
+// }, [authUser]);
+
+  
+  // React.useEffect(() => {
+  //   const updateNotificationCounts = () => {
+  //     // Mettre à jour le compteur de nouvelles notifications
+  //     const newCount = notifs.filter((notif) => !notif.read).length;
+  //     setNewNotificationsCount(newCount);
+  //   };
+
+  //   updateNotificationCounts();
+  // }, [notifs]);
+
+
 
 
   const handleProfileMenuOpen = (event) => {
@@ -90,7 +183,6 @@ function NavAdmin({ Toggle }) {
     setAnchorElNotif(null);
     handleMobileMenuClose();
     setNewNotificationsCount(0);
-
     // Stocker les notifications lues dans le stockage local
     const readNotifications = notifs.map((notif) => notif.id);
     localStorage.setItem(
@@ -155,7 +247,7 @@ function NavAdmin({ Toggle }) {
           <MenuItem key={notif.id}>
             <p
               className={`notifs px-2 py-2 rounded ${
-                index === notifs.length-1 ? "last-notification" : ""
+                index === notifs.length - 1 ? "last-notification" : ""
               }`}
             >
               {notif.message}
@@ -182,7 +274,7 @@ function NavAdmin({ Toggle }) {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
-      style={{width: "100px !important"}}
+      style={{ width: "100px !important" }}
     >
       <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
@@ -290,4 +382,4 @@ function NavAdmin({ Toggle }) {
   );
 }
 
-export default NavAdmin;
+export default NavUser;

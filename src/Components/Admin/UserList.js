@@ -22,6 +22,7 @@ function UserList() {
   const indexOfLastUser = currentPage * booksPerPage;
   const indexOfFirstUser = indexOfLastUser - booksPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const [temporaryBlocked, setTemporaryBlocked] = useState(null);
   // const [userBloqued, setUserBloqued] = useState(false);
 
 
@@ -33,11 +34,13 @@ function UserList() {
     try {
       const userBloqued = users.find((user) => user.id === UserId);    
       const bloqued = userBloqued.bloqued
+      
       // Mettre à jour la clé "blocked" avec la nouvelle valeur
       await updateDoc(doc(db, "users" , userBloqued.id), {
         bloqued: !bloqued, // Inverser la valeur actuelle
       });
-
+      
+      await setTemporaryBlocked(UserId);
       // Recharger les utilisateurs après la mise à jour
       loadUsers();
     } catch (error) {
@@ -46,6 +49,15 @@ function UserList() {
     }
   }
 
+    useEffect(() => {
+      if (temporaryBlocked !== null) {
+        const timeoutId = setTimeout(() => {
+          setTemporaryBlocked(null);
+        }, 2000);
+        return () => clearTimeout(timeoutId);
+      }
+    }, [temporaryBlocked]);
+  
     const loadUsers = useCallback(async () => {
       try {
         const bookCollection = collection(db, "users");
@@ -108,7 +120,9 @@ function UserList() {
                     />
                   )}
                 </Button>
-                <span>bloquer</span>
+                {temporaryBlocked === user.id && (
+                  <span className="text-danger">{user.bloqued ? "bloquer" : "debloquer"}</span>
+                )}
               </td>
             </tr>
           ))}

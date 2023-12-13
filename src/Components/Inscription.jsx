@@ -7,7 +7,7 @@ import MailLockIcon from "@mui/icons-material/MailLock";
 import PersonIcon from "@mui/icons-material/Person";
 import SendIcon from "@mui/icons-material/Send";
 import { Button } from "@mui/material";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
@@ -38,6 +38,11 @@ function SignUp() {
           email,
           password
         );
+
+        await updateProfile(userCredential.user, {
+          displayName: name,
+        });
+
         // Ajouter l'utilisateur dans le firestore
         await addDoc(collection(db, "users"), {
           uid: userCredential.user.uid,

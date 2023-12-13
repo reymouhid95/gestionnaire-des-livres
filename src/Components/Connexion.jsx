@@ -90,13 +90,14 @@ function SignIn() {
         }
         const user = userCredential.user;
         localStorage.setItem("utilisateur", JSON.stringify(user));
+        localStorage.setItem("userName", user.displayName || "");
         setEmail("");
         setPassword("");
 
         toast.success(
           email === "serigne@gmail.com"
-            ? "Administrateur connecté!"
-            : "Utilisateur connecté!"
+            ? "Connection in progress!"
+            : "Connection in progress!"
         );
         setTimeout(() => {
           if (email === "serigne@gmail.com") {
@@ -213,7 +214,7 @@ function SignIn() {
           <p className="my-3">
             The platform that will make you autonomous in your studies.
           </p>
-          <img src={Auth} alt="Image-auth" className="img-fluid" />
+          <img src={Auth} alt="Image-auth" className="img-fluid sign" />
         </Col>
       </Row>
     </>
