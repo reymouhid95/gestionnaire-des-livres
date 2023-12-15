@@ -29,7 +29,6 @@ import ListOfUsers from './Pages/Pages-Admin/ListOfUsers';
 function App() {
   const [toggle, setToggle] = useState(true);
   const url = "/admin/dashboardAdmin";
-  // const url2 = "/user/dashboardUser";
   
   const Toggle = () => {
     setToggle(!toggle);

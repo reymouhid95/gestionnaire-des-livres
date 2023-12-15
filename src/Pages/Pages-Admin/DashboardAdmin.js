@@ -14,6 +14,7 @@ function Dashboard() {
       // Si l'utilisateur est connecté, redirigez-le vers le tableau de bord approprié
       if (user.email !== "serigne@gmail.com") {
         navigate("/user/dashboardUser");
+        window.location.reload();
       }
     }
   }, [navigate]);

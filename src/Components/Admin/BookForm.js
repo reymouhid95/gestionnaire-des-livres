@@ -262,6 +262,7 @@ function FormBook() {
                     variant="filled"
                     type="text"
                     name="title"
+                    fullWidth
                     value={formData.title}
                     onChange={(e) =>
                       setFormData({ ...formData, title: e.target.value })
@@ -276,6 +277,7 @@ function FormBook() {
                     variant="filled"
                     type="text"
                     name="author"
+                    fullWidth
                     value={formData.author}
                     onChange={(e) =>
                       setFormData({ ...formData, author: e.target.value })
@@ -292,6 +294,7 @@ function FormBook() {
                     variant="filled"
                     type="text"
                     name="genre"
+                    fullWidth
                     value={formData.genre}
                     onChange={(e) =>
                       setFormData({ ...formData, genre: e.target.value })
@@ -306,6 +309,7 @@ function FormBook() {
                     variant="filled"
                     type="url"
                     name="url"
+                    fullWidth
                     value={formData.url}
                     onChange={(e) =>
                       setFormData({ ...formData, url: e.target.value })

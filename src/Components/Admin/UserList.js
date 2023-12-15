@@ -32,17 +32,28 @@ function UserList() {
 
   const handleBloquedUser = async(UserId) => {
     try {
-      const userBloqued = users.find((user) => user.id === UserId);    
+      const userBloqued = users.find((user) => user.id === UserId);   
       const bloqued = userBloqued.bloqued
       
       // Mettre à jour la clé "blocked" avec la nouvelle valeur
       await updateDoc(doc(db, "users" , userBloqued.id), {
         bloqued: !bloqued, // Inverser la valeur actuelle
       });
+      const updatedUsers = users.map((user) =>
+        user.id === UserId
+          ? {
+              ...user,
+              bloqued: !bloqued,
+              statusText: !bloqued ? "Blocked" : "Unblocked",
+            }
+          : user
+      );
+
+      setUsers(updatedUsers);
       
-      await setTemporaryBlocked(UserId);
+      setTemporaryBlocked(UserId);
       // Recharger les utilisateurs après la mise à jour
-      loadUsers();
+      // loadUsers();
     } catch (error) {
       console.error("Error updating user:", error);
       toast.error("Erreur lors de la mise à jour de l'utilisateur.");
@@ -53,7 +64,7 @@ function UserList() {
       if (temporaryBlocked !== null) {
         const timeoutId = setTimeout(() => {
           setTemporaryBlocked(null);
-        }, 2000);
+        }, 3000);
         return () => clearTimeout(timeoutId);
       }
     }, [temporaryBlocked]);
@@ -92,9 +103,9 @@ function UserList() {
         <thead>
           <tr>
             <th className="text-white text-start">#</th>
-            <th className="text-white text-start">Nom</th>
+            <th className="text-white text-start">Name</th>
             <th className="text-white text-start">Email</th>
-            <th className="text-white text-start">Livres empruntés</th>
+            <th className="text-white text-start">Books Borrowed</th>
             <th className="text-white text-start">Actions</th>
           </tr>
         </thead>
@@ -121,7 +132,13 @@ function UserList() {
                   )}
                 </Button>
                 {temporaryBlocked === user.id && (
-                  <span className="text-danger">{user.bloqued ? "bloquer" : "debloquer"}</span>
+                  <span
+                    className={`text-danger ${
+                      temporaryBlocked ? "" : "fade-out"
+                    }`}
+                  >
+                    {user.statusText}
+                  </span>
                 )}
               </td>
             </tr>

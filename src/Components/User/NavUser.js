@@ -9,22 +9,18 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { db } from "../../firebase-config";
 import {
   collection,
-  getDocs,
-  doc,
   onSnapshot,
   where,
   query,
-  addDoc,
+  orderBy
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { toast } from "react-toastify";
-// import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 
 function NavUser({ Toggle }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -33,7 +29,6 @@ function NavUser({ Toggle }) {
   const [authUser, setAuthUser] = React.useState(null);
   const [notifs, setNotifs] = React.useState([]);
   const [newNotificationsCount, setNewNotificationsCount] = React.useState(0);
-  const [readNotifications, setReadNotifications] = React.useState([]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
@@ -68,11 +63,13 @@ function NavUser({ Toggle }) {
 
   const loadNotifications = React.useCallback(() => {
     try {
-      // const userName = localStorage.getItem("userName");
       const displayName = authUser ? authUser.displayName : null;
       const notifCollection = collection(db, "notifications");
       const unsubscribe = onSnapshot(
-        query(notifCollection, where("name", "==", displayName)),
+        query(
+          notifCollection,
+          where("name", "==", displayName),
+        ),
         (snapshot) => {
           const notifData = snapshot.docs.map((doc) => ({
             id: doc.id,
@@ -110,61 +107,6 @@ function NavUser({ Toggle }) {
     // Mettre à jour le compteur de nouvelles notifications
     setNewNotificationsCount(newUnreadNotifications.length);
   }, [notifs]);
-
-  // const updateNotificationCount = () => {
-  //   // Mettre à jour le compteur de nouvelles notifications
-  //   const newCount = notifs.filter((notif) => !notif.read).length;
-  //   setNewNotificationsCount(newCount);
-  // };
-
-// React.useEffect(() => {
-//   const markNotificationsAsRead = async () => {
-//     try {
-//       const displayName = authUser ? authUser.displayName : null;
-//       const readNotificationsCollection = collection(db, "readNotifications");
-
-//       // Récupérer les notifications lues depuis la base de données
-//       const readNotificationsSnapshot = await getDocs(
-//         query(readNotificationsCollection, where("name", "==", displayName))
-//       );
-
-//       // Mettre à jour localement les données des notifications
-//       const readNotifications = readNotificationsSnapshot.docs.length
-//         ? readNotificationsSnapshot.docs[0].data().notifications
-//         : [];
-      
-//       setReadNotifications(readNotifications);
-
-//       setNotifs((prevNotifs) =>
-//         prevNotifs.map((notif) => ({
-//           ...notif,
-//           read: readNotifications.includes(notif.id),
-//         }))
-//       );
-
-//       // Mettre à jour le compteur de nouvelles notifications
-//       updateNotificationCount();
-//     } catch (error) {
-//       console.error("Error marking notifications as read:", error);
-//       toast.error("Erreur de marquage des notifications comme lues.");
-//     }
-//   };
-//   markNotificationsAsRead();
-// }, [authUser]);
-
-  
-  // React.useEffect(() => {
-  //   const updateNotificationCounts = () => {
-  //     // Mettre à jour le compteur de nouvelles notifications
-  //     const newCount = notifs.filter((notif) => !notif.read).length;
-  //     setNewNotificationsCount(newCount);
-  //   };
-
-  //   updateNotificationCounts();
-  // }, [notifs]);
-
-
-
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -243,17 +185,19 @@ function NavUser({ Toggle }) {
       <div>
         <h6 className="text-center fw-bold">Notifications</h6>
         <hr />
-        {notifs.map((notif, index) => (
-          <MenuItem key={notif.id}>
-            <p
-              className={`notifs px-2 py-2 rounded ${
-                index === notifs.length - 1 ? "last-notification" : ""
-              }`}
-            >
-              {notif.message}
-            </p>
-          </MenuItem>
-        ))}
+        <div className="menuItem">
+          {notifs.map((notif, index) => (
+            <MenuItem key={notif.id}>
+              <p
+                className={`notifs px-2 py-2 rounded ${
+                  index === notifs.length - 1 ? "last-notification" : ""
+                }`}
+              >
+                {notif.message}
+              </p>
+            </MenuItem>
+          ))}
+        </div>
       </div>
     </Menu>
   );
@@ -276,23 +220,19 @@ function NavUser({ Toggle }) {
       onClose={handleMobileMenuClose}
       style={{ width: "100px !important" }}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpenNotif}>
         <IconButton
           size="large"
-          aria-label="show 17 new notifications"
+          aria-label=""
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          {newNotificationsCount > 0 ? (
+            <Badge badgeContent={newNotificationsCount} color="error">
+              <NotificationsIcon />
+            </Badge>
+          ) : (
             <NotificationsIcon />
-          </Badge>
+          )}
         </IconButton>
         <p>Notifications</p>
       </MenuItem>

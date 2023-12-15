@@ -8,7 +8,7 @@ import {
   doc,
   updateDoc,
   arrayUnion,
-  arrayRemove
+  serverTimestamp,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "../../firebase-config";
@@ -34,8 +34,6 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       const usersCollection = collection(db, "users");
       const snapshot = await getDocs(bookCollection);
       const usersSnapshot = await getDocs(usersCollection);
-      // const user = auth.currentUser;
-      // console.log(user)
       const bookData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -89,7 +87,6 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
   //Fonction pour l'emprunt de livre
   const borrowBook = async (borrowedBookTitle) => {
     const displayName = authUser ? authUser.displayName : null;
-    // const userName = localStorage.getItem("userName");
     const borrowedBook = books.find((book) => book.title === borrowedBookTitle);
     const userBookBorrowed = users.find((user) => user.name === displayName);
     console.log(userBookBorrowed);
@@ -106,11 +103,12 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       toast.info(notificationMessage);
       loadBooks();
     } else if (borrowedBook && borrowedBook.stock > 0) {
-      const returnDate = addSeconds(new Date(), 10);
+      const returnDate = addSeconds(new Date(), 20);
       await updateDoc(doc(db, "books", borrowedBook.id), {
         stock: borrowedBook.stock - 1,
         isBorrowed: true,
         returnDate: returnDate.toISOString(),
+        
       });
 
       await updateDoc(doc(db, "users", userBookBorrowed.id), {
@@ -123,9 +121,10 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
         message: notificationMessage,
         messageForAdmin: notificationMessageAdmin,
         name: displayName,
+        timestamp: serverTimestamp(),
       });
 
-      toast.success(notificationMessage);
+      // toast.success(notificationMessage);
       loadBooks();
     } else if (borrowedBook) {
       const notificationMessage = `Stock épuisé pour le livre : ${borrowedBookTitle}!`;
@@ -145,14 +144,23 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
   useEffect(() => {
     const checkReturnStatus = async () => {
       const borrowedBooks = books.filter((book) => book.isBorrowed);
+      const displayName = authUser ? authUser.displayName : null;
       for (const borrowedBook of borrowedBooks) {
         const returnDate = new Date(borrowedBook.returnDate);
-        const secondsUntilReturn = differenceInSeconds(returnDate, new Date());
+        const notificationMessage = `Délai dépassé. Le livre ${borrowedBook.title} a été recupéré!`;
+        const notificationMessageAdmin = `Délai dépassé. Le livre ${borrowedBook.title} emprunté à ${displayName} été recupéré!`;
         if (isPast(returnDate)) {
           await updateDoc(doc(db, "books", borrowedBook.id), {
             stock: borrowedBook.stock + 1,
             isBorrowed: false,
             returnDate: null,
+          });
+
+          await addDoc(notificationsCollection, {
+            message: notificationMessage,
+            messageForAdmin: notificationMessageAdmin,
+            name: displayName,
+            timestamp: serverTimestamp(),
           });
           toast.info(
             `Délai dépassé. Le livre ${borrowedBook.title} a été recupéré!`
@@ -167,7 +175,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     };
 
     // Déclaration de l'intervalle pour récupérer le livre
-    const interval = setInterval(checkReturnStatus, 3000);
+    const interval = setInterval(checkReturnStatus, 5000);
     return () => clearInterval(interval);
   }, [books, loadBooks]);
 
@@ -184,8 +192,8 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       data-aos="fade-up"
       className={
         bookBorrowed
-          ? "col-md-3 mx-4 py-1 mb-4 btn-borrowed"
-          : "col-md-3 mx-4 py-1 mb-4"
+          ? "col-md-3 mx-1 py-1 mb-4 btn-borrowed"
+          : " mx-1 py-1 mb-4 "
       }
       id="card"
     >
@@ -202,7 +210,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
               className={
                 bookBorrowed
                   ? "text-white mt-3 bouton rounded-pill btn-success border-0"
-                  : "text-white mt-3 bouton rounded-pill bg-warning border-0"
+                  : "text-white mt-3 bouton rounded-pill bg-warning border-0 "
               }
             >
               {bookBorrowed ? "Return" : "Borrow"}

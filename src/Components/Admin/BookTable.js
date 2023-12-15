@@ -157,7 +157,7 @@ function TableBook({
 
       // Update local state
       setBookArchives((prevBookArchives) => ({
-        ...prevBookArchives,
+        ...prevBookArchives, 
         [bookId]: true,
       }));
 

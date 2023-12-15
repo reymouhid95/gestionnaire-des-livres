@@ -9,11 +9,10 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { db } from "../../firebase-config";
-import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { toast } from "react-toastify";
 
 function NavAdmin({ Toggle }) {
@@ -22,21 +21,20 @@ function NavAdmin({ Toggle }) {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [notifs, setNotifs] = React.useState([]);
   const [newNotificationsCount, setNewNotificationsCount] = React.useState(0);
-  const [previousNotifications, setPreviousNotifications] = React.useState([]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const loadBooks = React.useCallback(() => {
+  const loadNotifications = React.useCallback(() => {
     try {
-      const bookCollection = collection(db, "notifications");
-      const unsubscribe = onSnapshot(bookCollection, (snapshot) => {
-        const bookData = snapshot.docs.map((doc) => ({
+      const notifCollection = collection(db, "notifications");
+      const unsubscribe = onSnapshot(notifCollection, (snapshot) => {
+        const notifData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setNotifs(bookData);
+        setNotifs(notifData);
       });
 
       return () => unsubscribe();
@@ -49,8 +47,8 @@ function NavAdmin({ Toggle }) {
   }, []);
 
   React.useEffect(() => {
-    loadBooks();
-  }, [loadBooks]);
+    loadNotifications();
+  }, [loadNotifications]);
 
   React.useEffect(() => {
     // Récupérer les notifications lues depuis le stockage local
@@ -144,17 +142,19 @@ function NavAdmin({ Toggle }) {
       <div>
         <h6 className="text-center fw-bold">Notifications</h6>
         <hr />
-        {notifs.map((notif, index) => (
-          <MenuItem key={notif.id}>
-            <p
-              className={`notifs px-2 py-2 rounded ${
-                index === notifs.length - 1 ? "last-notification" : ""
-              }`}
-            >
-              {notif.messageForAdmin}
-            </p>
-          </MenuItem>
-        ))}
+        <div className="menuItem">
+          {notifs.map((notif, index) => (
+            <MenuItem key={notif.id}>
+              <p
+                className={`notifs px-2 py-2 rounded ${
+                  index === notifs.length - 1 ? "last-notification" : ""
+                }`}
+              >
+                {notif.messageForAdmin}
+              </p>
+            </MenuItem>
+          ))}    
+        </div>
       </div>
     </Menu>
   );
@@ -175,25 +175,18 @@ function NavAdmin({ Toggle }) {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
-      style={{ width: "100px !important" }}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpenNotif}>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
+      <MenuItem
+        onClick={handleProfileMenuOpenNotif}
         >
-          <Badge badgeContent={17} color="error">
+        <IconButton size="large" aria-label="" color="inherit">
+          {newNotificationsCount > 0 ? (
+            <Badge badgeContent={newNotificationsCount} color="error">
+              <NotificationsIcon />
+            </Badge>
+          ) : (
             <NotificationsIcon />
-          </Badge>
+          )}
         </IconButton>
         <p>Notifications</p>
       </MenuItem>

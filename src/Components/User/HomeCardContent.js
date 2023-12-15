@@ -3,14 +3,9 @@ import HomeCard from './HomeCard';
 import { db } from "../../firebase-config";
 import {
     collection,
-    doc,
     getDocs,
-    updateDoc,
 } from "firebase/firestore";
-import { toast, ToastContainer } from 'react-toastify';
-// import Toaster from "react-hot-toast";
-// import Aos from 'aos';
-// import 'aos/dist/aos.css';
+import { toast,} from 'react-toastify';
 
 function HomeCardContent() {
   const [books, setBooks] = useState([]);
@@ -46,7 +41,6 @@ function HomeCardContent() {
         <h1>BEST SELLER</h1>
       </div>
       <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 carte">
-        <ToastContainer />
         {books.map((book, index) => {
           return (
             <HomeCard
@@ -57,8 +51,6 @@ function HomeCardContent() {
               auth={book.author}
               Id={book.id}
               archived={book.archived}
-              stock={book.stock}
-              toastComp={toastComps}
             />
           );
         })}

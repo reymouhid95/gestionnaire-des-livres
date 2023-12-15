@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import img from '../../assets/banner11.jpg'
 import HomeCard from './HomeCard';
-import imgBanner1 from '../../assets/banner21.jpg';
-import imgBanner2 from '../../assets/banner22.jpg';
-import imgBanner3 from '../../assets/banner23.jpg';
 import Aos from 'aos';
 import 'aos/dist/aos.css';
 import { db } from "../../firebase-config";
@@ -43,25 +40,12 @@ function NewArrivals() {
         <div data-aos="fade-up">
             <img src={img} alt="img" className='w-100'/>
         </div>
-        <div className="row d-flex justify-content-center g-5 flex-wrap px-0 m-0 py-4 carte">
+        <div className="row d-flex justify-content-around g-2 flex-wrap px-0 m-0 py-4 carte">
             {
-                books.map((book, index) => (
-                    <HomeCard img={book.url} title={book.title} key={index} description={book.description} auth={book.author}/>
-                ))
+              books.map((book, index) => (
+                  <HomeCard img={book.url} title={book.title} key={index} description={book.description} auth={book.author}/>
+              ))
             }
-        </div>
-        <div className='d-flex justify-content-between pt-5'>
-            <div className='col-6'>
-                <img src={imgBanner1} alt="img" className='img-fluid w-100'/>
-            </div>
-            <div className='col-5 d-flex flex-column justify-content-between'>
-                <div>
-                    <img src={imgBanner2} alt="img" className='img-fluid'/>
-                </div>
-                <div>
-                    <img src={imgBanner3} alt="img" className='img-fluid'/>
-                </div>
-            </div>
         </div>
     </div>
   )
