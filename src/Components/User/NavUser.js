@@ -17,7 +17,9 @@ import {
   onSnapshot,
   where,
   query,
-  orderBy
+  orderBy,
+  updateDoc,
+  doc
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { toast } from "react-toastify";
@@ -34,6 +36,7 @@ function NavUser({ Toggle }) {
   const isMenuOpenNotif = Boolean(anchorElNotif);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  //Fonction permettant de récupèrer les données de l'utilisateur connecté
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -61,6 +64,7 @@ function NavUser({ Toggle }) {
     fetchData();
   }, []);
 
+  //Fonction permettant de récupèrer les notifications disponibles pour l'utilisateur connecté
   const loadNotifications = React.useCallback(() => {
     try {
       const displayName = authUser ? authUser.displayName : null;
@@ -69,6 +73,7 @@ function NavUser({ Toggle }) {
         query(
           notifCollection,
           where("name", "==", displayName),
+          orderBy("timestamp", "desc")
         ),
         (snapshot) => {
           const notifData = snapshot.docs.map((doc) => ({
@@ -100,7 +105,7 @@ function NavUser({ Toggle }) {
       JSON.parse(localStorage.getItem("readNotifications")) || [];
 
     // Filtrer les nouvelles notifications qui ne sont pas lues
-    const newUnreadNotifications = notifs.filter(
+    const newUnreadNotifications = notifs.filter((notif) => notif.message).filter(
       (notif) => !readNotifications.includes(notif.id)
     );
 
@@ -108,18 +113,30 @@ function NavUser({ Toggle }) {
     setNewNotificationsCount(newUnreadNotifications.length);
   }, [notifs]);
 
+  //Fonction pour l'ouverture du profile user
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  //Fonction pour l'ouverture de l'historique des notifs
   const handleProfileMenuOpenNotif = (event) => {
     setAnchorElNotif(event.currentTarget);
   };
-
+  //Fonction pour la fermeture du profile
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
+  const signalNewNotif = async (date) => {
+    // Récupérez la première notification non lue
+    const firstUnreadNotif = notifs.find((notif) => notif.timestamp === date);
+    console.log(firstUnreadNotif)
+    // Si une notification non lue a été trouvée, mettez à jour le document Firestore
+    await updateDoc(doc(db, "notifications", firstUnreadNotif.id), {
+      newNotif: false,
+    });
+  };
+
+  //Fonction pour la fermeture de l'historique des notifs
   const handleMenuClose = () => {
     setAnchorEl(null);
     setAnchorElNotif(null);
@@ -132,15 +149,9 @@ function NavUser({ Toggle }) {
       JSON.stringify(readNotifications)
     );
   };
-
+  //Fonction pour l'ouverture du profile et de l'historique de notifs en mode mobile
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
-  };
-
-  // const navigate = useNavigate();
-  const deconnexion = () => {
-    localStorage.removeItem("utilisateur");
-    window.location.replace("/connexion");
   };
 
   const menuId = "primary-search-account-menu";
@@ -161,7 +172,6 @@ function NavUser({ Toggle }) {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={deconnexion}>Déconnexion</MenuItem>
     </Menu>
   );
 
@@ -186,17 +196,24 @@ function NavUser({ Toggle }) {
         <h6 className="text-center fw-bold">Notifications</h6>
         <hr />
         <div className="menuItem">
-          {notifs.map((notif, index) => (
-            <MenuItem key={notif.id}>
-              <p
-                className={`notifs px-2 py-2 rounded ${
-                  index === notifs.length - 1 ? "last-notification" : ""
-                }`}
+          {notifs
+            .filter((mess) => mess.message)
+            .map((notif, index) => (
+              <MenuItem
+                key={notif.id}
+                onClick={() => signalNewNotif(notif.timestamp)}
               >
-                {notif.message}
-              </p>
-            </MenuItem>
-          ))}
+                {notif.newNotif ? <p className="rounded-circle p-1 bg-primary mx-2"></p> : ""}
+                <p
+                  role="button"
+                  className={`notifs px-2 py-2 rounded ${
+                    index === notifs.length - 1 ? "last-notification" : ""
+                  }`}
+                >
+                  {notif.message}
+                </p>
+              </MenuItem>
+            ))}
         </div>
       </div>
     </Menu>
@@ -221,11 +238,7 @@ function NavUser({ Toggle }) {
       style={{ width: "100px !important" }}
     >
       <MenuItem onClick={handleProfileMenuOpenNotif}>
-        <IconButton
-          size="large"
-          aria-label=""
-          color="inherit"
-        >
+        <IconButton size="large" aria-label="" color="inherit">
           {newNotificationsCount > 0 ? (
             <Badge badgeContent={newNotificationsCount} color="error">
               <NotificationsIcon />

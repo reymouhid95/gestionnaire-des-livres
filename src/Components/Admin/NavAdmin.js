@@ -12,7 +12,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { db } from "../../firebase-config";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 
 function NavAdmin({ Toggle }) {
@@ -29,7 +29,10 @@ function NavAdmin({ Toggle }) {
   const loadNotifications = React.useCallback(() => {
     try {
       const notifCollection = collection(db, "notifications");
-      const unsubscribe = onSnapshot(notifCollection, (snapshot) => {
+      const unsubscribe = onSnapshot(query(
+          notifCollection,
+          orderBy("timestamp", "desc")
+        ), (snapshot) => {
         const notifData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -64,6 +67,16 @@ function NavAdmin({ Toggle }) {
     setNewNotificationsCount(newUnreadNotifications.length);
   }, [notifs]);
 
+  const signalNewNotif = async (date) => {
+    // Récupérez la première notification non lue
+    const firstUnreadNotif = notifs.find((notif) => notif.timestamp === date);
+    console.log(firstUnreadNotif);
+    // Si une notification non lue a été trouvée, mettez à jour le document Firestore
+    await updateDoc(doc(db, "notifications", firstUnreadNotif.id), {
+      newNotif: false,
+    });
+  };
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -94,12 +107,6 @@ function NavAdmin({ Toggle }) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  // const navigate = useNavigate();
-  const deconnexion = () => {
-    localStorage.removeItem("utilisateur");
-    window.location.replace("/connexion");
-  };
-
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -118,7 +125,6 @@ function NavAdmin({ Toggle }) {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={deconnexion}>Déconnexion</MenuItem>
     </Menu>
   );
 
@@ -144,7 +150,15 @@ function NavAdmin({ Toggle }) {
         <hr />
         <div className="menuItem">
           {notifs.map((notif, index) => (
-            <MenuItem key={notif.id}>
+            <MenuItem
+              key={notif.id}
+              onClick={() => signalNewNotif(notif.timestamp)}
+            >
+              {notif.newNotif ? (
+                <p className="rounded-circle p-1 bg-primary mx-2"></p>
+              ) : (
+                ""
+              )}
               <p
                 className={`notifs px-2 py-2 rounded ${
                   index === notifs.length - 1 ? "last-notification" : ""
@@ -153,7 +167,7 @@ function NavAdmin({ Toggle }) {
                 {notif.messageForAdmin}
               </p>
             </MenuItem>
-          ))}    
+          ))}
         </div>
       </div>
     </Menu>

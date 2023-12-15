@@ -98,7 +98,11 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       });
 
       const notificationMessage = `${displayName} a rendu le livre ${borrowedBookTitle}!`;
-      await addDoc(notificationsCollection, { message: notificationMessage });
+      await addDoc(notificationsCollection, {
+        messageForAdmin: notificationMessage,
+        timestamp: serverTimestamp(),
+        newNotif: true,
+      });
 
       toast.info(notificationMessage);
       loadBooks();
@@ -108,7 +112,6 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
         stock: borrowedBook.stock - 1,
         isBorrowed: true,
         returnDate: returnDate.toISOString(),
-        
       });
 
       await updateDoc(doc(db, "users", userBookBorrowed.id), {
@@ -118,13 +121,13 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       const notificationMessage = `Vous avez emprunté le livre ${borrowedBookTitle}`;
       const notificationMessageAdmin = `${displayName} a emprunté le livre ${borrowedBookTitle}`;
       await addDoc(notificationsCollection, {
-        message: notificationMessage,
         messageForAdmin: notificationMessageAdmin,
         name: displayName,
         timestamp: serverTimestamp(),
+        newNotif: true,
       });
 
-      // toast.success(notificationMessage);
+      toast.success(notificationMessage);
       loadBooks();
     } else if (borrowedBook) {
       const notificationMessage = `Stock épuisé pour le livre : ${borrowedBookTitle}!`;
@@ -161,10 +164,8 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
             messageForAdmin: notificationMessageAdmin,
             name: displayName,
             timestamp: serverTimestamp(),
+            newNotif: true,
           });
-          toast.info(
-            `Délai dépassé. Le livre ${borrowedBook.title} a été recupéré!`
-          );
           loadBooks();
         } else {
           toast.warning(
