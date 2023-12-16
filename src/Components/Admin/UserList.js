@@ -28,13 +28,24 @@ function UserList() {
       await updateDoc(doc(db, "users", userBloqued.id), {
         bloqued: !bloqued, // Inverser la valeur actuelle
       });
+      const updatedUsers = users.map((user) =>
+        user.id === UserId
+          ? {
+              ...user,
+              bloqued: !bloqued,
+              statusText: !bloqued ? "Blocked" : "Unblocked",
+            }
+          : user
+      );
 
-      await setTemporaryBlocked(UserId);
+      setUsers(updatedUsers);
+
+      setTemporaryBlocked(UserId);
       // Recharger les utilisateurs après la mise à jour
       loadUsers();
     } catch (error) {
       console.error("Error updating user:", error);
-      toast.error("Erreur lors de la mise à jour de l'utilisateur.");
+      toast.error("Error updating user!");
     }
   };
 
@@ -42,7 +53,7 @@ function UserList() {
     if (temporaryBlocked !== null) {
       const timeoutId = setTimeout(() => {
         setTemporaryBlocked(null);
-      }, 2000);
+      }, 3000);
       return () => clearTimeout(timeoutId);
     }
   }, [temporaryBlocked]);
@@ -108,8 +119,12 @@ function UserList() {
                   )}
                 </Button>
                 {temporaryBlocked === user.id && (
-                  <span className="text-danger">
-                    {user.bloqued ? "blocked" : "Unlocked"}
+                  <span
+                    className={`text-danger ${
+                      temporaryBlocked ? "" : "fade-out"
+                    }`}
+                  >
+                    {user.statusText}
                   </span>
                 )}
               </td>

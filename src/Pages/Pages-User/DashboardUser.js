@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import AboutUs from "../../Components/User/AboutUs";
+import BookCategories from "../../Components/User/BookCategories";
 import CarouselAcceuil from "../../Components/User/CarouselAcceuil";
-import HomeCardContent from "../../Components/User/HomeCardContent";
 import NewArrivals from "../../Components/User/NewArrivals";
+import Newsletter from "../../Components/User/Newsletter";
+import Testimonials from "../../Components/User/Testimonials";
 
 function DashboardUser() {
   const navigate = useNavigate();
@@ -15,6 +18,7 @@ function DashboardUser() {
       // Si l'utilisateur est connecté, redirigez-le vers le tableau de bord approprié
       if (user.email === "serigne@gmail.com") {
         navigate("/admin/dashboardAdmin");
+        window.location.reload();
       }
     }
   }, [navigate]);
@@ -23,8 +27,11 @@ function DashboardUser() {
     <Link to="/user/dashboardUser" style={{ textDecoration: "none" }}>
       <div className="dashboard">
         <CarouselAcceuil />
-        <HomeCardContent />
+        <BookCategories />
         <NewArrivals />
+        <AboutUs />
+        <Newsletter />
+        <Testimonials />
       </div>
     </Link>
   );

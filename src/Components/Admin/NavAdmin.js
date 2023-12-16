@@ -18,7 +18,15 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
@@ -42,27 +50,30 @@ function NavAdmin({ Toggle }) {
   const isMenuOpenNotif = Boolean(anchorElNotif);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const loadBooks = useCallback(() => {
+  const loadNotifications = useCallback(() => {
     try {
-      const bookCollection = collection(db, "notifications");
-      const unsubscribe = onSnapshot(bookCollection, (snapshot) => {
-        const bookData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setNotifs(bookData);
-      });
+      const notifCollection = collection(db, "notifications");
+      const unsubscribe = onSnapshot(
+        query(notifCollection, orderBy("timestamp", "desc")),
+        (snapshot) => {
+          const notifData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setNotifs(notifData);
+        }
+      );
 
       return () => unsubscribe();
     } catch (error) {
       console.error("Error loading books:", error);
-      toast.error("Loading error. Please check your internet connection!");
+      toast.error("Error loading. Please check your internet connection!");
     }
   }, []);
 
   useEffect(() => {
-    loadBooks();
-  }, [loadBooks]);
+    loadNotifications();
+  }, [loadNotifications]);
 
   const loadAvatar = useCallback((userId) => {
     const profileImageRef = ref(
@@ -124,6 +135,16 @@ function NavAdmin({ Toggle }) {
     // Mettre à jour le compteur de nouvelles notifications
     setNewNotificationsCount(newUnreadNotifications.length);
   }, [notifs]);
+
+  const signalNewNotif = async (date) => {
+    // Récupérez la première notification non lue
+    const firstUnreadNotif = notifs.find((notif) => notif.timestamp === date);
+    console.log(firstUnreadNotif);
+    // Si une notification non lue a été trouvée, mettez à jour le document Firestore
+    await updateDoc(doc(db, "notifications", firstUnreadNotif.id), {
+      newNotif: false,
+    });
+  };
 
   const handleModalOpen = () => setOpenModal(true);
 
@@ -219,7 +240,15 @@ function NavAdmin({ Toggle }) {
         <h6 className="text-center fw-bold">Notifications</h6>
         <hr />
         {notifs.map((notif, index) => (
-          <MenuItem key={notif.id}>
+          <MenuItem
+            key={notif.id}
+            onClick={() => signalNewNotif(notif.timestamp)}
+          >
+            {notif.newNotif ? (
+              <p className="rounded-circle p-1 bg-primary mx-2"></p>
+            ) : (
+              ""
+            )}
             <p
               className={`notifs px-2 py-2 rounded ${
                 index === notifs.length - 1 ? "last-notification" : ""
@@ -257,9 +286,13 @@ function NavAdmin({ Toggle }) {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          {newNotificationsCount > 0 ? (
+            <Badge badgeContent={newNotificationsCount} color="error">
+              <NotificationsIcon />
+            </Badge>
+          ) : (
             <NotificationsIcon />
-          </Badge>
+          )}
         </IconButton>
         <p>Notifications</p>
       </MenuItem>

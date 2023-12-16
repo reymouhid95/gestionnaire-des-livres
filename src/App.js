@@ -17,6 +17,7 @@ import Books from "./Pages/Pages-User/Books";
 import DashboardUser from "./Pages/Pages-User/DashboardUser";
 import Template from "./layouts/Template";
 
+// Import des autres composants
 function App() {
   const [toggle, setToggle] = useState(true);
   const url = "/admin/dashboardAdmin";
