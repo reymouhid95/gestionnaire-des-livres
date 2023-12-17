@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { addSeconds, differenceInSeconds, isPast } from "date-fns";
@@ -46,7 +47,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       setUsers(usersData);
     } catch (error) {
       console.error("Error loading books:", error);
-      alert("Error loading. Please check your internet connection!");
+      toast.error("Error loading. Please check your internet connection!");
     }
   }, []);
 
@@ -61,15 +62,13 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
           if (user) {
-            // L'utilisateur est connecté
             setAuthUser(user);
           } else {
-            // L'utilisateur n'est pas connecté
             setAuthUser(null);
           }
         });
 
-        return () => unsubscribe(); // Nettoyage lors du démontage du composant
+        return () => unsubscribe();
       } catch (error) {
         console.error("Error loading data:", error);
         alert("Error loading. Please check your internet connection!");

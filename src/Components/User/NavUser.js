@@ -32,7 +32,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { auth, db, storage } from "../../firebase-config";
 
@@ -44,37 +44,17 @@ function NavUser({ Toggle }) {
   const [notifs, setNotifs] = useState([]);
   const [newNotificationsCount, setNewNotificationsCount] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [users, setUsers] = useState([]);
   const [authUser, setAuthUser] = useState(null);
   const [user, setUser] = useState(null);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
-  const [profileImage, setProfileImage] = useState(null);
-  // const auth = getAuth();
+  const [newPhoto, setNewPhoto] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  useEffect(() => {
-    const getAvatarUrl = async () => {
-      try {
-        if (authUser) {
-          const profileImageRef = ref(
-            storage,
-            `path/to/users/${authUser.uid}/profile-image.jpg`
-          );
-          const url = await getDownloadURL(profileImageRef);
-          setProfileImage(url);
-        }
-      } catch (error) {
-        console.error("Error getting profile image URL:", error.message);
-      }
-    };
-
-    getAvatarUrl();
-  }, [authUser]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,15 +63,13 @@ function NavUser({ Toggle }) {
 
         const unsubscribe = onAuthStateChanged(auth, (user) => {
           if (user) {
-            // L'utilisateur est connecté
             setAuthUser(user);
           } else {
-            // L'utilisateur n'est pas connecté
             setAuthUser(null);
           }
         });
 
-        return () => unsubscribe(); // Nettoyage lors du démontage du composant
+        return () => unsubscribe();
       } catch (error) {
         console.error("Error loading data:", error);
         toast.error("Error loading. Please check your internet connection!");
@@ -100,30 +78,6 @@ function NavUser({ Toggle }) {
 
     fetchData();
   }, []);
-
-  const loadUsers = useCallback(async () => {
-    try {
-      const userCollection = collection(db, "users");
-      const unsubscribe = onSnapshot(userCollection, (snapshot) => {
-        const userData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setUsers(userData);
-      });
-
-      return () => unsubscribe();
-    } catch (error) {
-      console.error("Error loading users:", error);
-      toast.error("Loading error. Please check your internet connection!!");
-    }
-
-    loadUsers();
-  }, []);
-
-  useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
 
   const loadNotifications = useCallback(() => {
     try {
@@ -157,16 +111,26 @@ function NavUser({ Toggle }) {
     loadNotifications();
   }, [loadNotifications]);
 
-  // Mise à jour du profil
+  // Récupération des données de lutilisateur
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
-        // L'utilisateur est connecté, récupérer ses données
         setUser({
           name: authUser.displayName,
           email: authUser.email,
           uid: authUser.uid,
         });
+
+        // Charger la photo depuis le stockage Firebase
+        const photoRef = ref(storage, `profilePhotos/${authUser.uid}`);
+
+        try {
+          const photoUrl = await getDownloadURL(photoRef);
+          setUser((prevUser) => ({ ...prevUser, photoUrl }));
+          setAvatarImage(photoUrl);
+        } catch (error) {
+          console.error("Error loading profile photo:", error);
+        }
       } else {
         setUser(null);
       }
@@ -178,79 +142,46 @@ function NavUser({ Toggle }) {
   }, [auth]);
 
   const handleUpdateProfile = async () => {
-    try {
-      // Mettez à jour le profil de l'utilisateur avec les nouvelles données
-      await updateProfile(auth.currentUser, {
-        displayName: newName,
-        email: newEmail,
-      });
+    // Mettre à jour le profil dans Firebase Auth
+    await updateProfile(auth.currentUser, {
+      displayName: newName,
+    });
 
-      // Mettre à jour l'état local avec les nouvelles données de manière immuable
-      setUser((prevUser) => ({
-        ...prevUser,
-        name: newName,
-        email: newEmail,
-      }));
+    // Mettre à jour le nom dans l'état local
+    setUser((prevUser) => ({ ...prevUser, name: newName }));
 
-      // Effacez les champs de saisie
-      setNewName("");
-      setNewEmail("");
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour du profil :", error.message);
+    // Mettre à jour la photo dans le stockage Firebase
+    if (newPhoto) {
+      const photoRef = ref(storage, `profilePhotos/${user.uid}`);
+      await uploadBytes(photoRef, newPhoto);
+
+      // Charger la nouvelle photo depuis le stockage Firebase
+      const newPhotoUrl = await getDownloadURL(photoRef);
+
+      // Mettre à jour la photo dans l'état local
+      setUser((prevUser) => ({ ...prevUser, photoUrl: newPhotoUrl }));
+      setAvatarImage(newPhotoUrl);
     }
+
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      setLoadingComplete(true);
+      setOpenModal(false);
+      toast.success("Profile updated!");
+    }, 2000);
+  };
+
+  // Télécharger la photo
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    setNewPhoto(file);
   };
 
   // Contôler la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (!user) {
-        console.error("User not found.");
-        return;
-      }
-
-      if (!newName || !newEmail) {
-        console.error("Name and email cannot be empty.");
-        return;
-      }
-
-      // Vérifier si le nom ou l'email a été modifié
-      const isNameChanged = newName !== user.name;
-      const isEmailChanged = newEmail !== user.email;
-
-      if (!isNameChanged && !isEmailChanged) {
-        console.log("No changes detected.");
-        return;
-      }
-
-      // Mettre à jour le profil uniquement avec les champs modifiés
-      const updatedFields = {};
-      if (isNameChanged) updatedFields.name = newName;
-      if (isEmailChanged) updatedFields.email = newEmail;
-
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, updatedFields);
-
-      // Mettre à jour localement
-      setUser((prevUser) => ({
-        ...prevUser,
-        ...updatedFields,
-      }));
-
-      // Mettre à jour le profil Firebase
-      await updateProfile(auth.currentUser, {
-        displayName: newName,
-        email: newEmail,
-      });
-
-      // Fermer le Modal
-      setOpenModal(false);
-
-      console.log("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating profile:", error.message);
-      toast.error("Error updating profile. Please try again!");
-    }
   };
 
   useEffect(() => {
@@ -273,6 +204,8 @@ function NavUser({ Toggle }) {
 
   const handleModalClose = async () => {
     // Réinitialiser les valeurs en cas d'annulation
+    setNewName("");
+    setNewEmail("");
     setAvatarImage(null);
 
     // Fermer le Modal
@@ -319,40 +252,6 @@ function NavUser({ Toggle }) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const handleAvatarChange = async (event) => {
-    try {
-      const file = event.target.files[0];
-      if (file) {
-        const profileImageRef = ref(
-          storage,
-          `path/to/users/${authUser.uid}/profile-image.jpg`
-        );
-
-        // Téléchargez uniquement si nécessaire, sinon utilisez l'URL existante
-        const shouldUpload = !avatarImage;
-
-        if (shouldUpload) {
-          await uploadBytes(profileImageRef, file);
-        }
-
-        // Mettez à jour localement l'URL de l'image
-        const url = await getDownloadURL(profileImageRef);
-        setAvatarImage(url);
-
-        // Mettez à jour les informations de l'utilisateur dans Firebase uniquement si nécessaire
-        if (shouldUpload) {
-          await updateDoc(doc(db, "users", authUser.uid), {
-            avatarUrl: url,
-          });
-        }
-
-        console.log("Profile image updated successfully!");
-      }
-    } catch (error) {
-      console.error("Error updating profile image:", error.message);
-    }
-  };
-
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -375,7 +274,7 @@ function NavUser({ Toggle }) {
         <Form.Control
           type="file"
           accept="image/*"
-          onChange={handleAvatarChange}
+          onChange={handlePhotoChange}
         />
       </MenuItem>
     </Menu>
@@ -488,7 +387,7 @@ function NavUser({ Toggle }) {
           <Form.Control
             type="file"
             accept="image/*"
-            onChange={handleAvatarChange}
+            onChange={handlePhotoChange}
           />
         </Form>
       </MenuItem>
@@ -572,58 +471,62 @@ function NavUser({ Toggle }) {
           className="text-center"
         >
           <Form onSubmit={handleSubmit}>
-            <DialogTitle>Profile</DialogTitle>
+            <DialogTitle>Edit profile</DialogTitle>
             <DialogContent>
               <div>
-                {user ? (
+                {openModal && (
                   <div>
-                    <p>Nom: {user.name}</p>
-                    <p>Email: {user.email}</p>
                     <div>
-                      {" "}
-                      <TextField
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatarChange}
-                        className="mb-3"
-                        fullWidth
+                      <img
+                        src={user.photoUrl}
+                        alt="User"
+                        style={{ borderRadius: "50%", width: 50, height: 50 }}
                       />
-                      <TextField
-                        type="text"
-                        id="outlined-basic"
-                        label="New Name"
-                        variant="outlined"
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
-                        className="mb-3"
-                        fullWidth
-                      />
-                      <TextField
-                        type="email"
-                        id="outlined-basic"
-                        label="New Email"
-                        variant="outlined"
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        className="mb-3"
-                        fullWidth
-                      />{" "}
-                      <div className="d-flex justify-content-center my-2">
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          endIcon={<SendIcon onClick={handleUpdateProfile} />}
-                        >
-                          Update
-                        </Button>
-                      </div>
                     </div>
+                    <p className="fw-bold"> {user.name}</p>
+                    <p className="fw-bold"> {user.email}</p>
+                    <Form.Control
+                      name="file"
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="mb-3"
+                    />
+                    <Form.Control
+                      name="name"
+                      type="text"
+                      placeholder="New name"
+                      onChange={(e) => setNewName(e.target.value)}
+                      className="mb-3"
+                    />
+                    <Form.Control
+                      name="email"
+                      type="email"
+                      placeholder="New email"
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      className="mb-3"
+                    />
+                    <Button
+                      variant="contained"
+                      endIcon={<SendIcon />}
+                      onClick={handleUpdateProfile}
+                      disabled={loading}
+                    >
+                      Update
+                      {!loadingComplete && loading && (
+                        <Spinner
+                          as="span"
+                          animation="grow"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />
+                      )}
+                      {loading && loadingComplete ? "Loading..." : null}
+                    </Button>
                   </div>
-                ) : (
-                  <p>Connectez-vous pour voir votre profil.</p>
                 )}
               </div>
-              <div></div>
             </DialogContent>
           </Form>
         </Dialog>

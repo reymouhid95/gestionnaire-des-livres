@@ -1,15 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import SendIcon from "@mui/icons-material/Send";
 import {
   AppBar,
   Badge,
   Box,
   Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
@@ -18,10 +19,10 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { onAuthStateChanged, updateProfile } from "firebase/auth";
 import {
   collection,
   doc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -29,9 +30,9 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useCallback, useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { db, storage } from "../../firebase-config";
+import { auth, db, storage } from "../../firebase-config";
 
 function NavAdmin({ Toggle }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -41,10 +42,12 @@ function NavAdmin({ Toggle }) {
   const [notifs, setNotifs] = useState([]);
   const [newNotificationsCount, setNewNotificationsCount] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [userId, setUserId] = useState("");
-  const [users, setUsers] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [user, setUser] = useState([]);
+  const [newPhoto, setNewPhoto] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
@@ -75,53 +78,6 @@ function NavAdmin({ Toggle }) {
     loadNotifications();
   }, [loadNotifications]);
 
-  const loadAvatar = useCallback((userId) => {
-    const profileImageRef = ref(
-      storage,
-      `path/to/admin/${userId}/profile-image.jpg`
-    );
-    getDownloadURL(profileImageRef)
-      .then((url) => setAvatarImage(url))
-      .catch((error) => {
-        console.error("Error loading profile image:", error.message);
-      });
-  }, []);
-
-  const loadUserDetails = useCallback(
-    (user) => {
-      setUserId(user.id);
-      setUserName(user.name);
-      setUserEmail(user.email);
-      loadAvatar(user.id);
-    },
-    [loadAvatar]
-  );
-
-  const loadUsers = useCallback(async () => {
-    try {
-      const userCollection = collection(db, "users");
-      const snapshot = await getDocs(userCollection);
-      const userData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUsers(userData);
-
-      const currentUser = userData[0];
-      if (currentUser) {
-        loadUserDetails(currentUser);
-        loadAvatar(currentUser.id);
-      }
-    } catch (error) {
-      console.error("Error loading users:", error);
-      toast.error("Loading error. Please check your internet connection!");
-    }
-  }, [loadUserDetails, loadAvatar]);
-
-  useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
-
   useEffect(() => {
     // Récupérer les notifications lues depuis le stockage local
     const readNotifications =
@@ -140,10 +96,81 @@ function NavAdmin({ Toggle }) {
     // Récupérez la première notification non lue
     const firstUnreadNotif = notifs.find((notif) => notif.timestamp === date);
     console.log(firstUnreadNotif);
-    // Si une notification non lue a été trouvée, mettez à jour le document Firestore
+    // Si une notification non lue a été trouvée, mettre à jour le document Firestore
     await updateDoc(doc(db, "notifications", firstUnreadNotif.id), {
       newNotif: false,
     });
+  };
+
+  // Récupération des données de l'utilisateur
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        setUser({
+          name: authUser.displayName,
+          email: authUser.email,
+          uid: authUser.uid,
+        });
+
+        // Charger la photo depuis le stockage Firebase
+        const photoRef = ref(storage, `profilePhotos/${authUser.uid}`);
+
+        try {
+          const photoUrl = await getDownloadURL(photoRef);
+          setUser((prevUser) => ({ ...prevUser, photoUrl }));
+          setAvatarImage(photoUrl);
+        } catch (error) {
+          toast.error("Error loading profile photo:", error);
+        }
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [auth]);
+
+  // Mettre à jour le profil
+  const handleUpdateProfile = async () => {
+    await updateProfile(auth.currentUser, {
+      displayName: newName,
+    });
+    setUser((prevUser) => ({ ...prevUser, name: newName }));
+
+    // Mettre à jour la photo dans le stockage Firebase
+    if (newPhoto) {
+      const photoRef = ref(storage, `profilePhotos/${user.uid}`);
+      await uploadBytes(photoRef, newPhoto);
+
+      // Charger la nouvelle photo depuis le stockage Firebase
+      const newPhotoUrl = await getDownloadURL(photoRef);
+
+      // Mettre à jour la photo dans l'état local
+      setUser((prevUser) => ({ ...prevUser, photoUrl: newPhotoUrl }));
+      setAvatarImage(newPhotoUrl);
+    }
+
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      setLoadingComplete(true);
+      setOpenModal(false);
+      toast.success("Profile updated!");
+    }, 2000);
+  };
+
+  // Télécharger la photo
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    setNewPhoto(file);
+  };
+
+  // Contôler la soumission du formulaire
+  const handleSubmit = async (e) => {
+    e.preventDefault();
   };
 
   const handleModalOpen = () => setOpenModal(true);
@@ -180,21 +207,6 @@ function NavAdmin({ Toggle }) {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const handleAvatarChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const profileImageRef = ref(
-        storage,
-        `path/to/admin/${userId}/profile-image.jpg`
-      );
-      uploadBytes(profileImageRef, file)
-        .then(() => loadAvatar(userId))
-        .catch((error) => {
-          console.error("Error uploading profile image:", error.message);
-        });
-    }
-  };
-
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -214,7 +226,11 @@ function NavAdmin({ Toggle }) {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem>
-        <input type="file" accept="image/*" onChange={handleAvatarChange} />
+        <Form.Control
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoChange}
+        />
       </MenuItem>
     </Menu>
   );
@@ -321,7 +337,7 @@ function NavAdmin({ Toggle }) {
           <Form.Control
             type="file"
             accept="image/*"
-            onChange={handleAvatarChange}
+            onChange={handlePhotoChange}
           />
         </Form>
       </MenuItem>
@@ -399,17 +415,70 @@ function NavAdmin({ Toggle }) {
             </IconButton>
           </Box>
         </Toolbar>
-        <Dialog open={openModal} onClose={handleModalClose}>
-          <DialogTitle>Profile</DialogTitle>
-          <DialogContent>
-            <input type="file" accept="image/*" onChange={handleAvatarChange} />
-            <p>Name: {userName}</p>
-            <p>Email: {userEmail}</p>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleModalClose}>Cancel</Button>
-            <Button onClick={handleModalClose}>Save</Button>
-          </DialogActions>
+        <Dialog
+          open={openModal}
+          onClose={handleModalClose}
+          className="text-center"
+        >
+          <Form onSubmit={handleSubmit}>
+            <DialogTitle>Edit profile</DialogTitle>
+            <DialogContent>
+              <div>
+                {openModal && (
+                  <div>
+                    <div>
+                      <img
+                        src={user.photoUrl}
+                        alt="User"
+                        style={{ borderRadius: "50%", width: 50, height: 50 }}
+                      />
+                    </div>
+                    <p className="fw-bold"> {user.name}</p>
+                    <p className="fw-bold"> {user.email}</p>
+                    <Form.Control
+                      name="file"
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="mb-3"
+                    />
+                    <Form.Control
+                      name="name"
+                      type="text"
+                      placeholder="New name"
+                      onChange={(e) => setNewName(e.target.value)}
+                      className="mb-3"
+                    />
+                    <Form.Control
+                      name="email"
+                      type="email"
+                      placeholder="New email"
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      className="mb-3"
+                    />
+                    <Button
+                      variant="contained"
+                      endIcon={<SendIcon />}
+                      onClick={handleUpdateProfile}
+                      disabled={loading}
+                    >
+                      Update
+                      {!loadingComplete && loading && (
+                        <Spinner
+                          as="span"
+                          animation="grow"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />
+                      )}
+                      {loading && loadingComplete ? "Loading..." : null}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+          </Form>
         </Dialog>
       </AppBar>
       {renderMobileMenu}
