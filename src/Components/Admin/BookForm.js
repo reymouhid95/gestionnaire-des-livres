@@ -185,11 +185,9 @@ function FormBook() {
         );
 
         if (updatedBookData.archived) {
-          setIsArchived(true);
-          setIsUnarchived(false);
+          toast.success("Livre archivé avec succès!");
         } else {
-          setIsArchived(false);
-          setIsUnarchived(true);
+          toast.success("Livre désarchivé avec succès!");
         }
       } catch (error) {
         console.error("Error updating book:", error);
@@ -236,8 +234,6 @@ function FormBook() {
   // L'affichage
   return (
     <div className="mt-2">
-      {isArchived && toast.success("Livre archivé avec succès!")}
-      {isUnarchived && toast.success("Livre désarchivé avec succès!")}
       <Form onSubmit={handleSubmit}>
         <Row className="p-0 m-0 w-100">
           <div className="d-flex justify-content-end">

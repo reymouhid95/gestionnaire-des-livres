@@ -206,6 +206,9 @@ tbody .archiver {
 /* .bouton{
   width: 80%;
 } */
+.categoryFilter{
+  cursor: pointer !important;
+}
 
 @media screen and (max-width: 768px) {
   .carte {
@@ -621,6 +624,11 @@ thead th {
 .btn-borrowed{
   border: none;
   background-color: rgb(165, 165, 165) !important;
+}
+
+.cursor-na{
+  background-color: rgb(165, 165, 165) !important;
+  cursor: not-allowed !important;
 }
 
 /* .block1, .block2{

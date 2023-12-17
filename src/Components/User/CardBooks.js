@@ -43,15 +43,26 @@ function CardBooks() {
     switch (filterType) {
       case "all":
         return filteredBooks;
-      case "dispo":
-        return filteredBooks.filter((book) => !book.archived);
-      case "noDispo":
-        return filteredBooks.filter((book) => book.archived);
+      case "roman":
+        return filteredBooks.filter((book) => book.genre === "Roman");
+      case "histoire":
+        return filteredBooks.filter((book) => book.genre === "Histoire");
+      case "art":
+        return filteredBooks.filter((book) => book.genre === "Art");
+      case "poesie":
+        return filteredBooks.filter((book) => book.genre === "Poesie");
+      case "science":
+        return filteredBooks.filter((book) => book.genre === "Science");
+      case "adventure":
+        return filteredBooks.filter((book) => book.genre === "Adventure");
       default:
         return [];
     }
   };
 
+  // console.log(filterBooks());
+
+  const filteredBooks = filterBooks();
 
   return (
     <div className="container-fluid m-0 px-0 homeCard w-100">
@@ -60,20 +71,25 @@ function CardBooks() {
         filter={filter}
         func={(e) => setFilter(e.target.value)}
         func3={() => setFilterType("all")}
-        func2={() => setFilterType("noDispo")}
-        func1={() => setFilterType("dispo")}
+        func2={() => setFilterType("histoire")}
+        func1={() => setFilterType("roman")}
+        func4={() => setFilterType("art")}
+        func5={() => setFilterType("poesie")}
+        func6={() => setFilterType("science")}
+        func7={() => setFilterType("adventure")}
       />
       <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4 books">
-        {filterBooks().map((book, index) => (
-          <HomeCard
-            img={book.url}
-            title={book.title}
-            key={index}
-            description={book.description}
-            auth={book.author}
-            genre={book.genre}
-          />
-        ))}
+        {
+          filteredBooks.map((book, index) => (
+            <HomeCard
+              img={book.url}
+              title={book.title}
+              key={index}
+              description={book.description}
+              auth={book.author}
+              genre={book.genre}
+            />
+          ))}
       </div>
     </div>
   );

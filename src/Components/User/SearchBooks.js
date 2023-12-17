@@ -157,7 +157,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function SearchBooks({filter , func, func1, func2, func3}) {
+function SearchBooks({filter , func, func1, func2, func3, func4, func5, func6, func7}) {
 
   const createHandleMenuClick = (menuItem) => {
     return () => {
@@ -184,14 +184,30 @@ function SearchBooks({filter , func, func1, func2, func3}) {
           <div id="filterDropDown">
             <Dropdown>
               <MenuButton className="icon">
-                <TuneIcon className="iconFliter"/>
+                <TuneIcon className="iconFliter" />
               </MenuButton>
               <Menu slots={{ listbox: Listbox }}>
-                <MenuItem onClick={func3}>All books</MenuItem>
-                <MenuItem role="button" onClick={func1}>
-                  Books available
+                <MenuItem className="categoryFilter" onClick={func3}>
+                  All Category
                 </MenuItem>
-                <MenuItem onClick={func2}>Books not available</MenuItem>
+                <MenuItem className="categoryFilter" onClick={func1}>
+                  Novel Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func2}>
+                  History Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func4}>
+                  Art Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func5}>
+                  Poetry Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func6}>
+                  Science Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func7}>
+                  Adventure Category
+                </MenuItem>
               </Menu>
             </Dropdown>
           </div>

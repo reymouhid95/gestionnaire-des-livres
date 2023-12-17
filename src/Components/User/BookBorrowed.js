@@ -37,22 +37,26 @@ function BookBorrowed() {
   return (
     <div className="m-0 px-0 homeCard w-100">
       <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4">
-        {books
-          .filter((book) => book.isBorrowed)
-          .map((book, index) => {
-            return (
-              <HomeCard
-                img={book.url}
-                title={book.title}
-                key={index}
-                description={book.description}
-                auth={book.author}
-                Id={book.id}
-                archived={book.archived}
-                stock={book.stock}
-              />
-            );
-          })}
+        {books.filter((book) => book.isBorrowed).length === 0 ? (
+          <p>No Borrowed Books</p>
+        ) : (
+          books
+            .filter((book) => book.isBorrowed)
+            .map((book, index) => {
+              return (
+                <HomeCard
+                  img={book.url}
+                  title={book.title}
+                  key={index}
+                  description={book.description}
+                  auth={book.author}
+                  Id={book.id}
+                  archived={book.archived}
+                  stock={book.stock}
+                />
+              );
+            })
+        )}
       </div>
     </div>
   );

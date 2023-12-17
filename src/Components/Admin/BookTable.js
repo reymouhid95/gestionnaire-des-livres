@@ -54,12 +54,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 // Fonction principal du composant
-function TableBook({
-  books,
-  onEditBook,
-  onDeleteBook,
-  onArchivedBook,
-}) {
+function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showListModal, setShowListModal] = useState(false);
@@ -69,10 +64,6 @@ function TableBook({
   const [initialBookArchives, setInitialBookArchives] = useState({});
   const [bookArchives, setBookArchives] = useState({});
   const [archivedBookId, setArchivedBookId] = useState(null);
-
-  // const [bookArchives, setBookArchives] = useState(
-  //   JSON.parse(localStorage.getItem("bookArchives")) || {}
-  // );
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
   const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
@@ -147,47 +138,52 @@ function TableBook({
     );
   };
 
-  const handleArchivedBook = async (bookId) => {
-    onArchivedBook(bookId);
+const handleArchivedBook = async (bookId) => {
+  onArchivedBook(bookId);
 
-    try {
-      // Update archive state in Firestore
-      const docRef = doc(db, "archivedBooks", "archivedBooksData");
-      await setDoc(docRef, { ...bookArchives, [bookId]: true });
+  try {
+    // Update local state
+    const updatedBookArchives = { ...bookArchives, [bookId]: true };
 
-      // Update local state
-      setBookArchives((prevBookArchives) => ({
-        ...prevBookArchives, 
-        [bookId]: true,
-      }));
+    // Update archive state in Firestore
+    const docRef = doc(db, "archivedBooks", "archivedBooksData");
+    await setDoc(docRef, updatedBookArchives);
 
-      // Update archivedBookId
-      setArchivedBookId(bookId);
-    } catch (error) {
-      console.error("Error updating archives in Firestore:", error);
-    }
-  };
+    // Update archivedBookId
+    setArchivedBookId(bookId);
 
-  const handleUnarchivedBook = async (bookId) => {
-    onArchivedBook(bookId);
+    // Save to local storage
+    localStorage.setItem("bookArchives", JSON.stringify(updatedBookArchives));
 
-    try {
-      // Update archive state in Firestore
-      const docRef = doc(db, "archivedBooks", "archivedBooksData");
-      await setDoc(docRef, { ...bookArchives, [bookId]: false });
+    setBookArchives(updatedBookArchives);
+  } catch (error) {
+    console.error("Error updating archives in Firestore:", error);
+  }
+};
 
-      // Update local state
-      setBookArchives((prevBookArchives) => ({
-        ...prevBookArchives,
-        [bookId]: false,
-      }));
+const handleUnarchivedBook = async (bookId) => {
+  onArchivedBook(bookId);
 
-      // Update archivedBookId
-      setArchivedBookId(bookId);
-    } catch (error) {
-      console.error("Error updating archives in Firestore:", error);
-    }
-  };
+  try {
+    // Update local state
+    const updatedBookArchives = { ...bookArchives, [bookId]: false };
+
+    // Update archive state in Firestore
+    const docRef = doc(db, "archivedBooks", "archivedBooksData");
+    await setDoc(docRef, updatedBookArchives);
+
+    // Update archivedBookId
+    setArchivedBookId(bookId);
+
+    // Save to local storage
+    localStorage.setItem("bookArchives", JSON.stringify(updatedBookArchives));
+
+    setBookArchives(updatedBookArchives);
+  } catch (error) {
+    console.error("Error updating archives in Firestore:", error);
+  }
+};
+
 
   // L'affichage
   return (

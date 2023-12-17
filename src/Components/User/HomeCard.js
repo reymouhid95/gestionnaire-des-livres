@@ -188,6 +188,10 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     (book) => book.title === title && book.isBorrowed
   );
 
+  const bookArchived = books.find(
+    (book) => book.title === title && book.archived === true
+  );
+
   return (
     <Card
       data-aos="fade-up"
@@ -211,10 +215,17 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
               className={
                 bookBorrowed
                   ? "text-white mt-3 bouton rounded-pill btn-success border-0"
+                  : bookArchived
+                  ? "text-white mt-3 cursor-na rounded-pill pe-auto border-0 btn-archived"
                   : "text-white mt-3 bouton rounded-pill bg-warning border-0 "
               }
+              disabled={bookArchived ? true : false}
             >
-              {bookBorrowed ? "Return" : "Borrow"}
+              {bookBorrowed
+                ? "Return"
+                : bookArchived
+                ? "Book not available"
+                : "Borrow"}
             </Button>
           </div>
 
