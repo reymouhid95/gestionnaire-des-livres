@@ -165,14 +165,13 @@ function FormBook() {
         );
 
         if (updatedBookData.archived) {
-          setIsArchived(true);
-          setIsUnarchived(false);
+          toast.success("Book archived!");
         } else {
-          setIsArchived(false);
-          setIsUnarchived(true);
+          toast.success("Book unarchived!");
         }
       } catch (error) {
         console.error("Update error:", error);
+        toast.error("Update error!");
       }
     },
     [books, selectedBook, setBooks, loadBooks]
@@ -181,16 +180,19 @@ function FormBook() {
   // Supprimer un livre
   const handleDeleteBook = useCallback(
     async (bookId) => {
-      await deleteDoc(doc(db, "books", bookId));
-      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
-      setStocks((prevStocks) => {
-        const {
-          [books.find((book) => book.id === bookId)?.title]: removed,
-          ...rest
-        } = prevStocks;
-        return rest;
-      });
-      toast.success("Stock deleted!");
+      const bookToDelete = books.find((book) => book.id === bookId);
+      if (bookToDelete) {
+        const { title } = bookToDelete;
+        await deleteDoc(doc(db, "books", bookId));
+        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+        setStocks((prevStocks) => {
+          const { [title]: removed, ...rest } = prevStocks;
+          return rest;
+        });
+        toast.success(`Book "${title}" deleted!`);
+      } else {
+        toast.error(`Book not found with ID : ${bookId}`);
+      }
     },
     [books]
   );
@@ -213,8 +215,6 @@ function FormBook() {
   // L'affichage
   return (
     <div className="m-0">
-      {isArchived && toast.success("Book archived!")}
-      {isUnarchived && toast.success("Book unarchived!")}
       <Form onSubmit={handleSubmit}>
         <Row>
           <div className="d-flex justify-content-end">

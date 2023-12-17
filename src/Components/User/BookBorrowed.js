@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { db } from "../../firebase-config";
 import HomeCard from "./HomeCard";
 
@@ -28,7 +28,6 @@ function BookBorrowed() {
   // Affichage
   return (
     <div className="m-0 px-0 homeCard w-100">
-      <ToastContainer />
       <div className="d-flex justify-content-around g-5 flex-wrap px-0 m-0 py-4">
         {books
           .filter((book) => book.isBorrowed)

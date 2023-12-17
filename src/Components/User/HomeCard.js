@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import Aos from "aos";
 import "aos/dist/aos.css";
-import { addSeconds, differenceInSeconds, isPast } from "date-fns";
+import { addSeconds, isPast } from "date-fns";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   addDoc,
@@ -9,6 +10,7 @@ import {
   collection,
   doc,
   getDocs,
+  serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
@@ -28,6 +30,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     collection(db, "notifications")
   );
 
+  // Chargement des livres au montage
   const loadBooks = useCallback(async () => {
     try {
       const bookCollection = collection(db, "books");
@@ -55,6 +58,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     loadBooks();
   }, [loadBooks]);
 
+  // Chargement des données des utilisateurs au montage
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,7 +75,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
         return () => unsubscribe();
       } catch (error) {
         console.error("Error loading data:", error);
-        alert("Error loading. Please check your internet connection!");
+        toast.error("Error loading. Please check your internet connection!");
       }
     };
 
@@ -92,12 +96,16 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       });
 
       const notificationMessage = `${displayName} returned the book ${borrowedBookTitle}!`;
-      await addDoc(notificationsCollection, { message: notificationMessage });
+      await addDoc(notificationsCollection, {
+        messageForAdmin: notificationMessage,
+        timestamp: serverTimestamp(),
+        newNotif: true,
+      });
 
       toast.info(notificationMessage);
       loadBooks();
     } else if (borrowedBook && borrowedBook.stock > 0) {
-      const returnDate = addSeconds(new Date(), 10);
+      const returnDate = addSeconds(new Date(), 20);
       await updateDoc(doc(db, "books", borrowedBook.id), {
         stock: borrowedBook.stock - 1,
         isBorrowed: true,
@@ -109,11 +117,12 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       });
 
       const notificationMessage = `You borrowed the book ${borrowedBookTitle}`;
-      const notificationMessageAdmin = `${displayName} borrowed book ${borrowedBookTitle}`;
+      const notificationMessageAdmin = `${displayName} borrowed the book ${borrowedBookTitle}`;
       await addDoc(notificationsCollection, {
-        message: notificationMessage,
         messageForAdmin: notificationMessageAdmin,
         name: displayName,
+        timestamp: serverTimestamp(),
+        newNotif: true,
       });
 
       toast.success(notificationMessage);
@@ -133,21 +142,29 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     }
   };
 
+  // Vérification pour le retour des livres
   useEffect(() => {
     const checkReturnStatus = async () => {
       const borrowedBooks = books.filter((book) => book.isBorrowed);
+      const displayName = authUser ? authUser.displayName : null;
       for (const borrowedBook of borrowedBooks) {
         const returnDate = new Date(borrowedBook.returnDate);
-        const secondsUntilReturn = differenceInSeconds(returnDate, new Date());
+        const notificationMessage = `Deadline exceeded. Book ${borrowedBook.title} has been recovered!`;
+        const notificationMessageAdmin = `Deadline. Book ${borrowedBook.title} borrowed by ${displayName} has been recovered!`;
         if (isPast(returnDate)) {
           await updateDoc(doc(db, "books", borrowedBook.id), {
             stock: borrowedBook.stock + 1,
             isBorrowed: false,
             returnDate: null,
           });
-          toast.info(
-            `Deadline exceeded. The book ${borrowedBook.title} has been recovered!`
-          );
+
+          await addDoc(notificationsCollection, {
+            message: notificationMessage,
+            messageForAdmin: notificationMessageAdmin,
+            name: displayName,
+            timestamp: serverTimestamp(),
+            newNotif: true,
+          });
           loadBooks();
         } else {
           toast.warning(
@@ -158,7 +175,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     };
 
     // Déclaration de l'intervalle pour récupérer le livre
-    const interval = setInterval(checkReturnStatus, 3000);
+    const interval = setInterval(checkReturnStatus, 5000);
     return () => clearInterval(interval);
   }, [books, loadBooks]);
 
@@ -170,13 +187,17 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     (book) => book.title === title && book.isBorrowed
   );
 
+  const bookArchived = books.find(
+    (book) => book.title === title && book.archived === true
+  );
+
   return (
     <Card
       data-aos="fade-up"
       className={
         bookBorrowed
-          ? "col-md-3 mx-4 py-1 mb-4 btn-borrowed"
-          : "col-md-3 mx-4 py-1 mb-4"
+          ? "col-md-3 mx-1 py-1 mb-4 btn-borrowed"
+          : " mx-1 py-1 mb-4 "
       }
       id="card"
     >
@@ -193,10 +214,17 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
               className={
                 bookBorrowed
                   ? "text-white mt-3 bouton rounded-pill btn-success border-0"
-                  : "text-white mt-3 bouton rounded-pill bg-warning border-0"
+                  : bookArchived
+                  ? "text-white mt-3 cursor-na rounded-pill pe-auto border-0 btn-archived"
+                  : "text-white mt-3 bouton rounded-pill bg-warning border-0 "
               }
+              disabled={bookArchived ? true : false}
             >
-              {bookBorrowed ? "Return" : "Borrow"}
+              {bookBorrowed
+                ? "Return"
+                : bookArchived
+                ? "Book not available"
+                : "Borrow"}
             </Button>
           </div>
 

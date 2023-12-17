@@ -1,12 +1,13 @@
-import React from "react";
-import SearchIcon from "@mui/icons-material/Search";
-import TuneIcon from "@mui/icons-material/Tune";
-import InputBase from "@mui/material/InputBase";
-import { styled, alpha } from "@mui/material/styles";
+/* eslint-disable no-unused-vars */
 import { Dropdown } from "@mui/base/Dropdown";
 import { Menu } from "@mui/base/Menu";
 import { MenuButton as BaseMenuButton } from "@mui/base/MenuButton";
 import { MenuItem as BaseMenuItem, menuItemClasses } from "@mui/base/MenuItem";
+import SearchIcon from "@mui/icons-material/Search";
+import TuneIcon from "@mui/icons-material/Tune";
+import InputBase from "@mui/material/InputBase";
+import { alpha, styled } from "@mui/material/styles";
+import React from "react";
 
 const blue = {
   50: "#F0F7FF",
@@ -162,16 +163,26 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function SearchBooks({ filter, func, func2, func3 }) {
+function SearchBooks({
+  filter,
+  func,
+  func1,
+  func2,
+  func3,
+  func4,
+  func5,
+  func6,
+  func7,
+}) {
   const createHandleMenuClick = (menuItem) => {
     return () => {
       console.log(`Clicked on ${menuItem}`);
     };
   };
   return (
-    <div className="container">
+    <div className="container" id="search">
       <div className="row">
-        <div className="col-md-6">
+        <div className="col-8 col-md-6 ">
           <Search className="rounded-pill">
             <SearchIconWrapper>
               <SearchIcon />
@@ -184,21 +195,34 @@ function SearchBooks({ filter, func, func2, func3 }) {
             />
           </Search>
         </div>
-        <div className="col-md-6 text-end" style={{ color: "black" }}>
-          <div>
+        <div className="col-md-6 col-1 text-end" style={{ color: "black" }}>
+          <div id="filterDropDown">
             <Dropdown>
-              <MenuButton>
-                <TuneIcon />
+              <MenuButton className="icon">
+                <TuneIcon className="iconFliter" />
               </MenuButton>
               <Menu slots={{ listbox: Listbox }}>
-                <MenuItem onClick={func3}>All books</MenuItem>
-                <MenuItem
-                  role="button"
-                  onClick={createHandleMenuClick("dispo")}
-                >
-                  Books available
+                <MenuItem className="categoryFilter" onClick={func3}>
+                  All Category
                 </MenuItem>
-                <MenuItem onClick={func2}>Books not available</MenuItem>
+                <MenuItem className="categoryFilter" onClick={func1}>
+                  Novel Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func2}>
+                  History Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func4}>
+                  Art Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func5}>
+                  Poetry Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func6}>
+                  Science Category
+                </MenuItem>
+                <MenuItem className="categoryFilter" onClick={func7}>
+                  Adventure Category
+                </MenuItem>
               </Menu>
             </Dropdown>
           </div>

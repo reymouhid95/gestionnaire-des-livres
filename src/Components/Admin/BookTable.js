@@ -7,6 +7,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Button, Col, Table } from "react-bootstrap";
 import * as Icon from "react-bootstrap-icons";
+import { toast } from "react-toastify";
 import { db } from "../../firebase-config";
 import BookDetails from "./BookDetails";
 import ListModal from "./ModalList";
@@ -71,6 +72,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
   const [bookArchives, setBookArchives] = useState({});
   const [archivedBookId, setArchivedBookId] = useState(null);
 
+  // Chargement des livres archivés au montage
   useEffect(() => {
     const loadArchives = async () => {
       try {
@@ -80,6 +82,7 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
         setInitialBookArchives(data || {});
       } catch (error) {
         console.error("Error loading archives from Firestore:", error);
+        toast.error("Error loading. Please check your internet connection");
       }
     };
 
@@ -134,33 +137,34 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
     );
   };
 
+  // Archivé un livre
   const handleArchivedBook = async (bookId) => {
     onArchivedBook(bookId);
     try {
+      const updatedBookArchives = { ...bookArchives, [bookId]: true };
       const docRef = doc(db, "archivedBooks", "archivedBooksData");
-      await setDoc(docRef, { ...bookArchives, [bookId]: true });
-      setBookArchives((prevBookArchives) => ({
-        ...prevBookArchives,
-        [bookId]: true,
-      }));
+      await setDoc(docRef, updatedBookArchives);
       setArchivedBookId(bookId);
+      localStorage.setItem("bookArchives", JSON.stringify(updatedBookArchives));
+      setBookArchives(updatedBookArchives);
     } catch (error) {
       console.error("Error updating archives in Firestore:", error);
+      toast.error("Error updating!");
     }
   };
 
   const handleUnarchivedBook = async (bookId) => {
     onArchivedBook(bookId);
     try {
+      const updatedBookArchives = { ...bookArchives, [bookId]: false };
       const docRef = doc(db, "archivedBooks", "archivedBooksData");
-      await setDoc(docRef, { ...bookArchives, [bookId]: false });
-      setBookArchives((prevBookArchives) => ({
-        ...prevBookArchives,
-        [bookId]: false,
-      }));
+      await setDoc(docRef, updatedBookArchives);
       setArchivedBookId(bookId);
+      localStorage.setItem("bookArchives", JSON.stringify(updatedBookArchives));
+      setBookArchives(updatedBookArchives);
     } catch (error) {
       console.error("Error updating archives in Firestore:", error);
+      toast.error("Error updating!");
     }
   };
 
@@ -196,7 +200,6 @@ function TableBook({ books, onEditBook, onDeleteBook, onArchivedBook }) {
             className="data"
             variant="bg-body-secondary"
             id="table"
-            size="sm"
           >
             <thead>
               <tr>
