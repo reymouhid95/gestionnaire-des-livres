@@ -168,7 +168,6 @@ function ArchivedBooks() {
         className="data"
         variant="bg-body-secondary"
         id="table"
-        size="sm"
       >
         <thead>
           <tr>

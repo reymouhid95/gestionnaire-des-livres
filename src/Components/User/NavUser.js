@@ -51,6 +51,7 @@ function NavUser({ Toggle }) {
   const [newPhoto, setNewPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [originalUser, setOriginalUser] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
@@ -142,13 +143,19 @@ function NavUser({ Toggle }) {
   }, [auth]);
 
   const handleUpdateProfile = async () => {
+    // Validation des champs
+    if (!newName.trim() && !newEmail.trim() && !newPhoto) {
+      toast.warning("Please make changes before updating!");
+      return;
+    }
+
     // Mettre à jour le profil dans Firebase Auth
     await updateProfile(auth.currentUser, {
       displayName: newName,
     });
 
     // Mettre à jour le nom dans l'état local
-    setUser((prevUser) => ({ ...prevUser, name: newName }));
+    setUser((prevUser) => ({ ...prevUser, name: newName.trim() }));
 
     // Mettre à jour la photo dans le stockage Firebase
     if (newPhoto) {
@@ -199,14 +206,20 @@ function NavUser({ Toggle }) {
   }, [notifs]);
 
   const handleModalOpen = () => {
+    // Sauvegarder les valeurs d'origine avant d'ouvrir le Modal
+    setOriginalUser({
+      name: user.name,
+      email: user.email,
+      photoUrl: user.photoUrl,
+    });
     setOpenModal(true);
   };
 
   const handleModalClose = async () => {
     // Réinitialiser les valeurs en cas d'annulation
-    setNewName("");
-    setNewEmail("");
-    setAvatarImage(null);
+    setNewName(originalUser.name);
+    setNewEmail(originalUser.email);
+    setNewPhoto(null);
 
     // Fermer le Modal
     setOpenModal(false);
@@ -362,7 +375,7 @@ function NavUser({ Toggle }) {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem onClick={handleModalOpen}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -382,15 +395,6 @@ function NavUser({ Toggle }) {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
-      <MenuItem>
-        <Form>
-          <Form.Control
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoChange}
-          />
-        </Form>
-      </MenuItem>
     </Menu>
   );
 
@@ -405,7 +409,7 @@ function NavUser({ Toggle }) {
             aria-label="open drawer"
             sx={{ mr: 2 }}
           >
-            <MenuIcon onClick={Toggle} />
+            <MenuIcon onClick={Toggle} className="toggleButton"/>
           </IconButton>
           <Typography
             variant="h6"
@@ -506,6 +510,13 @@ function NavUser({ Toggle }) {
                       onChange={(e) => setNewEmail(e.target.value)}
                       className="mb-3"
                     />
+                    <Button
+                      variant="contained"
+                      onClick={handleModalClose}
+                      className="me-3"
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       variant="contained"
                       endIcon={<SendIcon />}

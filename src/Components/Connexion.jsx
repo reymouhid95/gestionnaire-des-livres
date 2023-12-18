@@ -12,7 +12,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { useCallback, useEffect, useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import GoogleAuth from "../Components/AuthGoogle";
 import PasswordReset from "../Components/Reset";
 import Auth from "../assets/signin2.svg";
@@ -136,7 +136,6 @@ function SignIn() {
   // Affichage
   return (
     <>
-      <ToastContainer />
       <Row className="m-0 connexion">
         <Col md={6} className="backTwo">
           <Form className="form color" onSubmit={handleSubmit}>

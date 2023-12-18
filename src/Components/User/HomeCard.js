@@ -105,7 +105,7 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
       toast.info(notificationMessage);
       loadBooks();
     } else if (borrowedBook && borrowedBook.stock > 0) {
-      const returnDate = addSeconds(new Date(), 20);
+      const returnDate = addSeconds(new Date(), 60);
       await updateDoc(doc(db, "books", borrowedBook.id), {
         stock: borrowedBook.stock - 1,
         isBorrowed: true,
@@ -175,13 +175,13 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
     };
 
     // Déclaration de l'intervalle pour récupérer le livre
-    const interval = setInterval(checkReturnStatus, 5000);
+    const interval = setInterval(checkReturnStatus, 10000);
     return () => clearInterval(interval);
   }, [books, loadBooks]);
 
-  useEffect(() => {
-    Aos.init({ duration: 2000 });
-  }, []);
+  // useEffect(() => {
+  //   Aos.init({ duration: 2000 });
+  // }, []);
 
   const bookBorrowed = books.find(
     (book) => book.title === title && book.isBorrowed
@@ -193,7 +193,6 @@ function HomeCard({ img, title, description, auth, genre, Id, archived }) {
 
   return (
     <Card
-      data-aos="fade-up"
       className={
         bookBorrowed
           ? "col-md-3 mx-1 py-1 mb-4 btn-borrowed"

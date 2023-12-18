@@ -84,6 +84,7 @@ function UserList() {
         striped
         bordered
         hover
+        className="data"
         variant="bg-body-secondary"
         id="tableUser"
       >

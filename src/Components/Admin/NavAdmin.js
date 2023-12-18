@@ -48,6 +48,7 @@ function NavAdmin({ Toggle }) {
   const [newPhoto, setNewPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [originalUser, setOriginalUser] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenNotif = Boolean(anchorElNotif);
@@ -134,10 +135,19 @@ function NavAdmin({ Toggle }) {
 
   // Mettre à jour le profil
   const handleUpdateProfile = async () => {
+    // Validation des champs
+    if (!newName.trim() && !newEmail.trim() && !newPhoto) {
+      toast.warning("Please make changes before updating!");
+      return;
+    }
+
+    // Mettre à jour le profil dans Firebase Auth
     await updateProfile(auth.currentUser, {
       displayName: newName,
     });
-    setUser((prevUser) => ({ ...prevUser, name: newName }));
+
+    // Mettre à jour le nom dans l'état local
+    setUser((prevUser) => ({ ...prevUser, name: newName.trim() }));
 
     // Mettre à jour la photo dans le stockage Firebase
     if (newPhoto) {
@@ -173,9 +183,25 @@ function NavAdmin({ Toggle }) {
     e.preventDefault();
   };
 
-  const handleModalOpen = () => setOpenModal(true);
+  const handleModalOpen = () => {
+    // Sauvegarder les valeurs d'origine avant d'ouvrir le Modal
+    setOriginalUser({
+      name: user.name,
+      email: user.email,
+      photoUrl: user.photoUrl,
+    });
+    setOpenModal(true);
+  };
 
-  const handleModalClose = () => setOpenModal(false);
+  const handleModalClose = async () => {
+    // Réinitialiser les valeurs en cas d'annulation
+    setNewName(originalUser.name);
+    setNewEmail(originalUser.email);
+    setNewPhoto(null);
+
+    // Fermer le Modal
+    setOpenModal(false);
+  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -312,7 +338,7 @@ function NavAdmin({ Toggle }) {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem onClick={handleModalOpen}>
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -332,15 +358,6 @@ function NavAdmin({ Toggle }) {
         </IconButton>
         <p>Profile</p>
       </MenuItem>
-      <MenuItem>
-        <Form>
-          <Form.Control
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoChange}
-          />
-        </Form>
-      </MenuItem>
     </Menu>
   );
 
@@ -355,7 +372,7 @@ function NavAdmin({ Toggle }) {
             aria-label="open drawer"
             sx={{ mr: 2 }}
           >
-            <MenuIcon onClick={Toggle} />
+            <MenuIcon onClick={Toggle} className="toggleButton" />
           </IconButton>
           <Typography
             variant="h6"
@@ -456,6 +473,13 @@ function NavAdmin({ Toggle }) {
                       onChange={(e) => setNewEmail(e.target.value)}
                       className="mb-3"
                     />
+                    <Button
+                      variant="contained"
+                      onClick={handleModalClose}
+                      className="me-3"
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       variant="contained"
                       endIcon={<SendIcon />}
