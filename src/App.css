@@ -619,6 +619,10 @@ thead th {
   background-color: rgb(165, 165, 165) !important;
 }
 
+.btn-archived {
+  background-color: rgb(165, 165, 165) !important;
+}
+
 .backOne {
   width: 100%;
   background-size: cover;

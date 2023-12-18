@@ -53,7 +53,11 @@ function FormBook() {
         ...doc.data(),
         archived: doc.data().archived || false,
       }));
-      setBooks(bookData);
+
+      // Sort the books by creation timestamp in descending order
+      const sortedBooks = bookData.sort((a, b) => b.createdAt - a.createdAt);
+
+      setBooks(sortedBooks);
     } catch (error) {
       console.error("Error loading books:", error);
       toast.error("Loading error. Please check your internet connection!");
@@ -90,7 +94,8 @@ function FormBook() {
     }
 
     // Ajouter le livre avec un stock initial de 5
-    const newBook = { ...formData, stock: 5 };
+    // Ajouter le livre avec une propriété createdAt contenant la date actuelle
+    const newBook = { ...formData, stock: 5, createdAt: new Date().getTime() };
     await addDoc(collection(db, "books"), newBook);
     setBooks((prevBooks) => [...prevBooks, newBook]);
     setStocks((prevStocks) => ({
