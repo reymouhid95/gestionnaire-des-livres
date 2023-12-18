@@ -13,7 +13,7 @@ import { useState } from "react";
 import { Col, Form, InputGroup, Row, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import GoogleAuth from "../Components/AuthGoogle";
+// import GoogleAuth from "../Components/AuthGoogle";
 import Auth from "../assets/signup.svg";
 import { auth, db } from "../firebase-config";
 
@@ -210,8 +210,8 @@ function SignUp() {
               )}
               {loading && loadingComplete ? "Inscription..." : null}
             </Button>
-            <p className="text-uppercase">Or</p>
-            <GoogleAuth />
+            {/* <p className="text-uppercase">Or</p>
+            <GoogleAuth /> */}
             <p className="fw-bold">
               Already have an account ?{" "}
               <Link to="/connexion">
